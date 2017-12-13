@@ -47,9 +47,11 @@ $factory->define(App\Log::class, function (Faker $faker) {
 
     return [
         'client_id' => function() {
+
             return App\Client::inRandomOrder()->first()->id;
         },
         'user_created' => function() {
+
             return App\Client::inRandomOrder()->first()->id;
         },
         'title' => $faker->name,

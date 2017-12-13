@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class LogController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +19,9 @@ class LogController extends Controller
      */
     public function index()
     {
-        //
+        $logs = Log::orderBy('id', 'desc')->paginate(10);
+
+        return view('logs.index', ['title'=>'Dashboard', 'logs'=>$logs]);
     }
 
     /**

@@ -28,7 +28,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/';
 
     /**
      * Create a new controller instance.
@@ -43,7 +43,7 @@ class LoginController extends Controller
     public function create()
     {
         if(Auth::check()) {
-            return redirect()->route('clientsHome');
+            return redirect()->route('logsHome');
         }
 
         return view('auth/login')->withTitle('Login');
@@ -51,12 +51,14 @@ class LoginController extends Controller
 
     public function store(Request $request)
     {
-        if((request('email') && request('password')) == FALSE)
+        $email = strtolower( trim( request('email') ) );
+
+        if(($email && request('password')) == FALSE)
         {
             return back()->with('errors', ['Missing email and password.']);
         }
 
-        if(!$user = User::where('email', request('email'))->first()) 
+        if(!$user = User::where('email', $email)->first()) 
         {
             return back()->with('errors', ['Invalid login credentials provided.']);
         }
@@ -67,6 +69,9 @@ class LoginController extends Controller
             return back()->with('errors', ['Invalid login credentials provided.']);
         }
     
+        $user->last_login = date('Y-m-d H:i:s');
+        $user->save();
+
         return redirect()
                 ->route('clientsHome')
                 ->with('message', 'You have logged in, '.$user->first_name.' '.$user->last_name.'!');        

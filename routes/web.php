@@ -12,6 +12,8 @@
 */
 
 Route::group(['middleware'=>'auth'],function () {
+
+    Route::get('/logs', 'LogController@index')->name('logsHome');
     
     Route::get('/clients', 'ClientController@index')->name('clientsHome');
     Route::get('/clients/{client}', 'ClientController@show')->name('showClient');

@@ -28,6 +28,7 @@ class CreateUsersTable extends Migration
             $table->string('postcode')->nullable();
             $table->rememberToken();
             $table->timestamps();
+            $table->dateTime('last_login')->nullable();
         });
     }
 

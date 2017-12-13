@@ -19,7 +19,7 @@ class ClientController extends Controller
      */
     public function index()
     {
-        return view('clients.index', ['title'=>'Dashboard']);
+        return view('clients.index', ['title'=>'Clients']);
     }
 
     /**

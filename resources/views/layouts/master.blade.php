@@ -27,11 +27,17 @@
             </button>
                 <div class="container">
                     <div class="row">
-                        <div class="col-lg-8 col-lg-offset-2">
-                            <h3 class="page-header">{{ $title }}</h3>  
+                        <div style="color:white;" class="col-lg-10 col-lg-offset-1">
+                            <h3 class="page-header text-center lead">
+                                {{ $title }}
+                            </h3>  
+                                <span style="color:white;font-size:14px;" class="pull-right">
+                                    Logged in as {{ Auth::user()->name }}
+                                    {{ Auth::user()->last_login }}
+                                </span>
                             
                             @include('layouts.flash')
-                    
+                            <br>
                             @yield('content')
                         </div>
                     </div>

@@ -19,7 +19,7 @@ class CreateLogsTable extends Migration
             $table->integer('user_created');
             $table->integer('user_modified')->nullable();
             $table->string('title');
-            $table->string('description');
+            $table->text('description');
             $table->text('body');
             $table->text('notes');
             $table->timestamps();
