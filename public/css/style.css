@@ -8,3 +8,35 @@
     color:#583e7e;;
     font-weight:bold;
 }
+
+.main-container {
+    background:#FDFDFD;
+    color:black;
+    border-radius:5px;
+}
+
+td a, .card li a {
+    color:black !important;
+    text-decoration:none !important;
+}
+
+.breadcrumb {
+    font-size:12px;
+}
+
+.card li a {
+    font-weight:normal;
+    text-decoration:underline;
+}
+
+.footer {
+    margin: 10px 0px 20px 0px;
+}
+
+a.btn {
+    text-decoration: none;
+}
+
+.pull-right a.btn {
+    margin:20px 20px 0px 0px;
+}

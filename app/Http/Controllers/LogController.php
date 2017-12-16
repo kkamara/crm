@@ -80,7 +80,9 @@ class LogController extends Controller
      */
     public function show(Log $log)
     {
-        //
+
+
+        return view('logs.show', ['title'=>$log->title, 'log'=>$log]);
     }
 
     /**

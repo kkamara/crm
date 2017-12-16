@@ -32,6 +32,9 @@ Route::group(['middleware'=>'auth'],function () {
     Route::patch('/clients/update/{client}', 'ClientController@update')->name('updateClient');
     Route::delete('/clients/delete/{client}', 'ClientController@destroy')->name('deleteClient');
 
+    // User routes
+    // coming soon...
+
     // User settings routes
     Route::get('/settings', 'Auth\UserSettingsController@show')->name('showSettings');
     Route::get('/settings/edit', 'Auth\UserSettingsController@edit')->name('editSettings');

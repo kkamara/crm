@@ -38,7 +38,7 @@
                                 Logged in as {{ Auth::user()->name }}
                                 {{ Auth::user()->last_login }}
                             </div>
-                            <div class="pull-left {{ \request()->route()->getName() == 'Dashboard' ? 'hide' : '' }}" style="font-size:12px">
+                            <div class="pull-left {{ \request()->route()->getName() == 'Dashboard' ? 'hide' : '' }}">
                                 <ol class="breadcrumb">
                                     <li class="breadcrum-item"><a href="/">Home</a></li>
                                     @yield('breadcrumbs')>
@@ -50,6 +50,8 @@
                             @include('layouts.flash')
                             <br>
                             @yield('content')
+
+                            @include('layouts.footer')
                         </div>
                     </div>
 

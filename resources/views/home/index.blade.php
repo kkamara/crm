@@ -2,6 +2,8 @@
 
 @section('content')
 
-<p>Show graph statistics here</p>
+
+    <div>Show graph statistics here</div>
+
 
 @endsection
