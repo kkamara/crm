@@ -1,0 +1,10 @@
+.breadcrumb li,
+.breadcrumb li a {
+    text-decoration:none;
+    color:black;
+}
+
+.breadcrumb li.breadcrumb-item.active {
+    color:#583e7e;;
+    font-weight:bold;
+}

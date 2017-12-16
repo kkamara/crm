@@ -9,6 +9,26 @@
                     <li>
                         <a href="/"><i class="fa fa-fw fa-home"></i> Dashboard</a>
                     </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa fa-fw fa-tasks"></i> Logs <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li class="dropdown-header">Log Options</li>
+                            <li><a href="{{ route('logsHome') }}">View Logs</a></li>
+                            <li><a href="{{ route('createLog') }}">Create Log</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa fa-fw fa-user"></i> Clients <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li class="dropdown-header">Client Options</li>
+                            <li><a href="{{ route('clientsHome') }}">View Clients</a></li>
+                            <li><a href="{{ route('createClient') }}">Create Client</a></li>
+                        </ul>
+                    </li>
                     <li>
                         <a href="/settings"><i class="fa fa-fw fa-cogs"></i> Settings</a>
                     </li>

@@ -19,7 +19,7 @@ $factory->define(App\User::class, function (Faker $faker) {
     return [
         'first_name' => $faker->firstName,
         'last_name' => $faker->lastName,
-        'username' => $faker->username,
+        'username' => $faker->unique()->username,
         'email' => $faker->unique()->safeEmail,
         'password' => $password ?: $password = bcrypt('secret'),
         'remember_token' => str_random(10),
@@ -48,11 +48,11 @@ $factory->define(App\Log::class, function (Faker $faker) {
     return [
         'client_id' => function() {
 
-            return App\Client::inRandomOrder()->first()->id;
+            return factory(App\Client::class)->create()->id;
         },
         'user_created' => function() {
 
-            return App\Client::inRandomOrder()->first()->id;
+            return factory(App\User::class)->create()->id;
         },
         'title' => $faker->name,
         'description' => $faker->paragraph,

@@ -28,7 +28,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/';
+    protected $redirectTo = '/dashboard';
 
     /**
      * Create a new controller instance.
@@ -43,7 +43,7 @@ class LoginController extends Controller
     public function create()
     {
         if(Auth::check()) {
-            return redirect()->route('logsHome');
+            return redirect()->route('Dashboard');
         }
 
         return view('auth/login')->withTitle('Login');
@@ -73,7 +73,7 @@ class LoginController extends Controller
         $user->save();
 
         return redirect()
-                ->route('clientsHome')
+                ->route('Dashboard')
                 ->with('message', 'You have logged in, '.$user->first_name.' '.$user->last_name.'!');        
     }
 

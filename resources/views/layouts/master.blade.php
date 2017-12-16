@@ -9,7 +9,7 @@
     {{--  sheets  --}}
     <link rel="stylesheet" type="text/css" href="/css/app.css">
     <link rel="stylesheet" type="text/css" href="/css/navbar.css">
-
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
 </head>
 <body>
     
@@ -20,22 +20,33 @@
 
             <!-- Page Content -->
             <div id="page-content-wrapper">
-            <button type="button" class="hamburger is-closed animated fadeInLeft" data-toggle="offcanvas">
-                <span class="hamb-top"></span>
-                <span class="hamb-middle"></span>
-                <span class="hamb-bottom"></span>
-            </button>
+                <button type="button" class="hamburger is-closed animated fadeInLeft" data-toggle="offcanvas">
+                    <span class="hamb-top"></span>
+                    <span class="hamb-middle"></span>
+                    <span class="hamb-bottom"></span>
+                </button>
                 <div class="container">
                     <div class="row">
                         <div style="color:white;" class="col-lg-10 col-lg-offset-1">
                             <h3 class="page-header text-center lead">
                                 {{ $title }}
-                            </h3>  
-                                <span style="color:white;font-size:14px;" class="pull-right">
-                                    Logged in as {{ Auth::user()->name }}
-                                    {{ Auth::user()->last_login }}
-                                </span>
+                            </h3>
+                            <div style="color:white;font-size:14px;" class="pull-right">
+                                Logged in as {{ Auth::user()->name }}
+                                {{ Auth::user()->last_login }}
+                            </div>
+                            <div class="pull-left {{ \request()->route()->getName() == 'Dashboard' ? 'hide' : '' }}" style="font-size:12px">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrum-item"><a href="/">Home</a></li>
+                                    {{--  <li class="breadcrumb-item active">Home</li>
+                                    <li class="breadcrumb-item active"><a href="#">Home</a></li>
+                                    <li class="breadcrumb-item active">Library</li>  --}}
+                                    @yield('breadcrumbs')>
+                                </ol>
+                            </div>
                             
+                            <br>
+
                             @include('layouts.flash')
                             <br>
                             @yield('content')

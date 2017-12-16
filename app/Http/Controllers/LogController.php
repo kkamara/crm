@@ -19,9 +19,36 @@ class LogController extends Controller
      */
     public function index()
     {
-        $logs = Log::orderBy('id', 'desc')->paginate(10);
+        $logs = Log::orderBy('id', 'desc');
 
-        return view('logs.index', ['title'=>'Dashboard', 'logs'=>$logs]);
+        if(request('title'))
+        {
+            $logs = $logs->where('title', 'like', '%'.request('search').'%');
+                        // ->where('description', 'like', '%'.$searchParam.'%')
+                        // ->where('body', 'like', '%'.$searchParam.'%')
+                        // ->where('created_at', 'like', '%'.$searchParam.'%')
+                        // ->where('updated_at', 'like', '%'.$searchParam.'%');
+        }
+        if(request('desc'))
+        {
+            $logs = $logs->where('description', 'like', '%'.request('search').'%');
+        }
+        if(request('body'))
+        {
+            $logs = $logs->where('body', 'like', '%'.request('search').'%');
+        }
+        if(request('created_at'))
+        {
+            $logs = $logs->where('created_at', 'like', '%'.request('search').'%');
+        }
+        if(request('updated_at'))
+        {
+            $logs = $logs->where('updated_at', 'like', '%'.request('search').'%');
+        }
+
+        $logs = $logs->paginate(10);
+
+        return view('logs.index', ['title'=>'View Logs', 'logs'=>$logs]);
     }
 
     /**

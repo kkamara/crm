@@ -1,7 +1,6 @@
 @extends('layouts.master')
 
 @section('content')
-<<<<<<< HEAD
     
     <table>
 
@@ -15,7 +14,4 @@
 
     </table>
 
-=======
-    <p>List Clients & search through</p>
->>>>>>> 3518bd60a8f0f12ef12c6e8470a8dfff2edbd831
 @endsection
