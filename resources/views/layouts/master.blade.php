@@ -6,10 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{ $title }} | {{ config('app.name') }}</title>
 
+    {{--  Icons  --}}
+    <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}">
+
     {{--  sheets  --}}
-    <link rel="stylesheet" type="text/css" href="/css/app.css">
-    <link rel="stylesheet" type="text/css" href="/css/navbar.css">
-    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/navbar.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}">    
 </head>
 <body>
     
@@ -38,9 +41,6 @@
                             <div class="pull-left {{ \request()->route()->getName() == 'Dashboard' ? 'hide' : '' }}" style="font-size:12px">
                                 <ol class="breadcrumb">
                                     <li class="breadcrum-item"><a href="/">Home</a></li>
-                                    {{--  <li class="breadcrumb-item active">Home</li>
-                                    <li class="breadcrumb-item active"><a href="#">Home</a></li>
-                                    <li class="breadcrumb-item active">Library</li>  --}}
                                     @yield('breadcrumbs')>
                                 </ol>
                             </div>
@@ -61,7 +61,7 @@
         <!-- /#wrapper -->
 
     @section('scripts')
-        <script src="/js/app.js" type="text/javascript"></script>
+        <script src="{{ asset('js/app.js') }}" type="text/javascript"></script>
     @show
 </body>
 </html>
