@@ -45,3 +45,8 @@ a.btn {
 .errors .list-group-item-danger {
     list-style-type:none !important;
 }
+
+.front-page-links a,
+.front-page-links a:hover {
+    color:black;
+}

@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Auth;
 use App\User;
 
-class EmployeeController extends Controller
+class ClientAdminController extends Controller
 {
     /**
      * Display a listing of the resource.

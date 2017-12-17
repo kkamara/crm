@@ -23,10 +23,10 @@
                 <strong>Title</strong> :<br> {{ $log->title }}
             </li>
             <li class="list-group-item" style="border: none">
-                <strong>Description</strong>:<br> {{ $log->description }}
+                <strong>Description</strong>:<br> {!! $log->description !!}
             </li>
             <li class="list-group-item" style="border: none">
-                <strong>Notes</strong>:<br> {{ $log->notes }}
+                <strong>Notes</strong>:<br> {!! $log->notes !!}
             </li>
             <li class="list-group-item" style="border: none">
                 <strong>Created by</strong>:<br> <a href="#">{{ $log->user->name }} </a> at {{ $log->created_at->format('D-m-Y G:i:a') }}

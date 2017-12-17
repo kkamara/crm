@@ -39,14 +39,14 @@ class Log extends Model
         return $validator->errors()->all();
     }
 
-    public function sanitizeData($request)
+    public function parseData($request)
     {
         $data = array();
-        $data['title']         = filter_var(request('title'), FILTER_SANITIZE_STRING);
-        $data['description']   = filter_var(request('description'), FILTER_SANITIZE_STRING);
-        $data['body']          = filter_var(request('body'), FILTER_SANITIZE_STRING);
-        $data['user_modified'] = filter_var(request('user_modified'), FILTER_SANITIZE_STRING);
-        $data['notes']         = filter_var(request('notes'), FILTER_SANITIZE_STRING);
+        $data['title']         = request('title');
+        $data['description']   = request('description');
+        $data['body']          = request('body');
+        $data['user_modified'] = request('user_modified');
+        $data['notes']         = request('notes');
 
         return $data;
     }
@@ -60,5 +60,20 @@ class Log extends Model
         $this->notes         = $data['notes'];
         
         return ($this->save()) ? TRUE : FALSE;
+    }
+
+    public function getDescriptionAttribute()
+    {
+        return nl2br(e($this->attributes['description']));
+    }
+
+    public function getBodyAttribute()
+    {
+        return nl2br(e($this->attributes['body']));
+    }
+
+    public function getNotesAttribute()
+    {
+        return nl2br(e($this->attributes['notes']));
     }
 }

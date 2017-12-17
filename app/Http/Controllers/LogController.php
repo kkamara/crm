@@ -131,7 +131,7 @@ class LogController extends Controller
             ]);
         }
 
-        $data = $log->sanitizeData($request);
+        $data = $log->parseData($request);
         
         $update = $log->updateLog($data);
 

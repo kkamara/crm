@@ -66,7 +66,7 @@
 
                     <tr>
                         <td><a href="{{ $log->path() }}">{{ $log->title }}</a></td>
-                        <td>{{ $log->description}}</td>
+                        <td>{!! $log->description !!}</td>
                         <td>{{ $log->created_at}}</td>
                         @if($log->updated_at)
                             <td>{{$log->updated_at}}</td>

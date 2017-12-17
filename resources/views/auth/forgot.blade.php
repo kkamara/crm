@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{$title}} | {{config('app.name')}}</title>
-    <link rel="stylesheet" href="/css/app.css" type="text/css">
+    @include('layouts.stylesheets')
     <link rel="stylesheet" href="/css/frontpage.css" type="text/css">
 </head>
 <body>
@@ -40,9 +40,9 @@
                                     </div>
                                  </div>
 
-                                <div class="col-xs-12 col-sm-12 col-md-12">
+                                <div class="col-xs-12 col-sm-12 col-md-12 front-page-links">
 
-                                    <div class="col-xs-6 col-sm-4 col-sm-offset-8 col-md-4 col-sm-offset-8">
+                                    <div class="col-xs-6 col-sm-4 col-sm-offset-8 col-md-4 col-sm-offset-8 front-page-links">
                                         <div class="form-group">
                                         <a href="/" data-toggle="modal"> Login page </a>
                                         </div>
