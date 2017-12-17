@@ -3,17 +3,34 @@
 @section('breadcrumbs')
 
     <li class="breadcrumb-item"><a href="{{ route('logsHome') }}">View Logs</a></li>
-    <li class="breadcrumb-item active">{{ $title }}</li>
+    <li class="breadcrumb-item"><a href="{{ route('showLog', $log->id) }}">{{ $log->title }}</a></li>
+    <li class="breadcrumb-item active">delete</li>
 
 @endsection
 
 @section('content')
 
 <div class="container-fluid main-container">
-    <div class="pull-right">
-        <a href="{{ route('editLog', $log->id) }}" class="btn btn-info">Edit</a>
-        <a href="{{ route('deleteLog', $log->id) }}" class="btn btn-danger">Delete</a>
+    
+    <br>
+    <div class="text-center">
+        <form class="form-inline" method="POST" action="{{ route('destroyLog', $log->id) }}">
+            {{ csrf_field() }}
+            {{ method_field('DELETE') }}
+
+            <div class="form-group">
+                <label>Are you sure you want to delete this log?
+                    <select name="delete" class="form-control">
+                        <option value="0" selected>No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                    <input type="submit" class="form-control btn btn-primary">
+                </label>
+            </div>
+
+        </form>
     </div>
+
     <div class="card pull-left">
         <ul class="list-group list-group-flush ">
             <li class="list-group-item" style="border: none;">

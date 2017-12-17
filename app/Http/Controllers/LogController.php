@@ -137,22 +137,38 @@ class LogController extends Controller
 
         if($update === TRUE)
         {
-            return redirect('/logs/'.$log->id)->with('flashSuccess', 'Log successfully updated');
+            return redirect('/logs/'.$log->id)->with('flashSuccess', 'Log successfully updated.');
         }
         else
         {
-            return redirect('/logs/'.$log->id)->with('flashError', 'Unable to update log');
+            return redirect('/logs/'.$log->id)->with('flashError', 'We encountered an error updating the log.');
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Log  $log
-     * @return \Illuminate\Http\Response
-     */
+    public function delete(Log $log)
+    {
+        return view('logs.delete', [
+            'title'=>'Delete '.$log->title,
+            'log'  => $log
+        ]);
+    }
+    
     public function destroy(Log $log)
     {
-        //
+        if((int)request('delete') !== 1)
+        {
+            return redirect()->route('showLog', $log->id);
+        }
+
+
+        if($log->delete())
+        {
+            return redirect('/logs')->with('flashSuccess', 'Log successfully deleted.');
+        }
+        else
+        {
+            return redirect('/logs')->with('flashError', 'We encountered an error deleting the log.');
+        }
+
     }
 }

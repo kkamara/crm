@@ -22,7 +22,8 @@ Route::group(['middleware'=>'auth'],function () {
     Route::get('/logs/create/', 'LogController@show')->name('createLog');
     Route::get('/logs/edit/{log}', 'LogController@edit')->name('editLog');
     Route::patch('/logs/update/{log}', 'LogController@update')->name('updateLog');
-    Route::delete('/logs/delete/{log}', 'LogController@destroy')->name('deleteLog');
+    Route::get('/logs/delete/{log}', 'LogController@delete')->name('deleteLog');
+    Route::delete('/logs/delete/{log}', 'LogController@destroy')->name('destroyLog');
     
     // Client routes
     Route::get('/clients', 'ClientController@index')->name('clientsHome');

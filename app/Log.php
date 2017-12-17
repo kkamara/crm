@@ -53,11 +53,11 @@ class Log extends Model
 
     public function updateLog($data)
     {
-        $this->title         = $data['title'];
-        $this->description   = $data['description'];
-        $this->body          = $data['body'];
+        $this->title         = filter_var($data['title'], FILTER_SANITIZE_STRING);
+        $this->description   = filter_var($data['description'], FILTER_SANITIZE_STRING);
+        $this->body          = filter_var($data['body'], FILTER_SANITIZE_STRING);
+        $this->notes         = filter_var($data['notes'], FILTER_SANITIZE_STRING);
         $this->user_modified = $data['user_modified'];
-        $this->notes         = $data['notes'];
         
         return ($this->save()) ? TRUE : FALSE;
     }
@@ -75,5 +75,26 @@ class Log extends Model
     public function getNotesAttribute()
     {
         return nl2br(e($this->attributes['notes']));
+    }
+
+    public function getEditDescriptionAttribute()
+    {
+        $desc = str_replace('<br/>', '', $this->attributes['description']);
+
+        return e($desc);
+    }
+
+    public function getEditBodyAttribute()
+    {
+        $body = str_replace('<br/>', '', $this->attributes['body']);
+
+        return e($body);
+    }
+
+    public function getEditNotesAttribute()
+    {
+        $notes = str_replace('<br/>', '', $this->attributes['notes']);
+
+        return e($notes);
     }
 }

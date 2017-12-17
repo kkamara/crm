@@ -31,19 +31,19 @@
 
             <div class="form-group">
                 <label>Description :
-                    <textarea cols="100%" rows="10" class="form-control" name="description">{!! $log->description !!}</textarea>
+                    <textarea cols="100%" rows="10" class="form-control" name="description">{!! $log->edit_description !!}</textarea>
                 </label>
             </div>
 
             <div class="form-group">
                 <label>Body :
-                    <textarea cols="100%" rows="10" class="form-control" name="body">{!! $log->body !!}</textarea>
+                    <textarea cols="100%" rows="10" class="form-control" name="body">{!! $log->edit_body !!}</textarea>
                 </label>
             </div>
 
             <div class="form-group">
                 <label>Notes :
-                    <textarea cols="100%" rows="10" class="form-control" name="notes">{!! $log->notes !!}</textarea>
+                    <textarea cols="100%" rows="10" class="form-control" name="notes">{!! $log->edit_notes !!}</textarea>
                 </label>
             </div>
 
