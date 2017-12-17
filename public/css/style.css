@@ -4,8 +4,8 @@
     color:black;
 }
 
-.breadcrumb li.breadcrumb-item.active {
-    color:#583e7e;;
+.breadcrumb > .active {
+    color:#583e7e;
     font-weight:bold;
 }
 
@@ -31,6 +31,7 @@ td a, .card li a {
 
 .footer {
     margin: 10px 0px 20px 0px;
+    color:white;
 }
 
 a.btn {
@@ -39,4 +40,8 @@ a.btn {
 
 .pull-right a.btn {
     margin:20px 20px 0px 0px;
+}
+
+.errors .list-group-item-danger {
+    list-style-type:none !important;
 }

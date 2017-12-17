@@ -40,10 +40,10 @@
                         </ul>
                     </li>
                     <li>
-                        <a href="/settings"><i class="fa fa-fw fa-cogs"></i> Settings</a>
+                        <a href="{{ route('showSettings') }}"><i class="fa fa-fw fa-cogs"></i> Settings</a>
                     </li>
                     <li>
-                        <a href="logout"><i class="fa fa-fw fa-folder"></i> Logout</a>
+                        <a href="{{ route('logout') }}"><i class="fa fa-fw fa-folder"></i> Logout</a>
                     </li>
                     {{--  <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-fw fa-plus"></i> Dropdown <span class="caret"></span></a>

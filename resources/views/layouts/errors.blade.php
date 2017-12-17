@@ -1,7 +1,7 @@
-@if(count($errors) > 0)
-    <div class="panel panel-danger text-center">
+@if(isset($errors) && !empty($errors))
+<ul class="list-group text-center errors">
     @foreach($errors as $error)
-        <li class="panel-heading">{{ $error }}</li>
+    <li class="list-group-item-danger">{{ $error }}</li>
     @endforeach
-    </div>
+</ul>
 @endif

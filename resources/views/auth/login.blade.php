@@ -28,7 +28,7 @@
                         {{ csrf_field() }}
                               <h2 class="text-center" style="color: #5cb85c;"> <strong> {{$title}}  </strong></h2>
                               <hr />
-                                @include('layouts.errors')
+                            @include('layouts.errors')
                               <div class="row">
                                  <div class="col-xs-12 col-sm-12 col-md-12">
                                     <div class="form-group">
@@ -65,7 +65,7 @@
                                     </div>
                                  </div>
 
-                                  <div class="col-xs-6 col-sm-6 col-md-6">
+                                  <div class="col-xs-6 col-sm-6 col-md-6 hide">
                                     <div class="form-group">
                                        <a href="/forgot" data-toggle="modal"> Forgot Password? </a>
                                     </div>

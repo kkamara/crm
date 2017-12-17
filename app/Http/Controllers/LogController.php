@@ -48,7 +48,7 @@ class LogController extends Controller
                 $logs = $logs->where('updated_at', 'like', '%'.request('search').'%');
             }
         }
-        else
+        elseif(request('search'))
         {
             $logs = $logs->where('title', 'like', '%'.request('search').'%')
                          ->orWhere('description', 'like', '%'.request('search').'%')
@@ -105,6 +105,10 @@ class LogController extends Controller
     public function edit(Log $log)
     {
         //
+
+        return view('logs.edit')
+                ->withTitle('Edit '.$log->title)
+                ->withLog($log);
     }
 
     /**
@@ -116,7 +120,29 @@ class LogController extends Controller
      */
     public function update(Request $request, Log $log)
     {
-        //
+        $errors = $log->validationErrors($request);
+
+        if($errors)
+        {
+            return view('logs.edit', [
+                'title' => 'Edit '.$log->title,
+                'log' => $log,
+                'errors' => $errors,
+            ]);
+        }
+
+        $data = $log->sanitizeData($request);
+        
+        $update = $log->updateLog($data);
+
+        if($update === TRUE)
+        {
+            return redirect('/logs/'.$log->id)->with('flashSuccess', 'Log successfully updated');
+        }
+        else
+        {
+            return redirect('/logs/'.$log->id)->with('flashError', 'Unable to update log');
+        }
     }
 
     /**

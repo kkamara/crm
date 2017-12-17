@@ -10,9 +10,7 @@
     <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}">
 
     {{--  sheets  --}}
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/app.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/navbar.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}">    
+    @include('layouts.stylesheets') 
 </head>
 <body>
     
@@ -30,7 +28,7 @@
                 </button>
                 <div class="container">
                     <div class="row">
-                        <div style="color:white;" class="col-lg-10 col-lg-offset-1">
+                        <div style="color:white;" class="col-lg-12">
                             <h3 class="page-header text-center lead">
                                 {{ $title }}
                             </h3>

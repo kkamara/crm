@@ -74,7 +74,7 @@ class LoginController extends Controller
 
         return redirect()
                 ->route('Dashboard')
-                ->with('message', 'You have logged in, '.$user->first_name.' '.$user->last_name.'!');        
+                ->with('flashSuccess', 'You have logged in, '.$user->first_name.' '.$user->last_name.'!');        
     }
 
     public function logout()

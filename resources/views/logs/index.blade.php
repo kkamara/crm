@@ -48,7 +48,7 @@
         </form>
 
         <div class="text-center">
-            {{ $logs->total() }} results
+            Showing {{ $logs->total() }} results
         </div>
         
         <table class="table {{ count($logs) == 0 ? 'hide' : '' }}">
