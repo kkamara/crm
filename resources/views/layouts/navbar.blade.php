@@ -11,7 +11,7 @@
                     </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-fw fa-user"></i> Clients <span class="caret"></span>
+                            <i class="fa fa-fw fa-briefcase"></i> Clients <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu" role="menu">
                             <li class="dropdown-header">Client Options</li>
@@ -21,7 +21,7 @@
                     </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-fw fa-tasks"></i> Users <span class="caret"></span>
+                            <i class="fa fa-fw fa-users"></i> Users <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu" role="menu">
                             <li class="dropdown-header">User Options</li>

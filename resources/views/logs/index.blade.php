@@ -35,7 +35,7 @@
             <div class="row">
                 <div class="form-group">
                     <label>
-                        <input value='' name="search" type="text" placeholder="Search..." class="form-control">
+                        <input {{ request('search') ? 'autofocus' : '' }} value='' name="search" type="text" placeholder="Search..." class="form-control">
                     </label>
                 </div>
 

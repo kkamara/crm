@@ -21,29 +21,40 @@ class LogController extends Controller
     {
         $logs = Log::orderBy('id', 'desc');
 
-        if(request('title'))
+        if(request('title') || request('desc') || request('body') || request('created_at') || request('updated_at'))
         {
-            $logs = $logs->where('title', 'like', '%'.request('search').'%');
-                        // ->where('description', 'like', '%'.$searchParam.'%')
-                        // ->where('body', 'like', '%'.$searchParam.'%')
-                        // ->where('created_at', 'like', '%'.$searchParam.'%')
-                        // ->where('updated_at', 'like', '%'.$searchParam.'%');
+            if(request('title'))
+            {
+                $logs = $logs->where('title', 'like', '%'.request('search').'%');
+                            // ->where('description', 'like', '%'.$searchParam.'%')
+                            // ->where('body', 'like', '%'.$searchParam.'%')
+                            // ->where('created_at', 'like', '%'.$searchParam.'%')
+                            // ->where('updated_at', 'like', '%'.$searchParam.'%');
+            }
+            if(request('desc'))
+            {
+                $logs = $logs->where('description', 'like', '%'.request('search').'%');
+            }
+            if(request('body'))
+            {
+                $logs = $logs->where('body', 'like', '%'.request('search').'%');
+            }
+            if(request('created_at'))
+            {
+                $logs = $logs->where('created_at', 'like', '%'.request('search').'%');
+            }
+            if(request('updated_at'))
+            {
+                $logs = $logs->where('updated_at', 'like', '%'.request('search').'%');
+            }
         }
-        if(request('desc'))
+        else
         {
-            $logs = $logs->where('description', 'like', '%'.request('search').'%');
-        }
-        if(request('body'))
-        {
-            $logs = $logs->where('body', 'like', '%'.request('search').'%');
-        }
-        if(request('created_at'))
-        {
-            $logs = $logs->where('created_at', 'like', '%'.request('search').'%');
-        }
-        if(request('updated_at'))
-        {
-            $logs = $logs->where('updated_at', 'like', '%'.request('search').'%');
+            $logs = $logs->where('title', 'like', '%'.request('search').'%')
+                         ->orWhere('description', 'like', '%'.request('search').'%')
+                         ->orWhere('body', 'like', '%'.request('search').'%')
+                         ->orWhere('created_at', 'like', '%'.request('search').'%')
+                         ->orWhere('updated_at', 'like', '%'.request('search').'%');
         }
 
         $logs = $logs->paginate(10);
