@@ -40,7 +40,7 @@
                                     </div>
                                  </div>
 
-                                <div class="col-xs-12 col-sm-12 col-md-12 front-page-links">
+                                <div class="col-xs-12 col-sm-12 col-md-12">
 
                                     <div class="col-xs-6 col-sm-4 col-sm-offset-8 col-md-4 col-sm-offset-8 front-page-links">
                                         <div class="form-group">

@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Auth;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class LoginController extends Controller
 {
@@ -58,19 +59,22 @@ class LoginController extends Controller
             return back()->with('errors', ['Missing email and password.']);
         }
 
-        if(!$user = User::where('email', $email)->first()) 
+        if(!$user = DB::select('select distinct * from users where email = ?', [$email]))
         {
             return back()->with('errors', ['Invalid login credentials provided.']);
         }
+
+        $user = $user[0];
 
         if(!Auth::attempt(['email' => $user->email, 'password' => request('password')], 
             (int) request('remember_me')))
         {
             return back()->with('errors', ['Invalid login credentials provided.']);
         }
-    
-        $user->last_login = date('Y-m-d H:i:s');
-        $user->save();
+
+        DB::table('users')->update([
+            'last_login' => date('Y-m-d H:i:s')
+        ]);
 
         return redirect()
                 ->route('Dashboard')

@@ -65,7 +65,7 @@
                                     </div>
                                  </div>
 
-                                  <div class="col-xs-6 col-sm-6 col-md-6 front-page-links.front-page-links a">
+                                  <div class="col-xs-6 col-sm-6 col-md-6 front-page-links">
                                     <div class="form-group">
                                        <a href="/forgot" data-toggle="modal"> Forgot Password? </a>
                                     </div>
