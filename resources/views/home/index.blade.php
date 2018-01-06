@@ -3,7 +3,7 @@
 @section('content')
 
 
-    <div>Show graph statistics here</div>
+    <div>Show different graph statistics here based on permissions</div>
 
 
 @endsection

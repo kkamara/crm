@@ -54,10 +54,10 @@
         <table class="table {{ count($logs) == 0 ? 'hide' : '' }}">
 
             <thead>
-                <th>Title</th>
+                <th width='15%'>Title</th>
                 <th>Description</th>
-                <th>Created</th>
-                <th>Updated</th>
+                <th width='12%'>Created</th>
+                <th width='12%'>Updated</th>
             </thead>
 
             <tbody>
@@ -66,12 +66,12 @@
 
                     <tr>
                         <td><a href="{{ $log->path() }}">{{ $log->title }}</a></td>
-                        <td>{!! $log->description !!}</td>
-                        <td>{{ $log->created_at}}</td>
-                        @if($log->updated_at)
-                            <td>{{$log->updated_at}}</td>
+                        <td>{!! $log->short_description !!}</td>
+                        <td>{{ $log->created_at->format('d-m-Y') }}</td>
+                        @if(strtotime($log->created_at) != strtotime($log->updated_at))
+                            <td>{{$log->updated_at->format('d-m-Y')}}</td>
                         @else
-                            <td>n/a</td>
+                            <td>Never</td>
                         @endif
                     </tr>
 

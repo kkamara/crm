@@ -97,4 +97,11 @@ class Log extends Model
 
         return e($notes);
     }
+
+    public function getShortDescriptionAttribute()
+    {
+        $desc = $this->attributes['description'];
+
+        return strlen($desc) > 300 ? substr($desc,0,299).'...' : $desc;
+    }
 }

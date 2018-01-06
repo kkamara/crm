@@ -9,6 +9,7 @@
                     <li>
                         <a href="/"><i class="fa fa-fw fa-home"></i> Dashboard</a>
                     </li>
+                    @can('view client')
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <i class="fa fa-fw fa-briefcase"></i> Clients <span class="caret"></span>
@@ -16,9 +17,13 @@
                         <ul class="dropdown-menu" role="menu">
                             <li class="dropdown-header">Client Options</li>
                             <li><a href="{{ route('clientsHome') }}">View Clients</a></li>
+                            @can('create client')
                             <li><a href="{{ route('createClient') }}">Create Client</a></li>
+                            @endcan
                         </ul>
                     </li>
+                    @endcan
+                    @can('view user')
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <i class="fa fa-fw fa-users"></i> Users <span class="caret"></span>
@@ -26,9 +31,13 @@
                         <ul class="dropdown-menu" role="menu">
                             <li class="dropdown-header">User Options</li>
                             <li><a href="#">View Users</a></li>
-                            <li><a href="#">Create User Account</a></li>
+                            @can('create user')
+                            <li><a href="#">Create User</a></li>
+                            @endcan
                         </ul>
                     </li>
+                    @endcan
+                    @can('view log')
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <i class="fa fa-fw fa-tasks"></i> Logs <span class="caret"></span>
@@ -36,9 +45,12 @@
                         <ul class="dropdown-menu" role="menu">
                             <li class="dropdown-header">Log Options</li>
                             <li><a href="{{ route('logsHome') }}">View Logs</a></li>
+                            @can('create log')
                             <li><a href="{{ route('createLog') }}">Create Log</a></li>
+                            @endcan
                         </ul>
                     </li>
+                    @endcan
                     <li>
                         <a href="{{ route('showSettings') }}"><i class="fa fa-fw fa-cogs"></i> Settings</a>
                     </li>

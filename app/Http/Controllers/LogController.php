@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Log;
 use Illuminate\Http\Request;
+use App\User;
+use Illuminate\Support\Facades\DB;
 
 class LogController extends Controller
 {
@@ -20,6 +22,27 @@ class LogController extends Controller
     public function index()
     {
         $logs = Log::orderBy('id', 'desc');
+
+        $user = Auth()->user();
+
+        if(!$user->hasPermissionTo('view log'))
+        {
+            return redirect()->route('Dashboard');
+        }
+
+        $clients = DB::table('client_user')->select('client_id')->where('user_id', $user->id)->get();
+
+        $logsKeys = array();
+
+        foreach($clients as $client) 
+        {
+            $log = Log::distinct()->select('id')->where('client_id', $client->client_id)->get();
+
+            array_push($logsKeys, $log[0]->id);
+        }
+        unset($log);
+        
+        $logs = Log::whereIn('id', $logsKeys)->OrderBy('id', 'desc');
 
         if(request('title') || request('desc') || request('body') || request('created_at') || request('updated_at'))
         {
