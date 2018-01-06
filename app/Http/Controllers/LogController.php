@@ -30,13 +30,13 @@ class LogController extends Controller
             return redirect()->route('Dashboard');
         }
 
-        $clients = DB::table('client_user')->select('client_id')->where('user_id', $user->id)->get();
+        $clientUsers = $user->getClientUsers();
 
         $logsKeys = array();
 
-        foreach($clients as $client) 
+        foreach($clientUsers as $clientUser) 
         {
-            $log = Log::distinct()->select('id')->where('client_id', $client->client_id)->get();
+            $log = Log::distinct()->select('id')->where('client_id', $clientUser->client_id)->get();
 
             array_push($logsKeys, $log[0]->id);
         }
@@ -114,7 +114,29 @@ class LogController extends Controller
      */
     public function show(Log $log)
     {
+        $user = Auth()->user();
+        
+        if(!$user->hasPermissionTo('view log'))
+        {
+            return redirect()->route('Dashboard');
+        }
 
+        // check if log should be viewable by user
+        $clientUsers = $user->getClientUsers();
+        $allowed = false;
+
+        foreach($clientUsers as $clientUser)
+        {
+            if($clientUser->client_id == $log->id)
+            {
+                $allowed = true;
+            }
+        }
+
+        if(!$allowed)
+        {
+            return redirect()->route('logsHome')->with('flashError', 'You do not have access to that resource.');
+        }
 
         return view('logs.show', ['title'=>$log->title, 'log'=>$log]);
     }
@@ -127,7 +149,29 @@ class LogController extends Controller
      */
     public function edit(Log $log)
     {
-        //
+        $user = Auth()->user();
+        
+        if(!$user->hasPermissionTo('edit log'))
+        {
+            return redirect()->route('Dashboard');
+        }
+
+        // check if log should be viewable by user
+        $clientUsers = $user->getClientUsers();
+        $allowed = false;
+
+        foreach($clientUsers as $clientUser)
+        {
+            if($clientUser->client_id == $log->id)
+            {
+                $allowed = true;
+            }
+        }
+
+        if(!$allowed)
+        {
+            return redirect()->route('logsHome')->with('flashError', 'You do not have access to that resource.');
+        }
 
         return view('logs.edit')
                 ->withTitle('Edit '.$log->title)
@@ -143,6 +187,30 @@ class LogController extends Controller
      */
     public function update(Request $request, Log $log)
     {
+        $user = Auth()->user();
+        
+        if(!$user->hasPermissionTo('edit log'))
+        {
+            return redirect()->route('Dashboard');
+        }
+
+        // check if log should be viewable by user
+        $clientUsers = $user->getClientUsers();
+        $allowed = false;
+
+        foreach($clientUsers as $clientUser)
+        {
+            if($clientUser->client_id == $log->id)
+            {
+                $allowed = true;
+            }
+        }
+
+        if(!$allowed)
+        {
+            return redirect()->route('logsHome')->with('flashError', 'You do not have access to that resource.');
+        }
+
         $errors = $log->validationErrors($request);
 
         if($errors)
@@ -170,6 +238,31 @@ class LogController extends Controller
 
     public function delete(Log $log)
     {
+
+        $user = Auth()->user();
+        
+        if(!$user->hasPermissionTo('delete log'))
+        {
+            return redirect()->route('Dashboard');
+        }
+
+        // check if log should be viewable by user
+        $clientUsers = $user->getClientUsers();
+        $allowed = false;
+
+        foreach($clientUsers as $clientUser)
+        {
+            if($clientUser->client_id == $log->id)
+            {
+                $allowed = true;
+            }
+        }
+
+        if(!$allowed)
+        {
+            return redirect()->route('logsHome')->with('flashError', 'You do not have access to that resource.');
+        }
+
         return view('logs.delete', [
             'title'=>'Delete '.$log->title,
             'log'  => $log
@@ -178,6 +271,30 @@ class LogController extends Controller
     
     public function destroy(Log $log)
     {
+        $user = Auth()->user();
+        
+        if(!$user->hasPermissionTo('delete log'))
+        {
+            return redirect()->route('Dashboard');
+        }
+
+        // check if log should be viewable by user
+        $clientUsers = $user->getClientUsers();
+        $allowed = false;
+
+        foreach($clientUsers as $clientUser)
+        {
+            if($clientUser->client_id == $log->id)
+            {
+                $allowed = true;
+            }
+        }
+
+        if(!$allowed)
+        {
+            return redirect()->route('logsHome')->with('flashError', 'You do not have access to that resource.');
+        }
+
         if((int)request('delete') !== 1)
         {
             return redirect()->route('showLog', $log->id);

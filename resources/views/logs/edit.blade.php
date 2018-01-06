@@ -47,8 +47,8 @@
                 </label>
             </div>
 
-            <div class="form-group text-center">
-                <input class="form-control btn btn-primary" type="submit">
+            <div class="form-group pull-right">
+                <input class="btn btn-primary" type="submit">
             </div>
         </form>
     </div>

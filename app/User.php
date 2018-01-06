@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -41,5 +42,12 @@ class User extends Authenticatable
     public function getNameAttribute()
     {
         return $this->attributes['first_name'] . ' ' . $this->attributes['last_name'];
+    }
+
+    public function getClientUsers()
+    {
+        $clients = DB::table('client_user')->select('client_id')->where('user_id', $this->id)->get();
+
+        return $clients;
     }
 }

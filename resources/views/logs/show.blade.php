@@ -11,8 +11,12 @@
 
 <div class="container-fluid main-container">
     <div class="pull-right">
+        @can('edit log')
         <a href="{{ route('editLog', $log->id) }}" class="btn btn-info">Edit</a>
+        @endcan
+        @can('delete log')
         <a href="{{ route('deleteLog', $log->id) }}" class="btn btn-danger">Delete</a>
+        @endcan
     </div>
     <div class="card pull-left">
         <ul class="list-group list-group-flush ">
