@@ -7,7 +7,7 @@
 @section('content')
 
     <div class="container-fluid main-container">
-        <form method="get" action="/logs" class="form-inline" style="padding:5px 0px 0px 20px">
+        <form method="get" action="{{ route('logsHome') }}" class="form-inline" style="padding:5px 0px 0px 20px">
             {{ csrf_field() }}
             
             <div class="row">

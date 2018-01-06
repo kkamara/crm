@@ -19,7 +19,47 @@ class ClientController extends Controller
      */
     public function index()
     {
-        return view('clients.index', ['title'=>'Clients']);
+        $clients = Client::orderBy('id', 'desc');
+
+        $user = Auth()->user();
+
+        if(!$user->hasPermissionTo('view client'))
+        {
+            return redirect()->route('Dashboard');
+        }
+
+        $clientUsers = $user->getClientUsers();
+
+        $clientsKeys = array();
+// dd($clientsKeys);
+        foreach($clientUsers as $clientUser) 
+        {
+            $client = Client::where('id', $clientUser->client_id)->get();
+
+            array_push($clientsKeys, $client[0]->id);
+        }
+        unset($client);
+        // dd($clientsKeys);
+        
+        $clients = Client::whereIn('id', $clientsKeys)->OrderBy('id', 'desc');
+
+        if(request('search'))
+        {
+            $clients = $clients->where('first_name', 'like', '%'.request('search').'%')
+                                ->orWhere('last_name', 'like', '%'.request('search').'%')
+                                ->orWhere('company', 'like', '%'.request('search').'%')
+                                ->orWhere('email', 'like', '%'.request('search').'%')
+                                ->orWhere('contact_number', 'like', '%'.request('search').'%')
+                                ->orWhere('building_number', 'like', '%'.request('search').'%')
+                                ->orWhere('city', 'like', '%'.request('search').'%')
+                                ->orWhere('postcode', 'like', '%'.request('search').'%')
+                                ->orWhere('created_at', 'like', '%'.request('search').'%')
+                                ->orWhere('updated_at', 'like', '%'.request('search').'%');
+        }
+
+        $clients = $clients->paginate(10);
+
+        return view('clients.index', ['title'=>'Clients', 'clients'=>$clients]);
     }
 
     /**

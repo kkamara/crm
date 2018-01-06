@@ -20,6 +20,11 @@ class Log extends Model
         return $this->belongsTo('App\User', 'user_created');
     }
 
+    public function client()
+    {
+        return $this->belongsTo('App\Client', 'client_id');
+    }
+
     public function getUpdatedByAttribute()
     {
         $user = User::where('id', $this->user_modified)->first();

@@ -49,10 +49,6 @@ class LogController extends Controller
             if(request('title'))
             {
                 $logs = $logs->where('title', 'like', '%'.request('search').'%');
-                            // ->where('description', 'like', '%'.$searchParam.'%')
-                            // ->where('body', 'like', '%'.$searchParam.'%')
-                            // ->where('created_at', 'like', '%'.$searchParam.'%')
-                            // ->where('updated_at', 'like', '%'.$searchParam.'%');
             }
             if(request('desc'))
             {
@@ -74,10 +70,10 @@ class LogController extends Controller
         elseif(request('search'))
         {
             $logs = $logs->where('title', 'like', '%'.request('search').'%')
-                         ->orWhere('description', 'like', '%'.request('search').'%')
-                         ->orWhere('body', 'like', '%'.request('search').'%')
-                         ->orWhere('created_at', 'like', '%'.request('search').'%')
-                         ->orWhere('updated_at', 'like', '%'.request('search').'%');
+                            ->orWhere('description', 'like', '%'.request('search').'%')
+                            ->orWhere('body', 'like', '%'.request('search').'%')
+                            ->orWhere('created_at', 'like', '%'.request('search').'%')
+                            ->orWhere('updated_at', 'like', '%'.request('search').'%');
         }
 
         $logs = $logs->paginate(10);
