@@ -7,10 +7,12 @@
 <p>1. Open the command line and run:</p>
 <p><pre>git clone https://github.com/kkamara/laravel-crm [installation-path]</pre></p>
 <p>2. Go to the folder you downloaded Laravel CRM to and run the following in the command line:</p>
-<p>To generate a secure hash for the project:</p>
-<p><pre>php artisan key:generate</pre></p>
 <p>To update project dependencies where necessary:</p>
 <p><pre>npm update;composer update</pre></p>
+<p>To generate a secure hash for the project:</p>
+<p><pre>php artisan key:generate</pre></p>
+<p>To link the public folder and storage folder:</p>
+<p><pre>php artisan storage:link</pre></p>
 <p>
   <span>3. Rename the file <b>.env.example</b> to <b>.env</b> and then update the contents with your database connection.</span>
   <br>
