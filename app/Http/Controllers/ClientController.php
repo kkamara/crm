@@ -91,7 +91,31 @@ class ClientController extends Controller
      */
     public function show(Client $client)
     {
-        //
+        $user = Auth()->user();
+        
+        if(!$user->hasPermissionTo('view client'))
+        {
+            return redirect()->route('Dashboard');
+        }
+
+        // check if client should be viewable by user
+        $clientUsers = $user->getClientUsers();
+        $allowed = false;
+
+        foreach($clientUsers as $clientUser)
+        {
+            if($clientUser->client_id == $client->id && $clientUser->user_id == $user->id)
+            {
+                $allowed = true;
+            }
+        }
+
+        if(!$allowed)
+        {
+            return redirect()->route('clientsHome')->with('flashError', 'You do not have access to that resource.');
+        }
+
+        return view('clients.show', ['title'=>$client->company, 'client'=>$client]);
     }
 
     /**
@@ -115,6 +139,11 @@ class ClientController extends Controller
     public function update(Request $request, Client $client)
     {
         //
+    }
+
+    public function delete(Client $client)
+    {
+        
     }
 
     /**

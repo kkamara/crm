@@ -66,7 +66,6 @@ class Log extends Model
         
         return ($this->save()) ? TRUE : FALSE;
     }
-
     public function getDescriptionAttribute()
     {
         return nl2br(e($this->attributes['description']));
@@ -81,7 +80,7 @@ class Log extends Model
     {
         return nl2br(e($this->attributes['notes']));
     }
-
+    
     public function getEditDescriptionAttribute()
     {
         $desc = str_replace('<br/>', '', $this->attributes['description']);
@@ -105,7 +104,7 @@ class Log extends Model
 
     public function getShortDescriptionAttribute()
     {
-        $desc = $this->attributes['description'];
+        $desc = str_replace('<br/>', '', $this->attributes['description']);
 
         return strlen($desc) > 300 ? substr($desc,0,299).'...' : $desc;
     }

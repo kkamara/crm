@@ -2,7 +2,7 @@
 
 @section('breadcrumbs')
 
-    <li class="breadcrumb-item"><a href="{{ route('logsHome') }}">View Logs</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('logsHome') }}">Logs</a></li>
     <li class="breadcrumb-item"><a href="{{ route('showLog', $log->id) }}">{{ $log->title }}</a></li>
     <li class="breadcrumb-item active">delete</li>
 

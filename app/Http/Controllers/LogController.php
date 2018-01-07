@@ -78,7 +78,7 @@ class LogController extends Controller
 
         $logs = $logs->paginate(10);
 
-        return view('logs.index', ['title'=>'View Logs', 'logs'=>$logs]);
+        return view('logs.index', ['title'=>'Logs', 'logs'=>$logs]);
     }
 
     /**

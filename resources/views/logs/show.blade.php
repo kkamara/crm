@@ -2,7 +2,7 @@
 
 @section('breadcrumbs')
 
-    <li class="breadcrumb-item"><a href="{{ route('logsHome') }}">View Logs</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('logsHome') }}">Logs</a></li>
     <li class="breadcrumb-item active">{{ $title }}</li>
 
 @endsection
@@ -38,7 +38,7 @@
             
             @if(strtotime($log->updated_at) != strtotime($log->created_at))
             <li class="list-group-item" style="border: none">
-                <strong>Updated by</strong> :<br> <a href="#">{{ $log->updated_by->name }}</a> at {{ $log->updated_at->format('Y-m-d G:i:a') }}
+                <strong>Updated by</strong> :<br> <a href="#">@if(!empty($log->updated_by)){{ $log->updated_by->name.' at ' }}@endif</a>{{ $log->updated_at->format('Y-m-d G:i:a') }}
             </li>
             @endif
             

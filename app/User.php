@@ -46,7 +46,7 @@ class User extends Authenticatable
 
     public function getClientUsers()
     {
-        $clients = DB::table('client_user')->select('client_id')->where('user_id', $this->id)->get();
+        $clients = DB::table('client_user')->select('client_id', 'user_id')->where('user_id', $this->id)->get();
 
         return $clients;
     }

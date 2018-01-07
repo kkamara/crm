@@ -7,7 +7,7 @@
     <title>{{ $title }} | {{ config('app.name') }}</title>
 
     {{--  Icons  --}}
-    <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}">
+    <link rel="shortcut icon" href="{{ asset('storage/images/favicon.png') }}">
 
     {{--  sheets  --}}
     @include('layouts.stylesheets') 
