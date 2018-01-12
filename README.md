@@ -6,18 +6,18 @@
 <p>Also make sure you have the latest version of <a href="https://nodejs.org/en/">NodeJS</a> and <a href="https://www.npmjs.com/">NPM</a> installed.</p>
 <p>1. Open the command line and run:</p>
 <p><pre>git clone https://github.com/kkamara/laravel-crm [installation-path]</pre></p>
-<p>2. Go to the folder you downloaded Laravel CRM to and run the following in the command line:</p>
+<p>
+  <span>2. Rename the file <b>.env.example</b> to <b>.env</b> and then update the contents with your database connection.</span>
+  <br>
+  <span><a href='https://laravel.com/docs/5.5/configuration#environment-configuration'>Click here for further assistance</a></span>
+ </p>
+<p>3. Go to the folder you downloaded Laravel CRM to and run the following in the command line:</p>
 <p>To update project dependencies where necessary:</p>
 <p><pre>npm update;composer update</pre></p>
 <p>To generate a secure hash for the project:</p>
 <p><pre>php artisan key:generate</pre></p>
 <p>To link the public folder and storage folder:</p>
 <p><pre>php artisan storage:link</pre></p>
-<p>
-  <span>3. Rename the file <b>.env.example</b> to <b>.env</b> and then update the contents with your database connection.</span>
-  <br>
-  <span><a href='https://laravel.com/docs/5.5/configuration#environment-configuration'>Click here for further assistance</a></span>
- </p>
 <p>4. Run the following to establish the required data schema in your chosen database:</p>
 <p><pre>php artisan migrate</pre></p>
 <p>5. Now we will generate fake data:</p>
@@ -36,7 +36,7 @@
 <p>Run the following in the installation folder:</p>
 <p><pre>php artisan db:seed --class=PermissionsTableSeeder</pre></p>
 <p><pre>php artisan db:seed --class=RolesTableSeeder</pre></p>
-<p>7. Run the following to setup the server:</p>
+<p>7. Run the following to start your local server:</p>
 <p><pre>php artisan serve</pre></p>
 <p>You should now be able to access the project by entering <code>http://localhost:8000</code> into your web browser.</p>
 
