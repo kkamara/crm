@@ -8,6 +8,8 @@ use App\User;
 
 class Client extends Model
 {
+    
+
     public function path()
     {
         return url('/').'/clients/'.$this->id;

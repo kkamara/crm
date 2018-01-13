@@ -77,7 +77,7 @@
 
                 @empty
                     <div class="text-center">
-                        There are no logs to show
+                        There are no logs to show.
                     </div>
                 @endforelse
 

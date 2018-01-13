@@ -32,10 +32,16 @@ Route::group(['middleware'=>'auth'],function () {
     Route::get('/clients/edit/{client}', 'ClientController@edit')->name('editClient');
     Route::patch('/clients/update/{client}', 'ClientController@update')->name('updateClient');
     Route::get('/clients/delete/{client}', 'ClientController@delete')->name('deleteClient');
-    Route::delete('/clients/delete/{client}', 'LogController@destroy')->name('destroyClient');
+    Route::delete('/clients/delete/{client}', 'ClientController@destroy')->name('destroyClient');
 
     // User routes
-    // coming soon...
+    Route::get('/users', 'UserController@index')->name('cusersHome');
+    Route::get('/users/{user}', 'UserController@show')->name('showUser');
+    Route::get('/users/create', 'UserController@show')->name('createUser');
+    Route::get('/users/edit/{user}', 'UserController@edit')->name('editUser');
+    Route::patch('/users/update/{user}', 'UserController@update')->name('updateUser');
+    Route::get('/users/delete/{user}', 'UserController@delete')->name('deleteUser');
+    Route::delete('/users/delete/{user}', 'UserController@destroy')->name('destroyUser');
 
     // User settings routes
     Route::get('/settings', 'Auth\UserSettingsController@show')->name('showSettings');

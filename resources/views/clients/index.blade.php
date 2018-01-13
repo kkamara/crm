@@ -51,7 +51,7 @@
 
                 @empty
                     <div class="text-center">
-                        There are no clients to show
+                        There are no clients to show.
                     </div>
                 @endforelse
 
