@@ -14,7 +14,7 @@ class AddImageColumnToClientTable extends Migration
     public function up()
     {
         Schema::table('clients', function($table) {
-            $table->string('image')->after('postcode');
+            $table->string('image')->after('postcode')->nullable();
         });
     }
 
