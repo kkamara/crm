@@ -40,6 +40,26 @@
 <p><pre>php artisan serve</pre></p>
 <p>You should now be able to access the project by entering <code>http://localhost:8000</code> into your web browser.</p>
 
+# Assigning User Roles
+<p>After completing the steps in the Installation section you should have Laravel CRM ready to run on your local system with fake data contained in a database of your choosing. If so, you can take the following steps to assign roles to users in order to grant access to project features.</p>
+<p>Open a terminal shell in the project directory and enter the following command</p>
+<p><pre>php artisan tinker</pre></p>
+<p>Within Tinker you can now find a user and assign roles and permissions with the following example.</p>
+<p><pre>// Get user of your choosing
+$u = App\User::find(1);
+</pre></p>
+<p><pre>/*
+/* associate the user with a defined role (recommended)
+/* each role grants permissions related to the access level you would expect by the role name
+ */
+$u->assignRole('admin'); // roles: 'admin', 'client_admin', 'client_user'
+</pre></p>
+<p><pre>
+// assign permissions to the user
+$u->givePermissionTo($string); // replace $string with the name of the permission stored in the database
+</pre></p>
+<p>To be able to view a particular client you will have to insert a user_id and client_id row within the client_user table and ensure your user has the necessary access privileges.</p>
+
 # Popular APIs Included
 <ul>
 <li><a href="https://github.com/spatie/laravel-permission">Spatie's laravel-permissions</a></li>
