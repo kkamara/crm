@@ -40,7 +40,7 @@
 <p><pre>php artisan serve</pre></p>
 <p>You should now be able to access the project by entering <code>http://localhost:8000</code> into your web browser.</p>
 
-# Assigning User Roles
+# Granting Access Privileges
 <p>After completing the steps in the Installation section you should have Laravel CRM ready to run on your local system with fake data contained in a database of your choosing. If so, you can take the following steps to assign roles to users in order to grant access to project features.</p>
 <p>Open a terminal shell in the project directory and enter the following command</p>
 <p><pre>php artisan tinker</pre></p>
