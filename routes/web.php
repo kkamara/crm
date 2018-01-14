@@ -10,7 +10,6 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 Route::group(['middleware'=>'auth'],function () {
 
     // Home routes
@@ -18,8 +17,9 @@ Route::group(['middleware'=>'auth'],function () {
 
     // Log routes
     Route::get('/logs', 'LogController@index')->name('logsHome');
+    Route::get('/logs/create', 'LogController@create')->name('createLog');
+    Route::post('/logs/create', 'LogController@store')->name('createLog');
     Route::get('/logs/{log}', 'LogController@show')->name('showLog');
-    Route::get('/logs/create/', 'LogController@show')->name('createLog');
     Route::get('/logs/edit/{log}', 'LogController@edit')->name('editLog');
     Route::patch('/logs/update/{log}', 'LogController@update')->name('updateLog');
     Route::get('/logs/delete/{log}', 'LogController@delete')->name('deleteLog');
@@ -27,8 +27,9 @@ Route::group(['middleware'=>'auth'],function () {
     
     // Client routes
     Route::get('/clients', 'ClientController@index')->name('clientsHome');
+    Route::get('/clients/create', 'ClientController@create')->name('createClient');
+    Route::post('/clients/create', 'ClientController@store')->name('createClient');
     Route::get('/clients/{client}', 'ClientController@show')->name('showClient');
-    Route::get('/clients/create', 'ClientController@show')->name('createClient');
     Route::get('/clients/edit/{client}', 'ClientController@edit')->name('editClient');
     Route::patch('/clients/update/{client}', 'ClientController@update')->name('updateClient');
     Route::get('/clients/delete/{client}', 'ClientController@delete')->name('deleteClient');
@@ -50,6 +51,17 @@ Route::group(['middleware'=>'auth'],function () {
 
     // Auth routes
     Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
+
+
+    // Return permissions assigned to current logged in user
+    Route::get('user/permissions', function(Request $request) {
+        return auth()->user()->getAllPermissions();
+    });
+
+    // Return clients assigned to current logged in user
+    Route::get('user/clients', function(Request $request) {
+        return auth()->user()->getClientUsers();
+    });
 
 });
 

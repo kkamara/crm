@@ -38,4 +38,28 @@ class Client extends Model
 
         return $user;
     }
+
+    // public function validationErrors($request)
+    // {
+    //     $validator = $request->validate([
+    //         'user_id' => 'required|max:191|min:5',
+    //         'description'  => 'required|min:20',
+    //         'body'  => 'required|min:20',
+    //         'user_modified' => 'required|exists:users,id',
+    //     ]);
+
+    //     return $validator->errors()->all();
+    // }
+
+    // public function parseData($request)
+    // {
+    //     $data = array();
+    //     $data['title']         = request('title');
+    //     $data['description']   = request('description');
+    //     $data['body']          = request('body');
+    //     $data['user_modified'] = request('user_modified');
+    //     $data['notes']         = request('notes');
+
+    //     return $data;
+    // }
 }

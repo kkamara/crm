@@ -6,6 +6,7 @@ use App\Log;
 use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\DB;
+use Validator;
 
 class LogController extends Controller
 {
@@ -42,7 +43,7 @@ class LogController extends Controller
         }
         unset($log);
         
-        $logs = Log::whereIn('id', $logsKeys)->OrderBy('id', 'desc');
+        $logs = Log::whereIn('client_id', $logsKeys)->OrderBy('id', 'desc');
 
         if(request('title') || request('desc') || request('body') || request('created_at') || request('updated_at'))
         {
@@ -88,7 +89,10 @@ class LogController extends Controller
      */
     public function create()
     {
-        //
+        if(!auth()->user()->hasPermissionTo('create log'))
+            return redirect()->route('Dashboard');
+        
+        return view('logs.create', ['title'=>'Create Log']);
     }
 
     /**
@@ -99,7 +103,41 @@ class LogController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if(!auth()->user()->hasPermissionTo('create log'))
+            return redirect()->route('Dashboard');
+
+        $validator = Validator::make($request->all(), [
+            'client_id' => 'required|integer',
+            'title' => 'required|max:191|min:5',
+            'description'  => 'required|min:20',
+            'body'  => 'required|min:20'
+        ]);
+
+        if(request('client_id') > 0 == false)
+        {
+            return view('logs.create', ['title'=>'Create Log', 'errors'=>['No client selected.']]);
+        }
+
+        if(!empty($validator->errors()->all())) {
+            return view('logs.create', ['title'=>'Create Log','errors'=>$validator->errors()->all()]);
+        }
+
+        // does user have permission to edit this client?
+        if(!auth()->user()->isClientAssigned(request('client_id')))
+        {
+            return view('logs.create', ['title'=>'Create Log', 'errors'=>['Oops, something went wrong.']]);
+        }
+
+        Log::create([
+            'client_id' => request('client_id'),
+            'user_created' => auth()->user()->id,
+            'title' => filter_var(request('title'), FILTER_SANITIZE_STRING),
+            'description' => filter_var(request('description'), FILTER_SANITIZE_STRING),
+            'body' => filter_var(request('body'), FILTER_SANITIZE_STRING),
+            'notes' => !empty(request('notes')) ? request('notes') : NULL
+        ]);
+
+        return redirect()->route('logsHome');
     }
 
     /**
@@ -118,18 +156,7 @@ class LogController extends Controller
         }
 
         // check if log should be viewable by user
-        $clientUsers = $user->getClientUsers();
-        $allowed = false;
-
-        foreach($clientUsers as $clientUser)
-        {
-            if($clientUser->client_id == $log->id)
-            {
-                $allowed = true;
-            }
-        }
-
-        if(!$allowed)
+        if(!$user->isClientAssigned($log->client_id))
         {
             return redirect()->route('logsHome')->with('flashError', 'You do not have access to that resource.');
         }
@@ -153,18 +180,7 @@ class LogController extends Controller
         }
 
         // check if log should be viewable by user
-        $clientUsers = $user->getClientUsers();
-        $allowed = false;
-
-        foreach($clientUsers as $clientUser)
-        {
-            if($clientUser->client_id == $log->id)
-            {
-                $allowed = true;
-            }
-        }
-
-        if(!$allowed)
+        if(!auth()->user()->isClientAssigned($log->client_id))
         {
             return redirect()->route('logsHome')->with('flashError', 'You do not have access to that resource.');
         }
@@ -191,18 +207,7 @@ class LogController extends Controller
         }
 
         // check if log should be viewable by user
-        $clientUsers = $user->getClientUsers();
-        $allowed = false;
-
-        foreach($clientUsers as $clientUser)
-        {
-            if($clientUser->client_id == $log->id)
-            {
-                $allowed = true;
-            }
-        }
-
-        if(!$allowed)
+        if(!auth()->user()->isClientAssigned($log->client_id))
         {
             return redirect()->route('logsHome')->with('flashError', 'You do not have access to that resource.');
         }
@@ -243,18 +248,7 @@ class LogController extends Controller
         }
 
         // check if log should be viewable by user
-        $clientUsers = $user->getClientUsers();
-        $allowed = false;
-
-        foreach($clientUsers as $clientUser)
-        {
-            if($clientUser->client_id == $log->id)
-            {
-                $allowed = true;
-            }
-        }
-
-        if(!$allowed)
+        if(!auth()->user()->isClientAssigned($log->client_id))
         {
             return redirect()->route('logsHome')->with('flashError', 'You do not have access to that resource.');
         }
@@ -275,18 +269,7 @@ class LogController extends Controller
         }
 
         // check if log should be viewable by user
-        $clientUsers = $user->getClientUsers();
-        $allowed = false;
-
-        foreach($clientUsers as $clientUser)
-        {
-            if($clientUser->client_id == $log->id)
-            {
-                $allowed = true;
-            }
-        }
-
-        if(!$allowed)
+        if(!auth()->user()->isClientAssigned($log->client_id))
         {
             return redirect()->route('logsHome')->with('flashError', 'You do not have access to that resource.');
         }

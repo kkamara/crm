@@ -8,7 +8,7 @@ use Validator;
 
 class Log extends Model
 {
-    //
+    protected $guarded = [];
 
     public function path()
     {
@@ -107,5 +107,10 @@ class Log extends Model
         $desc = str_replace('<br/>', '', $this->attributes['description']);
 
         return strlen($desc) > 300 ? substr($desc,0,299).'...' : $desc;
+    }
+
+    public function createLog($request)
+    {
+
     }
 }

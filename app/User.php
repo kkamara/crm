@@ -46,8 +46,33 @@ class User extends Authenticatable
 
     public function getClientUsers()
     {
-        $clients = DB::table('client_user')->select('client_id', 'user_id')->where('user_id', $this->id)->get();
+        $clientUsers = DB::table('client_user')->select('client_id', 'user_id')->where('user_id', $this->id)->get();
+
+        return $clientUsers;
+    }
+
+    public function getClientsAssigned()
+    {
+        $clientUsers = DB::table('client_user')->select('client_id', 'user_id')->where('user_id', $this->id)->get();
+
+        $clients = DB::table('clients')->select('id', 'first_name', 'last_name','company');
+
+        $clientKeys = array();
+
+        foreach($clientUsers as $cu)
+        {
+            array_push($clientKeys, $cu->client_id);
+        }
+
+        $clients = $clients->whereIn('id', $clientKeys)->get();
 
         return $clients;
+    }
+
+    public function isClientAssigned($clientId)
+    {
+        $clientUser = DB::table('client_user')->select('id')->where(['user_id'=>auth()->user()->id, 'client_id'=>$clientId]);
+
+        return (!empty($clientUser)) ? TRUE : FALSE;
     }
 }

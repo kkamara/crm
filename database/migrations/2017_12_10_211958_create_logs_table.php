@@ -21,7 +21,7 @@ class CreateLogsTable extends Migration
             $table->string('title');
             $table->text('description');
             $table->text('body');
-            $table->text('notes');
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }

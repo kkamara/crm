@@ -19,7 +19,7 @@ class ClientController extends Controller
      */
     public function index()
     {
-        $clients = Client::orderBy('id', 'desc');
+        $clients = Client::orderBy('client_id', 'desc');
 
         $user = Auth()->user();
 
@@ -69,7 +69,7 @@ class ClientController extends Controller
      */
     public function create()
     {
-        //
+        return view('clients.create', ['title'=>'Create Client']);
     }
 
     /**
