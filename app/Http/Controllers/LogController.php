@@ -134,7 +134,7 @@ class LogController extends Controller
             'title' => filter_var(request('title'), FILTER_SANITIZE_STRING),
             'description' => filter_var(request('description'), FILTER_SANITIZE_STRING),
             'body' => filter_var(request('body'), FILTER_SANITIZE_STRING),
-            'notes' => !empty(request('notes')) ? request('notes') : NULL
+            'notes' => !empty(request('notes')) ? filter_var(request('notes', FILTER_SANITIZE_STRING)) : NULL
         ]);
 
         return redirect()->route('logsHome');
