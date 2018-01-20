@@ -53,7 +53,7 @@ class Handler extends ExceptionHandler
             return view('home.index', [
                 'title' => 'Dashboard',
                 'flashError' => 'Security token expired. Please, repeat your request.',
-            ])
+            ]);
 		}
 
         return parent::render($request, $exception);
