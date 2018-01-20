@@ -1,5 +1,5 @@
 # What is Laravel CRM?
-<p>Laravel-CRM is a slow-moving project currently in the early stages. This is a remake of my barebones Client Management System using Laravel 5.5. You can view the original <a href="https://github.com/kkamara/crm">here</a>.</p>
+<p>This project is a remake of my barebones Client Management System using Laravel 5.5. You can view the original <a href="https://github.com/kkamara/crm">here</a>.</p>
 
 # Installation
 <p>Ensure you have <a href="http://php.net/downloads.php">php 7.0+</a> and <a href='https://getcomposer.org/'>Composer</a> installed <a href="https://laravel.com/docs/5.5/database#configuration">database engine</a> of your choosing, preferably Mariadb or MySQL.</p>
