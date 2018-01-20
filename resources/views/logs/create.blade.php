@@ -9,7 +9,6 @@
 
 @section('content')
 
-
 <div class="container-fluid main-container">
 
     <div class="row">
@@ -18,7 +17,6 @@
 
         <form method="post" action="{{ route('createLog') }}" class="form col-md-8 col-md-offset-2">
             {{ csrf_field() }}
-            <input type="hidden" value="{{ Auth::user()->id }}" name="user_modified">
 
             <div class="form-group">
                 <label>Which client is this for?
@@ -47,25 +45,25 @@
 
             <div class="form-group">
                 <label>Title :
-                    <input class="form-control" name="title">
+                    <input class="form-control" name="title" value="{{ $input['title'] or '' }}">
                 </label>
             </div>
 
             <div class="form-group">
                 <label>Description :
-                    <textarea cols="100%" rows="10" class="form-control" name="description"></textarea>
+                    <textarea cols="100%" rows="10" class="form-control" name="description">{{ $input['description'] or '' }}</textarea>
                 </label>
             </div>
 
             <div class="form-group">
                 <label>Body :
-                    <textarea cols="100%" rows="10" class="form-control" name="body"></textarea>
+                    <textarea cols="100%" rows="10" class="form-control" name="body">{{ $input['body'] or '' }}</textarea>
                 </label>
             </div>
 
             <div class="form-group">
-                <label>Notes :
-                    <textarea cols="100%" rows="10" class="form-control" name="notes"></textarea>
+                <label>Notes (optional) :
+                    <textarea cols="100%" rows="10" class="form-control" name="notes">{{ $input['notes'] or '' }}</textarea>
                 </label>
             </div>
 

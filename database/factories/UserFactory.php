@@ -40,7 +40,7 @@ $factory->define(App\Client::class, function (Faker $faker) {
         'city' => $faker->city,
         'postcode' => $faker->postcode,
         'email' => $faker->unique()->safeEmail,
-        'street_address' => $faker->StreetAddress,
+        'street_name' => $faker->StreetAddress,
     ];
 });
 

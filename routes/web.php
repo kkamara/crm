@@ -60,7 +60,7 @@ Route::group(['middleware'=>'auth'],function () {
 
     // Return clients assigned to current logged in user
     Route::get('user/clients', function(Request $request) {
-        return auth()->user()->getClientUsers();
+        return auth()->user()->getUserClients();
     });
 
 });

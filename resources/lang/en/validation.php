@@ -103,6 +103,10 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'image' => [
+            'image' => 'The Image must be of type jpeg, png, bmp, gif, or svg.',
+            'dimensions' => 'The Image dimensions must not be greater than 1000 x 500.',
+        ],
     ],
 
     /*
@@ -116,6 +120,23 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        // logs
+        'title' => 'Title',
+        'description' => 'Description',
+        'body' => 'Body',
+        // clients / users
+        'first_name' => 'First Name',
+        'last_name' => 'Last Name',
+        'company' => 'Company Name',
+        'email' => 'Email',
+        'contact_number' => 'Contact Number',
+        'building_number' => 'Building Number',
+        'street_name' => 'Street Name',
+        'postcode' => 'Postcode',
+        'city' => 'City',
+        'image' => 'Image',
+        'client_users' => 'Assign Client Users',
+    ],
 
 ];

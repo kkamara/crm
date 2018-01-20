@@ -20,8 +20,6 @@
             {{ method_field('PATCH') }}
             {{ csrf_field() }}
 
-            <input type="hidden" value="{{ Auth::user()->id }}" name="user_modified">
-
             <div class="form-group">
                 <label>Title :
                     <input class="form-control" name="title" value="{{ $log->title }}">

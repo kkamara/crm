@@ -108,9 +108,4 @@ class Log extends Model
 
         return strlen($desc) > 300 ? substr($desc,0,299).'...' : $desc;
     }
-
-    public function createLog($request)
-    {
-
-    }
 }

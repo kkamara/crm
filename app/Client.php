@@ -8,7 +8,7 @@ use App\User;
 
 class Client extends Model
 {
-    
+    protected $guarded = [];
 
     public function path()
     {
@@ -17,14 +17,15 @@ class Client extends Model
 
     public function getImageAttribute()
     {
-        $imagePath = $this->attributes['image'];
+        $image = $this->attributes['image'];
+        $imagePath = 'uploads/clients/'.$this->attributes['id'].'/'.$image;
         
         if(File::exists($imagePath))
         {
             return asset($imagePath);
         }
 
-        return asset('storage/images/client-avatar.jpg');
+        return asset('images/client-avatar.jpg');
     }
 
     public function user()

@@ -24,10 +24,13 @@
                 <strong>Company</strong> :<br> {{ $client->company }}
             </li>
             <li class="list-group-item" style="border: none;">
-                <strong>Name</strong> :<br> {{ $client->first_name.' '.$client->last_name }}
+                <strong>Name</strong> :<br> 
+                    @if(!empty($client->first_name) && !empty($client->last_name))
+                    {{ $client->first_name.' '.$client->last_name }}
+                    @endif
             </li>
             <li class="list-group-item" style="border: none;">
-                <strong>Contact Number</strong> :<br> {{ $client->contact_number }}
+                <strong>Contact Number</strong> :<br> {{ $client->contact_number or '' }}
             </li>
             <li class="list-group-item" style="border: none;">
                 <strong>Email</strong> :<br> {{ $client->email }}
@@ -36,7 +39,7 @@
                 <strong>Building Number/Name</strong> :<br> {{ $client->building_number }}
             </li>
             <li class="list-group-item" style="border: none;">
-                <strong>Street Address</strong> :<br> {{ $client->street_address }}
+                <strong>Street Address</strong> :<br> {{ $client->street_name }}
             </li>
             <li class="list-group-item" style="border: none;">
                 <strong>City</strong> :<br> {{ $client->city }}
@@ -45,12 +48,12 @@
                 <strong>Postcode</strong> :<br> {{ $client->postcode }}
             </li>
             <li class="list-group-item" style="border: none">
-                <strong>Created by</strong> :<br> <a href="#">{{ $client->user->name }} </a> at {{ $client->created_at->format('D-m-Y G:i:a') }}
+                <strong>Created by</strong> :<br> <a href="#">{{ $client->user->name }} </a> at {{ $client->created_at->format('Y-m-D G:i:a') }}
             </li>
             
             @if(strtotime($client->updated_at) != strtotime($client->created_at))
             <li class="list-group-item" style="border: none">
-                <strong>Updated by</strong> :<br> <a href="#">@if(!empty($client->update_by)){{ $client->updated_by->name.' at ' }}@endif</a> {{ $client->updated_at->format('Y-m-d G:i:a') }}
+                <strong>Updated by</strong> :<br> <a href="#">@if(!empty($client->update_by)){{ $client->updated_by->name.' at ' }}@endif</a> {{ $client->updated_at->format('Y-m-D G:i:a') }}
             </li>
             @endif
         </ul>

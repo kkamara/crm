@@ -33,12 +33,12 @@
                 <strong>Notes</strong> :<br> {!! $log->notes !!}
             </li>
             <li class="list-group-item" style="border: none">
-                <strong>Created by</strong> :<br> <a href="#">{{ $log->user->name }} </a> at {{ $log->created_at->format('D-m-Y G:i:a') }}
+                <strong>Created by</strong> :<br> <a href="#">{{ $log->user->name }} </a> at {{ $log->created_at->format('Y-m-D G:i:a') }}
             </li>
             
             @if(strtotime($log->updated_at) != strtotime($log->created_at))
             <li class="list-group-item" style="border: none">
-                <strong>Updated by</strong> :<br> <a href="#">@if(!empty($log->updated_by)){{ $log->updated_by->name.' at ' }}@endif</a>{{ $log->updated_at->format('Y-m-d G:i:a') }}
+                <strong>Updated by</strong> :<br> <a href="#">@if(!empty($log->updated_by)){{ $log->updated_by->name.' at ' }}@endif</a>{{ $log->updated_at->format('Y-m-D G:i:a') }}
             </li>
             @endif
             

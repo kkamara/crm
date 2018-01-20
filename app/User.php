@@ -44,22 +44,38 @@ class User extends Authenticatable
         return $this->attributes['first_name'] . ' ' . $this->attributes['last_name'];
     }
 
+    public function getUserClients()
+    {
+        $userClients = DB::table('client_user')->select('client_id', 'user_id')->where('user_id', $this->id)->get();
+
+        return $userClients;
+    }
+
     public function getClientUsers()
     {
-        $clientUsers = DB::table('client_user')->select('client_id', 'user_id')->where('user_id', $this->id)->get();
+        $userClients = $this->getUserClients();
+
+        $clientIds = array();
+
+        foreach($userClients as $userClient)
+        {
+            array_push($clientIds, $userClient->client_id);
+        }
+
+        $clientUsers = User::whereIn('id', $clientIds)->orderBy('first_name', 'ASC')->get();
 
         return $clientUsers;
     }
 
     public function getClientsAssigned()
     {
-        $clientUsers = DB::table('client_user')->select('client_id', 'user_id')->where('user_id', $this->id)->get();
+        $userClients = DB::table('client_user')->select('client_id', 'user_id')->where('user_id', $this->id)->get();
 
         $clients = DB::table('clients')->select('id', 'first_name', 'last_name','company');
 
         $clientKeys = array();
 
-        foreach($clientUsers as $cu)
+        foreach($userClients as $cu)
         {
             array_push($clientKeys, $cu->client_id);
         }
@@ -71,8 +87,15 @@ class User extends Authenticatable
 
     public function isClientAssigned($clientId)
     {
-        $clientUser = DB::table('client_user')->select('id')->where(['user_id'=>auth()->user()->id, 'client_id'=>$clientId]);
+        $clientUser = DB::table('client_user')->select('id')->where(['user_id'=>$this->id, 'client_id'=>$clientId])->get();
 
         return (!empty($clientUser)) ? TRUE : FALSE;
+    }
+
+    public function getAllUsers()
+    {
+        $users = User::orderBy('first_name', 'ASC')->get();
+
+        return $users;
     }
 }

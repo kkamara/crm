@@ -60,7 +60,7 @@
                                  <div class="col-xs-6 col-sm-6 col-md-6">
                                     <div class="form-group">
                                         <label>
-                                            <input value="1" type="checkbox" name="remember_me"> Remember Me
+                                            <input value="1" checked type="checkbox" name="remember_me"> Remember Me
                                         </label>
                                     </div>
                                  </div>

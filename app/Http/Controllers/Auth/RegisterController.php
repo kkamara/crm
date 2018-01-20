@@ -56,7 +56,7 @@ class RegisterController extends Controller
             'email' => 'required|string|email|max:191|unique:users',
             'password' => 'required|string|min:6|confirmed',
             'contact_number' => 'required|string|max:191',
-            'street_address' => 'required|string|max:191',
+            'street_name' => 'required|string|max:191',
             'building_number' => 'required|string|max:191',
             'city' => 'required|string|max:191',
             'postcode' => 'required|string|max:191'
@@ -78,7 +78,7 @@ class RegisterController extends Controller
             'email' => trim($data['email']),
             'password' => bcrypt($data['password']),
             'contact_number' => trim($data['contact_number']),
-            'street_address' => trim($data['street_address']),
+            'street_name' => trim($data['street_name']),
             'city' => trim($data['city']),
             'postcode' => trim($data['postcode'])
         ]);

@@ -67,9 +67,9 @@
                     <tr>
                         <td><a href="{{ $log->path() }}">{{ $log->title }}</a></td>
                         <td>{!! $log->short_description !!}</td>
-                        <td>{{ $log->created_at->format('d-m-Y') }}</td>
+                        <td>{{ $log->created_at->format('Y-m-d') }}</td>
                         @if(strtotime($log->created_at) != strtotime($log->updated_at))
-                            <td>{{$log->updated_at->format('d-m-Y')}}</td>
+                            <td>{{$log->updated_at->format('Y-m-d')}}</td>
                         @else
                             <td>Never</td>
                         @endif

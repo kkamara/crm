@@ -7,12 +7,12 @@
                         </a>
                     </li>
                     <li>
-                        <a href="/"><i class="fa fa-fw fa-home"></i> Dashboard</a>
+                        <a href="/"><i style='color:red;' class="fa fa-fw fa-home"></i> Dashboard</a>
                     </li>
                     @can('view client')
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-fw fa-briefcase"></i> Clients <span class="caret"></span>
+                            <i style='color:green;' class="fa fa-fw fa-briefcase"></i> Clients <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu" role="menu">
                             <li class="dropdown-header">Client Options</li>
@@ -26,7 +26,7 @@
                     @can('view user')
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-fw fa-users"></i> Users <span class="caret"></span>
+                            <i style='color:blue;' class="fa fa-fw fa-users"></i> Users <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu" role="menu">
                             <li class="dropdown-header">User Options</li>
@@ -40,7 +40,7 @@
                     @can('view log')
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-fw fa-tasks"></i> Logs <span class="caret"></span>
+                            <i style='color:yellow;' class="fa fa-fw fa-tasks"></i> Logs <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu" role="menu">
                             <li class="dropdown-header">Log Options</li>
@@ -52,10 +52,10 @@
                     </li>
                     @endcan
                     <li>
-                        <a href="{{ route('showSettings') }}"><i class="fa fa-fw fa-cogs"></i> Settings</a>
+                        <a href="{{ route('showSettings') }}"><i style='color:purple;' class="fa fa-fw fa-cogs"></i> Settings</a>
                     </li>
                     <li>
-                        <a href="{{ route('logout') }}"><i class="fa fa-fw fa-folder"></i> Logout</a>
+                        <a href="{{ route('logout') }}"><i style='color:orange;' class="fa fa-fw fa-folder"></i> Logout</a>
                     </li>
                     {{--  <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-fw fa-plus"></i> Dropdown <span class="caret"></span></a>

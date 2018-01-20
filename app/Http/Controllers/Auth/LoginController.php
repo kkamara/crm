@@ -66,7 +66,8 @@ class LoginController extends Controller
 
         $user = $user[0];
 
-        if(!Auth::attempt(['email' => $user->email, 'password' => request('password')], 
+        if(!Auth::attempt(['email' => $user->email, 
+            'password' => request('password')], 
             (int) request('remember_me')))
         {
             return back()->with('errors', ['Invalid login credentials provided.']);

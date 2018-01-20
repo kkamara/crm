@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddStreetAddressColumnToClientsTable extends Migration
+class AddStreetNameColumnToClientsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddStreetAddressColumnToClientsTable extends Migration
     public function up()
     {
         Schema::table('clients', function($table) {
-            $table->string('street_address')->after('building_number');
+            $table->string('street_name')->after('building_number');
         });
     }
 
@@ -26,7 +26,7 @@ class AddStreetAddressColumnToClientsTable extends Migration
     public function down()
     {
         Schema::table('clients', function($table) {
-            $table->dropColumn('street_address');
+            $table->dropColumn('street_name');
         });
     }
 }
