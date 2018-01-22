@@ -39,7 +39,7 @@
                 <strong>Building Number/Name</strong> :<br> {{ $client->building_number }}
             </li>
             <li class="list-group-item" style="border: none;">
-                <strong>Street Address</strong> :<br> {{ $client->street_name }}
+                <strong>Street Name</strong> :<br> {{ $client->street_name }}
             </li>
             <li class="list-group-item" style="border: none;">
                 <strong>City</strong> :<br> {{ $client->city }}

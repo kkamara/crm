@@ -43,7 +43,7 @@
             @endif
             
             <li class="list-group-item" style="border: none">
-                <strong>Assigned</strong> :<br> <a href="#">{{ $log->client->company }}</a>
+                <strong>Assigned to Company</strong> :<br> <a href="#">{{ $log->client->company }}</a>
             </li>
         </ul>
     </div>

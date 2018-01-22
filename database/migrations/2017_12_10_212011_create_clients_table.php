@@ -21,7 +21,7 @@ class CreateClientsTable extends Migration
             $table->string('last_name')->nullable();
             $table->string('company')->unique();
             $table->string('email');
-            $table->string('contact_number');
+            $table->string('contact_number')->nullable();
             $table->string('building_number');
             $table->string('city');
             $table->string('postcode');

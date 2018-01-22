@@ -40,27 +40,26 @@ class Client extends Model
         return $user;
     }
 
-    // public function validationErrors($request)
-    // {
-    //     $validator = $request->validate([
-    //         'user_id' => 'required|max:191|min:5',
-    //         'description'  => 'required|min:20',
-    //         'body'  => 'required|min:20',
-    //         'user_modified' => 'required|exists:users,id',
-    //     ]);
+    public function getNameAttribute()
+    {
+        $name = trim($this->attributes['first_name'].' '.$this->attributes['last_name']);
 
-    //     return $validator->errors()->all();
-    // }
+        return !empty($name) ? $name : 'None';
+    }
 
-    // public function parseData($request)
-    // {
-    //     $data = array();
-    //     $data['title']         = request('title');
-    //     $data['description']   = request('description');
-    //     $data['body']          = request('body');
-    //     $data['user_modified'] = request('user_modified');
-    //     $data['notes']         = request('notes');
+    public function updateClient($imageName = null)
+    {
+        $this->user_modified = auth()->user()->id;
+        $this->first_name = !empty(request('first_name')) ? trim(filter_var(request('first_name'), FILTER_SANITIZE_STRING)) : NULL;
+        $this->last_name = !empty(request('last_name')) ? trim(filter_var(request('last_name'), FILTER_SANITIZE_STRING)) : NULL;
+        $this->email = trim(filter_var(request('email'), FILTER_SANITIZE_EMAIL));
+        $this->building_number = trim(filter_var(request('building_number'), FILTER_SANITIZE_STRING));
+        $this->street_name = trim(filter_var(request('street_name'), FILTER_SANITIZE_STRING));
+        $this->postcode = trim(filter_var(request('postcode'), FILTER_SANITIZE_STRING));
+        $this->city = trim(filter_var(request('city'), FILTER_SANITIZE_STRING));
+        $this->contact_number = !empty(request('contact_number')) ? trim(filter_var(request('contact_number'), FILTER_SANITIZE_STRING)) : NULL;
+        $this->image = isset($imageName) ? $imageName : NULL;
 
-    //     return $data;
-    // }
+        return $this->save() ? TRUE : FALSE;
+    }
 }

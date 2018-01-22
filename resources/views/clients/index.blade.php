@@ -44,7 +44,7 @@
 
                     <tr>
                         <td><a href="{{ $client->path() }}">{{ $client->company }}</a></td>
-                        <td>{{ $client->first_name.' '.$client->last_name }}</td>
+                        <td>{{ $client->name }}</td>
                         <td>{{ $client->email }}</td>
                         <td>{{ $client->created_at->diffForHumans() }}</td>
                     </tr>

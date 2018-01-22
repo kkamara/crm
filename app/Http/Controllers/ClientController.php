@@ -112,8 +112,8 @@ class ClientController extends Controller
             return redirect()->route('Dashboard');
 
         $validator = Validator::make($request->all(), [
-            'first_name' => 'max:191|min:3',
-            'last_name' => 'max:191|min:3',
+            'first_name' => 'max:191',
+            'last_name' => 'max:191',
             'company' => 'required|max:191|min:3|unique:clients',
             'email' => 'required|email|max:191',
             'building_number' => 'required|max:191',
@@ -155,9 +155,11 @@ class ClientController extends Controller
         }
 
         // check if user have access to users provided in client_users field
-        if(!$user->hasRole('admin')) 
+        $hasAccessToClientUser = true;
+
+        if($user->hasRole('admin')) 
         {
-            $hasAccessToClientUser = true;
+            //
         }
         elseif($user->hasRole('client_admin'))
         {
@@ -211,11 +213,11 @@ class ClientController extends Controller
             {
                 $userList = array($user);
             }
-            
+
             return view('clients.create', [
                 'title'=>'Create Client',
-                'flashMessage'=> 'Oops, something went wrong.',
                 'users' => $userList,
+                'input' => $request->input(),
             ]);
         }
 
@@ -282,18 +284,7 @@ class ClientController extends Controller
         if(!$user->hasRole('admin'))
         {
             // check if client should be viewable by user
-            $userClients = $user->getuserClients();
-            $allowed = false;
-
-            foreach($userClients as $clientUser)
-            {
-                if($clientUser->client_id == $client->id && $clientUser->user_id == $user->id)
-                {
-                    $allowed = true;
-                }
-            }
-
-            if(!$allowed)
+            if(!$user->isClientAssigned($client->id))
             {
                 return redirect()->route('clientsHome')->with('flashError', 'You do not have access to that resource.');
             }
@@ -310,7 +301,26 @@ class ClientController extends Controller
      */
     public function edit(Client $client)
     {
-        //
+        $user = Auth()->user();
+        
+        if(!$user->hasPermissionTo('edit client'))
+        {
+            return redirect()->route('Dashboard');
+        }
+
+        if(!$user->hasRole('admin'))
+        {
+            // check if log should be viewable by user
+            if(!$user->isClientAssigned($client->client_id))
+            {
+                return redirect()->route('clientsHome')->with('flashError', 'You do not have access to that resource.');
+            }
+        }
+    
+        return view('clients.edit', [
+            'title'=>'Edit '.$client->company,
+            'client' => $client,
+        ]);
     }
 
     /**
@@ -322,7 +332,62 @@ class ClientController extends Controller
      */
     public function update(Request $request, Client $client)
     {
-        //
+        $user = Auth()->user();
+
+        if(!$user->hasPermissionTo('edit client'))
+        {
+            return redirect()->route('Dashboard');
+        }
+
+        if(!$user->hasRole('admin'))
+        {
+            if(!$user->isClientAssigned($client->id))
+            {
+                return redirect()->route('clientsHome')->with('flashError', 'You do not have access to that resource.');
+            }
+        }
+
+        $validator = Validator::make($request->all(), [
+            'first_name' => 'max:191',
+            'last_name' => 'max:191',
+            'email' => 'required|email|max:191',
+            'building_number' => 'required|max:191',
+            'street_name' => 'required|max:191',
+            'city' => 'required|max:191',
+            'postcode' => 'required|max:191',
+            // optional
+            'contact_number' => 'max:191',
+            'image' => 'image',
+        ]);
+
+        if(!empty($validator->errors()->all())) {
+
+            return view('clients.edit', [
+                'title' => 'Edit '.$client->company,
+                'errors' => $validator->errors()->all(),
+                'input' => $request->input(),
+                'client' => $client,
+            ]);
+        }
+
+        $imageName = null;
+        
+        // get image name
+        if(Input::hasFile('image'))
+        {
+            $file = Input::file('image');
+            $imageName = $file->getClientOriginalName();
+        }
+
+        $client->updateClient($imageName);
+
+        // store image file if provided
+        if(isset($file) && isset($imageName))
+        {
+            $file->move(public_path('uploads/clients/'.$client->id), $imageName);
+        }
+
+        return redirect()->route('clientsHome');
     }
 
     public function delete(Client $client)

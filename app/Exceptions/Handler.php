@@ -49,7 +49,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if ($e instanceof TokenMismatchException) {
+        if ($exception instanceof TokenMismatchException) {
             return view('home.index', [
                 'title' => 'Dashboard',
                 'flashError' => 'Security token expired. Please, repeat your request.',

@@ -58,14 +58,15 @@ class Log extends Model
 
     public function updateLog($data)
     {
-        $this->title         = filter_var($data['title'], FILTER_SANITIZE_STRING);
-        $this->description   = filter_var($data['description'], FILTER_SANITIZE_STRING);
-        $this->body          = filter_var($data['body'], FILTER_SANITIZE_STRING);
-        $this->notes         = filter_var($data['notes'], FILTER_SANITIZE_STRING);
+        $this->title         = trim(filter_var($data['title'], FILTER_SANITIZE_STRING));
+        $this->description   = trim(filter_var($data['description'], FILTER_SANITIZE_STRING));
+        $this->body          = trim(filter_var($data['body'], FILTER_SANITIZE_STRING));
+        $this->notes         = trim(filter_var($data['notes'], FILTER_SANITIZE_STRING));
         $this->user_modified = $data['user_modified'];
         
         return ($this->save()) ? TRUE : FALSE;
     }
+    
     public function getDescriptionAttribute()
     {
         return nl2br(e($this->attributes['description']));

@@ -255,14 +255,7 @@ class LogController extends Controller
         
         $update = $log->updateLog($data);
 
-        if($update === TRUE)
-        {
-            return redirect('/logs/'.$log->id)->with('flashSuccess', 'Log successfully updated.');
-        }
-        else
-        {
-            return redirect('/logs/'.$log->id)->with('flashError', 'We encountered an error updating the log.');
-        }
+        return redirect('/logs/'.$log->id)->with('flashSuccess', 'Log successfully updated.');
     }
 
     public function delete(Log $log)

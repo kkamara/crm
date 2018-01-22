@@ -53,18 +53,34 @@ class User extends Authenticatable
 
     public function getClientUsers()
     {
-        $userClients = $this->getUserClients();
+        $userClients = DB::table('client_user')->select('client_id', 'user_id')->where('user_id', $this->id)->get();
 
-        $clientIds = array();
+        $userIds = array();
 
         foreach($userClients as $userClient)
         {
-            array_push($clientIds, $userClient->client_id);
+            array_push($userIds, $userClient->user_id);
         }
 
-        $clientUsers = User::whereIn('id', $clientIds)->orderBy('first_name', 'ASC')->get();
+        $clientUsers = User::whereIn('id', $userIds)->orderBy('first_name', 'ASC')->get();
 
         return $clientUsers;
+    }
+
+    public function getClientSpecificUsers($clientId)
+    {
+        $clientUsers = DB::table('client_user')->where(['client_id'=>$clientId])->get();
+
+        $userIds = array();
+
+        foreach($clientUsers as $cu)
+        {
+            array_push($userIds, $cu->user_id);
+        }
+
+        $users = User::whereIn('id', $userIds)->get();
+
+        return $users;
     }
 
     public function getClientsAssigned()
@@ -89,7 +105,7 @@ class User extends Authenticatable
     {
         $clientUser = DB::table('client_user')->select('id')->where(['user_id'=>$this->id, 'client_id'=>$clientId])->get();
 
-        return (!empty($clientUser)) ? TRUE : FALSE;
+        return !$clientUser->isEmpty() ? TRUE : FALSE;
     }
 
     public function getAllUsers()

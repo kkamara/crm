@@ -26,20 +26,20 @@
             </div>
 
             <div class="form-group">
-                <label>First Name (optional) :
+                <label>First Name <em>(optional)</em> :
                     <input class="form-control" name="first_name" value="{{ $input['first_name'] or '' }}">
                 </label>
             </div>
 
             <div class="form-group">
-                <label>Last Name (optional) :
+                <label>Last Name <em>(optional)</em> :
                     <input class="form-control" name="last_name" value="{{ $input['last_name'] or '' }}">
                 </label>
             </div>
 
             <div class="form-group">
-                <label>Image (optional) :
-                    <input type="file" class="form-control" name="image" value="{{ $input['image'] or '' }}">
+                <label>Image <em>(optional)</em> :
+                    <input type="file" class="form-control" name="image">
                 </label>
             </div>
 
@@ -60,7 +60,7 @@
             </div>
 
             <div class="form-group">
-                <label>Contact Number (optional)&nbsp; :
+                <label>Contact Number <em>(optional)</em>&nbsp; :
                     <input class="form-control" name="contact_number" value="{{ $input['contact_number'] or '' }}">
                 </label>
             </div>

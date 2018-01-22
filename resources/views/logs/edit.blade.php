@@ -44,6 +44,10 @@
                 </label>
             </div>
 
+            <div class="form-group pull-left">
+                <a class="btn btn-warning" href="{{ $log->path() }}">Cancel</a>
+            </div>
+
             <div class="form-group pull-right">
                 <input class="btn btn-primary" type="submit">
             </div>
