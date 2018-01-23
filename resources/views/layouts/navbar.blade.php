@@ -11,7 +11,7 @@
                     </li>
                     @can('view client')
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <a href="{{ route('clientsHome') }}" class="dropdown-toggle" data-toggle="dropdown">
                             <i style='color:green;' class="fa fa-fw fa-briefcase"></i> Clients <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu" role="menu">
@@ -39,7 +39,7 @@
                     @endcan
                     @can('view log')
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <a href="{{ route('logsHome') }}" class="dropdown-toggle" data-toggle="dropdown">
                             <i style='color:yellow;' class="fa fa-fw fa-tasks"></i> Logs <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu" role="menu">

@@ -15,7 +15,7 @@
         <a href="{{ route('editClient', $client->id) }}" class="btn btn-info">Edit</a>
         @endcan
         @can('delete client')
-        <a href="{{ route('deleteClient', $client->id) }}" class="btn btn-danger">Delete</a>
+        <button data-toggle="modal" data-target="#deleteModal" class="btn btn-danger">Delete</button>
         @endcan
     </div>
     <div class="card pull-left">
@@ -60,6 +60,44 @@
     </div>
     <div class='col-md-5 pull-right'>
         <img src="{{ $client->image }}" class='img-responsive' style='max-height:300px;margin-top:150px;cursor:pointer;'>
+    </div>
+</div>
+
+
+<!-- Delete Modal -->
+<div id="deleteModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+  
+      <form class="modal-content" method="post" action="{{ route('destroyClient', $client->id) }}">
+        {{ csrf_field() }}
+        {{ method_field('DELETE') }}
+
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Delete {{ $client->company }}</h4>
+        </div>
+        <div class="modal-body">
+          
+            <div class='form-group'>
+                <label>Are you sure you want to delete this client?
+                    <select name="delete" class="form-control">
+                        <option value="0" selected>No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </label>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <div class='pull-left'>
+                <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+            </div>
+            <div class='pull-right'>
+                <input type="submit" class="btn btn-primary">
+            </div>
+        </div>
+    </form>
+  
     </div>
 </div>
 

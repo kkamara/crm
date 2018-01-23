@@ -49,34 +49,38 @@ class LogController extends Controller
 
         if(request('title') || request('desc') || request('body') || request('created_at') || request('updated_at'))
         {
+            $searchParam = filter_var(request('search'), FILTER_SANITIZE_STRING);
+
             if(request('title'))
             {
-                $logs = $logs->where('title', 'like', '%'.request('search').'%');
+                $logs = $logs->where('title', 'like', '%'.$searchParam.'%');
             }
             if(request('desc'))
             {
-                $logs = $logs->where('description', 'like', '%'.request('search').'%');
+                $logs = $logs->where('description', 'like', '%'.$searchParam.'%');
             }
             if(request('body'))
             {
-                $logs = $logs->where('body', 'like', '%'.request('search').'%');
+                $logs = $logs->where('body', 'like', '%'.$searchParam.'%');
             }
             if(request('created_at'))
             {
-                $logs = $logs->whereDate('created_at', 'like', '%'.request('search').'%');
+                $logs = $logs->whereDate('created_at', 'like', '%'.$searchParam.'%');
             }
             if(request('updated_at'))
             {
-                $logs = $logs->whereDate('updated_at', 'like', '%'.request('search').'%');
+                $logs = $logs->whereDate('updated_at', 'like', '%'.$searchParam.'%');
             }
         }
         elseif(request('search'))
         {
-            $logs = $logs->where('title', 'like', '%'.request('search').'%')
-                            ->orWhere('description', 'like', '%'.request('search').'%')
-                            ->orWhere('body', 'like', '%'.request('search').'%')
-                            ->orWhere('created_at', 'like', '%'.request('search').'%')
-                            ->orWhere('updated_at', 'like', '%'.request('search').'%');
+            $searchParam = filter_var(request('search'), FILTER_SANITIZE_STRING);
+            
+            $logs = $logs->where('title', 'like', '%'.$searchParam.'%')
+                            ->orWhere('description', 'like', '%'.$searchParam.'%')
+                            ->orWhere('body', 'like', '%'.$searchParam.'%')
+                            ->orWhere('created_at', 'like', '%'.$searchParam.'%')
+                            ->orWhere('updated_at', 'like', '%'.$searchParam.'%');
         }
 
         $logs = $logs->paginate(10);
@@ -260,7 +264,6 @@ class LogController extends Controller
 
     public function delete(Log $log)
     {
-
         $user = Auth()->user();
         
         if(!$user->hasPermissionTo('delete log'))

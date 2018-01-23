@@ -49,16 +49,18 @@ class ClientController extends Controller
 
         if(request('search'))
         {
-            $clients = $clients->where('first_name', 'LIKE', '%'.request('search').'%')
-                                ->orWhere('last_name', 'LIKE', '%'.request('search').'%')
-                                ->orWhere('company', 'LIKE', '%'.request('search').'%')
-                                ->orWhere('email', 'LIKE', '%'.request('search').'%')
-                                ->orWhere('contact_number', 'LIKE', '%'.request('search').'%')
-                                ->orWhere('building_number', 'LIKE', '%'.request('search').'%')
-                                ->orWhere('city', 'LIKE', '%'.request('search').'%')
-                                ->orWhere('postcode', 'LIKE', '%'.request('search').'%')
-                                ->orWhere('created_at', 'LIKE', '%'.request('search').'%')
-                                ->orWhere('updated_at', 'LIKE', '%'.request('search').'%');
+            $searchParam = filter_var(request('search'), FILTER_SANITIZE_STRING);
+
+            $clients = $clients->where('first_name', 'LIKE', '%'.$searchParam.'%')
+                                ->orWhere('last_name', 'LIKE', '%'.$searchParam.'%')
+                                ->orWhere('company', 'LIKE', '%'.$searchParam.'%')
+                                ->orWhere('email', 'LIKE', '%'.$searchParam.'%')
+                                ->orWhere('contact_number', 'LIKE', '%'.$searchParam.'%')
+                                ->orWhere('building_number', 'LIKE', '%'.$searchParam.'%')
+                                ->orWhere('city', 'LIKE', '%'.$searchParam.'%')
+                                ->orWhere('postcode', 'LIKE', '%'.$searchParam.'%')
+                                ->orWhere('created_at', 'LIKE', '%'.$searchParam.'%')
+                                ->orWhere('updated_at', 'LIKE', '%'.$searchParam.'%');
         }
 
         $clients = $clients->paginate(10);
@@ -403,6 +405,29 @@ class ClientController extends Controller
      */
     public function destroy(Client $client)
     {
-        //
+        $user = Auth()->user();
+        
+        if(!$user->hasPermissionTo('delete client'))
+        {
+            return redirect()->route('Dashboard');
+        }
+
+        if(!$user->hasRole('admin'))
+        {
+            // check if client should be viewable by user
+            if(!$user->isClientAssigned($client->client_id))
+            {
+                return redirect()->route('clientsHome')->with('flashError', 'You do not have access to that resource.');
+            }
+        }
+
+        if((int)request('delete') !== 1)
+        {
+            return redirect()->route('showClient', $client->id);
+        }
+
+        $client->delete();
+
+        return redirect('/clients')->with('flashSuccess', 'Client successfully deleted.');
     }
 }

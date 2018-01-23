@@ -50,3 +50,11 @@ a.btn {
 .front-page-links a:hover {
     color:black;
 }
+
+.modal-title, .modal-body, .modal-footer {
+    color:black;
+}
+
+button[data-toggle='modal'] {
+    margin-top:17.5px;
+}
