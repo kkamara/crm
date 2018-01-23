@@ -32,7 +32,8 @@ Route::group(['middleware'=>'auth'],function () {
     Route::get('/clients/{client}', 'ClientController@show')->name('showClient');
     Route::get('/clients/edit/{client}', 'ClientController@edit')->name('editClient');
     Route::patch('/clients/update/{client}', 'ClientController@update')->name('updateClient');
-    Route::get('/clients/delete/{client}', 'ClientController@delete')->name('deleteClient');
+    // Client delete form is now handled with a modal on client show page
+    // Route::get('/clients/delete/{client}', 'ClientController@delete')->name('deleteClient');
     Route::delete('/clients/delete/{client}', 'ClientController@destroy')->name('destroyClient');
 
     // User routes

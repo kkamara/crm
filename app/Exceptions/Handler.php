@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Exception;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Session\TokenMismatchException;
 
@@ -49,12 +50,17 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($exception instanceof MethodNotAllowedHttpException) 
+        {
+            return redirect()->route('Dashboard');
+        }
+
         if ($exception instanceof TokenMismatchException) {
             return view('home.index', [
                 'title' => 'Dashboard',
                 'flashError' => 'Security token expired. Please, repeat your request.',
             ]);
-		}
+        }
 
         return parent::render($request, $exception);
     }
