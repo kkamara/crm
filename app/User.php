@@ -72,9 +72,19 @@ class User extends Authenticatable
         return $clientUsers;
     }
 
-    public function getClientSpecificUsers($clientId)
+    public function getClientSpecificUsers()
     {
-        $clientUsers = DB::table('client_user')->where(['client_id'=>$clientId])->get();
+        $clients = DB::table('client_user')->where('user_id', $this->id)->get();
+
+        $clientKeys = array();
+
+        foreach($clients as $client)
+        {
+            array_push($clientKeys, $client->client_id);
+        }
+
+        // get all user ids assigned to clients
+        $clientUsers = DB::table('client_user')->whereIn('client_id', $clientKeys)->get();
 
         $userIds = array();
 
