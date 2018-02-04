@@ -31,6 +31,8 @@ class LogController extends Controller
         
         $logs = Log::orderBy('id', 'desc');
 
+        // if not admin then get logs assigned
+        // otherwise all logs will be shown
         if(!$user->hasRole('admin'))
         {
             $userClients = $user->getuserClients();

@@ -31,6 +31,8 @@ class ClientController extends Controller
 
         $clients = Client::orderBy('id', 'desc');
 
+        // if not admin then get clients assigned
+        // otherwise all clients will be shown
         if(!$user->hasRole('admin'))
         {
             $userClients = $user->getuserClients();

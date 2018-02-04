@@ -25,14 +25,14 @@
                     @endcan
                     @can('view user')
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <a href="{{ route('usersHome') }}" class="dropdown-toggle" data-toggle="dropdown">
                             <i style='color:blue;' class="fa fa-fw fa-users"></i> Users <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu" role="menu">
                             <li class="dropdown-header">User Options</li>
-                            <li><a href="#">View Users</a></li>
+                            <li><a href="{{ route('usersHome') }}">View Users</a></li>
                             @can('create user')
-                            <li><a href="#">Create User</a></li>
+                            <li><a href="{{ route('createUser') }}">Create User</a></li>
                             @endcan
                         </ul>
                     </li>

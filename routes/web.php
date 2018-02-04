@@ -37,7 +37,7 @@ Route::group(['middleware'=>'auth'],function () {
     Route::delete('/clients/delete/{client}', 'ClientController@destroy')->name('destroyClient');
 
     // User routes
-    Route::get('/users', 'UserController@index')->name('cusersHome');
+    Route::get('/users', 'UserController@index')->name('usersHome');
     Route::get('/users/{user}', 'UserController@show')->name('showUser');
     Route::get('/users/create', 'UserController@show')->name('createUser');
     Route::get('/users/edit/{user}', 'UserController@edit')->name('editUser');

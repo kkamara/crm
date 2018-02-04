@@ -29,6 +29,11 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    public function path()
+    {
+        return url('/').'/users/'.$this->id;
+    }
+
     public function getLastLoginAttribute()
     {
         if(empty($this->attributes['last_login']))
