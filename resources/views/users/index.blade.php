@@ -7,31 +7,9 @@
 @section('content')
 
     <div class="container-fluid main-container">
-        <form method="get" action="{{ route('usersHome') }}" class="form-inline" style="padding:5px 0px 0px 20px">
+        {{--  <form method="get" action="{{ route('usersHome') }}" class="form-inline" style="padding:5px 0px 0px 20px">
             {{ csrf_field() }}
-            
-            <div class="row">
-                <div class="form-group">
-                    <label>Title
-                        <input name="title" type="checkbox">&nbsp;&nbsp;
-                    </label>
-                </div>
-                <div class="form-group">
-                    <label>Description
-                        <input name="desc" type="checkbox">&nbsp;&nbsp;
-                    </label>
-                </div>
-                <div class="form-group">
-                    <label>Created at
-                        <input name="created_at" type="checkbox">&nbsp;&nbsp;
-                    </label>
-                </div>
-                <div class="form-group">
-                    <label>Updated at
-                        <input name="updated_at" type="checkbox">&nbsp;&nbsp;
-                    </label>
-                </div>
-            </div>
+            <br/>
             <div class="row">
                 <div class="form-group">
                     <label>
@@ -45,8 +23,8 @@
                     </label>
                 </div>
             </div>
-        </form>
-
+        </form>  --}}
+<br/>
         <div class="text-center">
             Showing {{ $users->total() }} results
         </div>

@@ -24,7 +24,7 @@ class UserController extends Controller
             return redirect()->route('Dashboard');
         }
 
-        $users = User::orderBy('id', 'desc');
+        $users = User::where('id', '!=', $user->id)->orderBy('id', 'desc');
 
         // if not admin then get users assigned
         // otherwise all users will be shown
@@ -32,28 +32,41 @@ class UserController extends Controller
         {
             $userClients = $user->getuserClients();
 
-            $usersKeys = array();
-            
-            foreach($userClients as $userClient) 
-            {
-                $user = User::where('id', $userClient->user_id)->first();
+            $clientKeys = array();
 
-                array_push($usersKeys, $user->id);
+            foreach($userClients as $userClient)
+            {
+                array_push($clientKeys, $userClient->client_id);
             }
+
+            $clientUsers = DB::table('client_user')
+                                ->select('user_id')
+                                ->whereIn('client_id', $clientKeys)
+                                ->where('user_id', '!=', $user->id)
+                                ->distinct()
+                                ->get();
             
+            $usersKeys = array();
+
+            foreach($clientUsers as $clientUser) 
+            {
+                array_push($usersKeys, $clientUser->user_id);
+            }
+
             $users = $users->whereIn('id', $usersKeys);
         }
 
-        if(request('search'))
-        {
-            $searchParam = filter_var(request('search'), FILTER_SANITIZE_STRING);
+        // if(request('search'))
+        // {
+        //     $searchParam = filter_var(request('search'), FILTER_SANITIZE_STRING);
 
-            $users = $users->where('first_name', 'LIKE', '%'.$searchParam.'%')
-                                ->orWhere('last_name', 'LIKE', '%'.$searchParam.'%')
-                                ->orWhere('email', 'LIKE', '%'.$searchParam.'%')
-                                ->orWhere('created_at', 'LIKE', '%'.$searchParam.'%')
-                                ->orWhere('updated_at', 'LIKE', '%'.$searchParam.'%');
-        }
+        //     $users = $users->where('username', 'LIKE', '%'.$searchParam.'%')
+        //                         ->orwhere('first_name', 'LIKE', '%'.$searchParam.'%')
+        //                         ->orWhere('last_name', 'LIKE', '%'.$searchParam.'%')
+        //                         ->orWhere('email', 'LIKE', '%'.$searchParam.'%')
+        //                         ->orWhere('created_at', 'LIKE', '%'.$searchParam.'%')
+        //                         ->orWhere('updated_at', 'LIKE', '%'.$searchParam.'%');
+        // }
 
         $users = $users->paginate(10);
 
@@ -99,18 +112,39 @@ class UserController extends Controller
         if(!$authUser->hasRole('admin'))
         {
             // check if client should be viewable by user
-            $authUser->getClientUsers();
+            $userClients = $authUser->getuserClients();
 
-            $userlist = $user->getClientSpecificUsers();
+            $clientKeys = array();
 
-            $userExists = false;
-            foreach($userlist as $ul)
+            foreach($userClients as $userClient)
             {
-                if($user_param->id == $ul->id)
-                {
-                    $userExists = true;
-                }
+                array_push($clientKeys, $userClient->client_id);
             }
+
+            $clientUsers = DB::table('client_user')
+                            ->select('user_id')
+                            ->whereIn('client_id', $clientKeys)
+                            ->where('user_id', '!=', $user->id)
+                            ->distinct()
+                            ->get();
+            
+            $usersKeys = array();
+
+            foreach($clientUsers as $clientUser) 
+            {
+                array_push($usersKeys, $clientUser->user_id);
+            }
+
+            $users = User::whereIn('id', $usersKeys)->where('id', '!=', $authUser->id)->distinct()->get();
+
+            $clientUserKeys = array();
+
+            foreach($users as $user)
+            {
+                array_push($clientUserKeys, $user->id);
+            }
+
+            $userExists = in_array($user->id, $clientUserKeys);
 
             if(!$userExists)
             {

@@ -74,7 +74,7 @@ class User extends Authenticatable
 
     public function getClientSpecificUsers()
     {
-        $clients = DB::table('client_user')->where('user_id', $this->id)->get();
+        $clients = DB::table('client_user')->where('user_id', $this->id)->where('user_id')->get();
 
         $clientKeys = array();
 
@@ -93,7 +93,7 @@ class User extends Authenticatable
             array_push($userIds, $cu->user_id);
         }
 
-        $users = User::whereIn('id', $userIds)->get();
+        $users = User::whereIn('id', $userIds)->where('id', '!=', $this->id)->get();
 
         return $users;
     }

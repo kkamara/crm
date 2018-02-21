@@ -38,32 +38,37 @@ class ClientController extends Controller
             $userClients = $user->getuserClients();
 
             $clientsKeys = array();
-            
+
             foreach($userClients as $userClient) 
             {
-                $client = Client::where('id', $userClient->client_id)->first();
+                $client = Client::where('id', $userClient->client_id)->get();
 
-                array_push($clientsKeys, $client->id);
+                if(empty($client)) break;
+
+                foreach($client as $c)
+                {
+                    array_push($clientsKeys, $c->id);
+                }
             }
             
             $clients = $clients->whereIn('id', $clientsKeys);
         }
 
-        if(request('search'))
-        {
-            $searchParam = filter_var(request('search'), FILTER_SANITIZE_STRING);
+        // if(request('search'))
+        // {
+        //     $searchParam = filter_var(request('search'), FILTER_SANITIZE_STRING);
 
-            $clients = $clients->where('first_name', 'LIKE', '%'.$searchParam.'%')
-                                ->orWhere('last_name', 'LIKE', '%'.$searchParam.'%')
-                                ->orWhere('company', 'LIKE', '%'.$searchParam.'%')
-                                ->orWhere('email', 'LIKE', '%'.$searchParam.'%')
-                                ->orWhere('contact_number', 'LIKE', '%'.$searchParam.'%')
-                                ->orWhere('building_number', 'LIKE', '%'.$searchParam.'%')
-                                ->orWhere('city', 'LIKE', '%'.$searchParam.'%')
-                                ->orWhere('postcode', 'LIKE', '%'.$searchParam.'%')
-                                ->orWhere('created_at', 'LIKE', '%'.$searchParam.'%')
-                                ->orWhere('updated_at', 'LIKE', '%'.$searchParam.'%');
-        }
+        //     $clients = $clients->where('first_name', 'LIKE', '%'.$searchParam.'%')
+        //                         ->orWhere('last_name', 'LIKE', '%'.$searchParam.'%')
+        //                         ->orWhere('company', 'LIKE', '%'.$searchParam.'%')
+        //                         ->orWhere('email', 'LIKE', '%'.$searchParam.'%')
+        //                         ->orWhere('contact_number', 'LIKE', '%'.$searchParam.'%')
+        //                         ->orWhere('building_number', 'LIKE', '%'.$searchParam.'%')
+        //                         ->orWhere('city', 'LIKE', '%'.$searchParam.'%')
+        //                         ->orWhere('postcode', 'LIKE', '%'.$searchParam.'%')
+        //                         ->orWhere('created_at', 'LIKE', '%'.$searchParam.'%')
+        //                         ->orWhere('updated_at', 'LIKE', '%'.$searchParam.'%');
+        // }
 
         $clients = $clients->paginate(10);
 

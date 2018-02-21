@@ -7,7 +7,7 @@
 @section('content')
 
     <div class="container-fluid main-container">
-        <form method="get" action="{{ route('clientsHome') }}" class="form-inline" style="padding:5px 0px 0px 20px">
+        {{--  <form method="get" action="{{ route('clientsHome') }}" class="form-inline" style="padding:5px 0px 0px 20px">
             {{ csrf_field() }}
             <br>
             <div class="row">
@@ -23,8 +23,8 @@
                     </label>
                 </div>
             </div>
-        </form>
-
+        </form>  --}}
+<br/>
         <div class="text-center">
             Showing {{ $clients->total() }} results
         </div>
