@@ -58,7 +58,7 @@ $u->assignRole('admin'); // roles: 'admin', 'client_admin', 'client_user'
 // assign permissions to the user
 $u->givePermissionTo($string); // replace $string with the name of the permission stored in the database
 </pre></p>
-<p>To be able to view a particular client you will have to insert a user_id and client_id row within the client_user table and ensure your user has the necessary access privileges.</p>
+<p>To be able to view a particular client you will have to access your database and insert a user_id and client_id row within the client_user table and ensure your user has the necessary access privileges.</p>
 
 # Popular APIs Included
 <ul>
