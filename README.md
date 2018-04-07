@@ -66,4 +66,4 @@ $u->givePermissionTo($string); // replace $string with the name of the permissio
   <li><a href="https://developers.google.com/gmail/api/guides/">Gmail API</a></li>
 </ul>
 
-<p>Front end design by <a href="https://prepen.io/j_holtslander/pen/XmpMEp">maridlcrmn & j_holtslander</a>.</p>
+<p>Front end design by <a href="https://codepen.io/j_holtslander/pen/XmpMEp">maridlcrmn & j_holtslander</a>.</p>
