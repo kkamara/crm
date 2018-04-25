@@ -63,6 +63,7 @@
                 <th>Director/Representative</th>
                 <th>Email</th>
                 <th>Created</th>
+                <th>Updated</th>
             </thead>
 
             <tbody>
@@ -73,7 +74,8 @@
                         <td><a href="{{ $client->path() }}">{{ $client->company }}</a></td>
                         <td>{{ $client->name }}</td>
                         <td>{{ $client->email }}</td>
-                        <td>{{ $client->created_at->diffForHumans() }}</td>
+                        <td>{{ $client->created_at->format('Y-m-d') }}</td>
+                        <td>{{ $client->updated_at->format('Y-m-d') }}</td>
                     </tr>
 
                 @empty
