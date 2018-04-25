@@ -397,11 +397,6 @@ class ClientController extends Controller
         }
     }
 
-    public function delete(Client $client)
-    {
-
-    }
-
     /**
      * Remove the specified resource from storage.
      *
@@ -415,9 +410,9 @@ class ClientController extends Controller
         if($user->hasPermissionTo('delete client'))
         {
             // check if client should be viewable by user
-            if($user->isClientAssigned($client->client_id))
+            if($user->isClientAssigned($client->id))
             {
-                if((int)request('delete') === 1)
+                if(request('delete') == 1)
                 {
                     $client->delete();
 

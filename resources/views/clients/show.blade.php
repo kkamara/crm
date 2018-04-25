@@ -24,7 +24,7 @@
                 <strong>Company</strong> :<br> {{ $client->company }}
             </li>
             <li class="list-group-item" style="border: none;">
-                <strong>Name</strong> :<br> 
+                <strong>Name</strong> :<br>
                     @if(!empty($client->first_name) && !empty($client->last_name))
                     {{ $client->first_name.' '.$client->last_name }}
                     @endif
@@ -50,7 +50,7 @@
             <li class="list-group-item" style="border: none">
                 <strong>Created by</strong> :<br> <a href="#">{{ $client->user->name }} </a> at {{ $client->created_at->format('Y-m-D G:i:a') }}
             </li>
-            
+
             @if(strtotime($client->updated_at) != strtotime($client->created_at))
             <li class="list-group-item" style="border: none">
                 <strong>Updated by</strong> :<br> <a href="#">@if(!empty($client->update_by)){{ $client->updated_by->name.' at ' }}@endif</a> {{ $client->updated_at->format('Y-m-D G:i:a') }}
@@ -67,7 +67,7 @@
 <!-- Delete Modal -->
 <div id="deleteModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
-  
+
       <form class="modal-content" method="post" action="{{ route('destroyClient', $client->id) }}">
         {{ csrf_field() }}
         {{ method_field('DELETE') }}
@@ -77,7 +77,7 @@
           <h4 class="modal-title">Delete {{ $client->company }}</h4>
         </div>
         <div class="modal-body">
-          
+
             <div class='form-group'>
                 <label>Are you sure you want to delete this client?
                     <select name="delete" class="form-control">
@@ -97,7 +97,7 @@
             </div>
         </div>
     </form>
-  
+
     </div>
 </div>
 

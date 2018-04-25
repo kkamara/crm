@@ -26,13 +26,11 @@ class LogController extends Controller
 
         if($user->hasPermissionTo('view log'))
         {
+            $logs = Log::orderBy('id', 'desc');
+
             // if not admin then get logs assigned
             // otherwise all logs will be shown
-            if($user->hasRole('admin'))
-            {
-                $logs = Log::orderBy('id', 'desc');
-            }
-            else
+            if(! $user->hasRole('admin'))
             {
                 $userClients = $user->getuserClients();
 
