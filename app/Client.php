@@ -19,7 +19,7 @@ class Client extends Model
     {
         $image = $this->attributes['image'];
         $imagePath = 'uploads/clients/'.$this->attributes['id'].'/'.$image;
-        
+
         if(File::exists(public_path($imagePath)))
         {
             return asset($imagePath);

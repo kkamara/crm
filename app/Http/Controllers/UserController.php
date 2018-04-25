@@ -19,58 +19,32 @@ class UserController extends Controller
     {
         $user = Auth()->user();
 
-        if(!$user->hasPermissionTo('view user'))
+        if($user->hasPermissionTo('view user'))
+        {
+            $users = User::where('id', '!=', $user->id)->orderBy('id', 'desc');
+
+            // filter users based on users assigned to clients connected to
+
+            // if(request('search'))
+            // {
+            //     $searchParam = filter_var(request('search'), FILTER_SANITIZE_STRING);
+
+            //     $users = $users->where('username', 'LIKE', '%'.$searchParam.'%')
+            //                         ->orwhere('first_name', 'LIKE', '%'.$searchParam.'%')
+            //                         ->orWhere('last_name', 'LIKE', '%'.$searchParam.'%')
+            //                         ->orWhere('email', 'LIKE', '%'.$searchParam.'%')
+            //                         ->orWhere('created_at', 'LIKE', '%'.$searchParam.'%')
+            //                         ->orWhere('updated_at', 'LIKE', '%'.$searchParam.'%');
+            // }
+
+            $users = $users->paginate(10);
+
+            return view('users.index', ['title'=>'Users', 'users'=>$users]);
+        }
+        else
         {
             return redirect()->route('Dashboard');
         }
-
-        $users = User::where('id', '!=', $user->id)->orderBy('id', 'desc');
-
-        // if not admin then get users assigned
-        // otherwise all users will be shown
-        if(!$user->hasRole('admin'))
-        {
-            $userClients = $user->getuserClients();
-
-            $clientKeys = array();
-
-            foreach($userClients as $userClient)
-            {
-                array_push($clientKeys, $userClient->client_id);
-            }
-
-            $clientUsers = DB::table('client_user')
-                                ->select('user_id')
-                                ->whereIn('client_id', $clientKeys)
-                                ->where('user_id', '!=', $user->id)
-                                ->distinct()
-                                ->get();
-            
-            $usersKeys = array();
-
-            foreach($clientUsers as $clientUser) 
-            {
-                array_push($usersKeys, $clientUser->user_id);
-            }
-
-            $users = $users->whereIn('id', $usersKeys);
-        }
-
-        // if(request('search'))
-        // {
-        //     $searchParam = filter_var(request('search'), FILTER_SANITIZE_STRING);
-
-        //     $users = $users->where('username', 'LIKE', '%'.$searchParam.'%')
-        //                         ->orwhere('first_name', 'LIKE', '%'.$searchParam.'%')
-        //                         ->orWhere('last_name', 'LIKE', '%'.$searchParam.'%')
-        //                         ->orWhere('email', 'LIKE', '%'.$searchParam.'%')
-        //                         ->orWhere('created_at', 'LIKE', '%'.$searchParam.'%')
-        //                         ->orWhere('updated_at', 'LIKE', '%'.$searchParam.'%');
-        // }
-
-        $users = $users->paginate(10);
-
-        return view('users.index', ['title'=>'Users', 'users'=>$users]);
     }
 
     /**
@@ -104,12 +78,7 @@ class UserController extends Controller
     {
         $authUser = Auth()->user();
 
-        if(!$authUser->hasPermissionTo('view user'))
-        {
-            return redirect()->route('Dashboard');
-        }
-
-        if(!$authUser->hasRole('admin'))
+        if($authUser->hasPermissionTo('view user'))
         {
             // check if client should be viewable by user
             $userClients = $authUser->getuserClients();
@@ -127,10 +96,10 @@ class UserController extends Controller
                             ->where('user_id', '!=', $user->id)
                             ->distinct()
                             ->get();
-            
+
             $usersKeys = array();
 
-            foreach($clientUsers as $clientUser) 
+            foreach($clientUsers as $clientUser)
             {
                 array_push($usersKeys, $clientUser->user_id);
             }
@@ -146,13 +115,19 @@ class UserController extends Controller
 
             $userExists = in_array($user->id, $clientUserKeys);
 
-            if(!$userExists)
+            if($userExists)
+            {
+                return view('users.show', ['title'=>$user->username, 'user'=>$user]);
+            }
+            else
             {
                 return redirect()->route('usersHome')->with('flashError', 'You do not have access to that resource.');
             }
         }
-
-        return view('users.show', ['title'=>$user->username, 'user'=>$user]);
+        else
+        {
+            return redirect()->route('Dashboard');
+        }
     }
 
     /**
