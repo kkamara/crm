@@ -28,62 +28,18 @@ class LogController extends Controller
         {
             $logs = Log::orderBy('id', 'desc');
 
-            // if not admin then get logs assigned
-            // otherwise all logs will be shown
-            if(! $user->hasRole('admin'))
+            $userClients = $user->getuserClients();
+
+            $logsKeys = array();
+
+            foreach($userClients as $userClient)
             {
-                $userClients = $user->getuserClients();
+                $log = Log::distinct()->select('id')->where('client_id', $userClient->client_id)->first();
 
-                $logsKeys = array();
-
-                foreach($userClients as $userClient)
-                {
-                    $log = Log::distinct()->select('id')->where('client_id', $userClient->client_id)->first();
-
-                    array_push($logsKeys, $log->id);
-                }
-
-                $logs = $logs->whereIn('client_id', $logsKeys);
+                array_push($logsKeys, $log->id);
             }
 
-            if(request('title') || request('desc') || request('body') || request('created_at') || request('updated_at'))
-            {
-                $searchParam = filter_var(request('search'), FILTER_SANITIZE_STRING);
-
-                if(request('title'))
-                {
-                    $logs = $logs->where('title', 'like', '%'.$searchParam.'%');
-                }
-                if(request('desc'))
-                {
-                    $logs = $logs->where('description', 'like', '%'.$searchParam.'%');
-                }
-                if(request('body'))
-                {
-                    $logs = $logs->where('body', 'like', '%'.$searchParam.'%');
-                }
-                if(request('created_at'))
-                {
-                    $logs = $logs->whereDate('created_at', 'like', '%'.$searchParam.'%');
-                }
-                if(request('updated_at'))
-                {
-                    $logs = $logs->whereDate('updated_at', 'like', '%'.$searchParam.'%');
-                }
-            }
-            else
-            {
-                if(request('search'))
-                {
-                    $searchParam = filter_var(request('search'), FILTER_SANITIZE_STRING);
-
-                    $logs = $logs->where('title', 'like', '%'.$searchParam.'%')
-                                    ->orWhere('description', 'like', '%'.$searchParam.'%')
-                                    ->orWhere('body', 'like', '%'.$searchParam.'%')
-                                    ->orWhere('created_at', 'like', '%'.$searchParam.'%')
-                                    ->orWhere('updated_at', 'like', '%'.$searchParam.'%');
-                }
-            }
+            $logs = $logs->whereIn('client_id', $logsKeys)->search();
 
             $logs = $logs->paginate(10);
 

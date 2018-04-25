@@ -7,9 +7,36 @@
 @section('content')
 
     <div class="container-fluid main-container">
-        {{--  <form method="get" action="{{ route('clientsHome') }}" class="form-inline" style="padding:5px 0px 0px 20px">
+        <form method="get" action="{{ route('clientsHome') }}" class="form-inline" style="padding:5px 0px 0px 20px">
             {{ csrf_field() }}
-            <br>
+
+            <div class="row">
+                <div class="form-group">
+                    <label>Company
+                        <input name="company" type="checkbox">&nbsp;&nbsp;
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>Representative
+                        <input name="representative" type="checkbox">&nbsp;&nbsp;
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>Email
+                        <input name="email" type="checkbox">&nbsp;&nbsp;
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>Created at
+                        <input name="created_at" type="checkbox">&nbsp;&nbsp;
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>Updated at
+                        <input name="updated_at" type="checkbox">&nbsp;&nbsp;
+                    </label>
+                </div>
+            </div>
             <div class="row">
                 <div class="form-group">
                     <label>
@@ -23,12 +50,12 @@
                     </label>
                 </div>
             </div>
-        </form>  --}}
-<br/>
+        </form>
+
         <div class="text-center">
             Showing {{ $clients->total() }} results
         </div>
-        
+
         <table class="table {{ count($clients) == 0 ? 'hide' : '' }}">
 
             <thead>

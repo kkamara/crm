@@ -62,4 +62,58 @@ class Client extends Model
 
         return $this->save() ? TRUE : FALSE;
     }
+
+    public function scopeSearch($query)
+    {
+        if(request('company') || request('representative') || request('email') || request('created_at') || request('updated_at'))
+        {
+            $searchParam = filter_var(request('search'), FILTER_SANITIZE_STRING);
+
+            if(request('company'))
+            {
+                $query = $query->where('company', 'like', '%'.$searchParam.'%');
+            }
+            if(request('representative'))
+            {
+                $fullName = explode(' ', $searchParam);
+
+                if(sizeof($fullName) == 2)
+                {
+                    $query = $query->where('first_name', 'like', '%'.$fullName[0].'%');
+                    $query = $query->where('last_name', 'like', '%'.$fullName[1].'%');
+                }
+                else
+                {
+                    $query = $query->where('first_name', 'like', '%'.$fullName[0].'%');
+                }
+            }
+            if(request('email'))
+            {
+                $query = $query->where('email', 'like', '%'.$searchParam.'%');
+            }
+            if(request('created_at'))
+            {
+                $query = $query->whereDate('created_at', 'like', '%'.$searchParam.'%');
+            }
+            if(request('updated_at'))
+            {
+                $query = $query->whereDate('updated_at', 'like', '%'.$searchParam.'%');
+            }
+        }
+        else
+        {
+            if(request('search'))
+            {
+                $searchParam = filter_var(request('search'), FILTER_SANITIZE_STRING);
+
+                $query = $query->where('company', 'like', '%'.$searchParam.'%')
+                                ->orWhere('first_name', 'like', '%'.$searchParam.'%')
+                                ->orWhere('last_name', 'like', '%'.$searchParam.'%')
+                                ->orWhere('created_at', 'like', '%'.$searchParam.'%')
+                                ->orWhere('updated_at', 'like', '%'.$searchParam.'%');
+            }
+        }
+
+        return $query;
+    }
 }

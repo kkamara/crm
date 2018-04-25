@@ -37,8 +37,7 @@ class Log extends Model
         $validator = Validator::make($request->all(), [
             'title' => 'required|max:191|min:5',
             'description'  => 'required|min:20',
-            'body'  => 'required|min:20',
-            'user_modified' => 'required|exists:users,id',
+            'body'  => 'required|min:20'
         ]);
 
         return $validator->errors()->all();
@@ -50,7 +49,6 @@ class Log extends Model
         $data['title']         = request('title');
         $data['description']   = request('description');
         $data['body']          = request('body');
-        $data['user_modified'] = request('user_modified');
         $data['notes']         = request('notes');
 
         return $data;
@@ -58,15 +56,15 @@ class Log extends Model
 
     public function updateLog($data)
     {
+        $this->user_modified = auth()->user()->id;
         $this->title         = trim(filter_var($data['title'], FILTER_SANITIZE_STRING));
         $this->description   = trim(filter_var($data['description'], FILTER_SANITIZE_STRING));
         $this->body          = trim(filter_var($data['body'], FILTER_SANITIZE_STRING));
         $this->notes         = trim(filter_var($data['notes'], FILTER_SANITIZE_STRING));
-        $this->user_modified = $data['user_modified'];
-        
+
         return ($this->save()) ? TRUE : FALSE;
     }
-    
+
     public function getDescriptionAttribute()
     {
         return nl2br(e($this->attributes['description']));
@@ -81,7 +79,7 @@ class Log extends Model
     {
         return nl2br(e($this->attributes['notes']));
     }
-    
+
     public function getEditDescriptionAttribute()
     {
         $desc = str_replace('<br/>', '', $this->attributes['description']);
@@ -108,5 +106,49 @@ class Log extends Model
         $desc = str_replace('<br/>', '', $this->attributes['description']);
 
         return strlen($desc) > 300 ? substr($desc,0,299).'...' : $desc;
+    }
+
+    public function scopeSearch($query)
+    {
+        if(request('title') || request('desc') || request('body') || request('created_at') || request('updated_at'))
+        {
+            $searchParam = filter_var(request('search'), FILTER_SANITIZE_STRING);
+
+            if(request('title'))
+            {
+                $query = $query->where('title', 'like', '%'.$searchParam.'%');
+            }
+            if(request('desc'))
+            {
+                $query = $query->where('description', 'like', '%'.$searchParam.'%');
+            }
+            if(request('body'))
+            {
+                $query = $query->where('body', 'like', '%'.$searchParam.'%');
+            }
+            if(request('created_at'))
+            {
+                $query = $query->whereDate('created_at', 'like', '%'.$searchParam.'%');
+            }
+            if(request('updated_at'))
+            {
+                $query = $query->whereDate('updated_at', 'like', '%'.$searchParam.'%');
+            }
+        }
+        else
+        {
+            if(request('search'))
+            {
+                $searchParam = filter_var(request('search'), FILTER_SANITIZE_STRING);
+
+                $query = $query->where('title', 'like', '%'.$searchParam.'%')
+                                ->orWhere('description', 'like', '%'.$searchParam.'%')
+                                ->orWhere('body', 'like', '%'.$searchParam.'%')
+                                ->orWhere('created_at', 'like', '%'.$searchParam.'%')
+                                ->orWhere('updated_at', 'like', '%'.$searchParam.'%');
+            }
+        }
+
+        return $query;
     }
 }

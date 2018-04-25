@@ -44,7 +44,7 @@ class ClientController extends Controller
                 }
             }
 
-            $clients = $clients->whereIn('id', $clientsKeys);
+            $clients = $clients->whereIn('id', $clientsKeys)->search();
 
             $clients = $clients->paginate(10);
 
