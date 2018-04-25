@@ -13,12 +13,14 @@
 <div class="container-fluid main-container">
 
     <div class="row">
-        
+
         @include('layouts.errors')
 
         <form method="post" action="{{ route('updateLog', $log->id) }}" class="form col-md-8 col-md-offset-2">
             {{ method_field('PATCH') }}
             {{ csrf_field() }}
+
+            <input type="hidden" name="user_modified" value="{{ auth()->user()->id }}">
 
             <div class="form-group">
                 <label>Title :

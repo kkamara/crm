@@ -309,7 +309,7 @@ class ClientController extends Controller
 
         if($user->hasPermissionTo('edit client'))
         {
-            if($user->isClientAssigned($client->client_id))
+            if($user->isClientAssigned($client->id))
             {
                 return view('clients.edit', [
                     'title'=>'Edit '.$client->company,
