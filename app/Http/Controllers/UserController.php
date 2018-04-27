@@ -23,21 +23,16 @@ class UserController extends Controller
         {
             $users = User::where('id', '!=', $user->id)->orderBy('id', 'desc');
 
-            // filter users based on users assigned to clients connected to
+            $clientUsers = $user->getClientUsers();
 
-            // if(request('search'))
-            // {
-            //     $searchParam = filter_var(request('search'), FILTER_SANITIZE_STRING);
+            $userIds = array();
 
-            //     $users = $users->where('username', 'LIKE', '%'.$searchParam.'%')
-            //                         ->orwhere('first_name', 'LIKE', '%'.$searchParam.'%')
-            //                         ->orWhere('last_name', 'LIKE', '%'.$searchParam.'%')
-            //                         ->orWhere('email', 'LIKE', '%'.$searchParam.'%')
-            //                         ->orWhere('created_at', 'LIKE', '%'.$searchParam.'%')
-            //                         ->orWhere('updated_at', 'LIKE', '%'.$searchParam.'%');
-            // }
+            foreach($clientUsers as $u)
+            {
+                array_push($userIds, $u->id);
+            }
 
-            $users = $users->search($request->all())->paginate(10);
+            $users = $users->whereIn('id', $userIds)->search($request->all())->paginate(10);
 
             return view('users.index', ['title'=>'Users', 'users'=>$users]);
         }

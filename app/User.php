@@ -58,13 +58,29 @@ class User extends Authenticatable
 
     public function getClientUsers()
     {
+        // get client ids user is assigned to
         $userClients = DB::table('client_user')->select('client_id', 'user_id')->where('user_id', $this->id)->get();
 
-        $userIds = array();
+        // store client ids
+        $clientIds = array();
 
         foreach($userClients as $userClient)
         {
-            array_push($userIds, $userClient->user_id);
+            array_push($clientIds, $userClient->client_id);
+        }
+
+        // query client users again to get all user ids except user currently logged in
+        $clientUsers = DB::table('client_user')->where('user_id', '!=', $this->id)->get();
+
+        // get unique users assigned to clients
+        $userIds = array();
+
+        foreach($clientUsers as $clientUser)
+        {
+            if(! in_array($clientUser->user_id, $userIds))
+            {
+                array_push($userIds, $clientUser->user_id);
+            }
         }
 
         $clientUsers = User::whereIn('id', $userIds)->orderBy('first_name', 'ASC')->get();
