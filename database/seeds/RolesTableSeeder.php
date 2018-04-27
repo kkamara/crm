@@ -29,7 +29,7 @@ class RolesTableSeeder extends Seeder
         // Assign client admin role permissions
         $clientAdminRole->givePermissionTo([
             'create log', 'edit log', 'delete log', 'view log',
-            'edit client',
+            'edit client', 'view client',
             'create user', 'edit user', 'delete user', 'view user'
         ]);
 
@@ -39,7 +39,8 @@ class RolesTableSeeder extends Seeder
         // Assign Client User role permissions
         $clientUserRole->givePermissionTo([
             'create log', 'edit log', 'view log',
-            'view user'
+            'view client',
+            'view user',
         ]);
 
     }

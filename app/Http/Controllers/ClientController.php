@@ -67,23 +67,12 @@ class ClientController extends Controller
 
         if($user->hasPermissionTo('create client'))
         {
-            if($user->hasRole('admin'))
-            {
-                $userList = $user->getAllUsers();
-            }
-            // if role = client admin show users for clients user is assigned to
-            elseif($user->hasRole('client_admin'))
-            {
-                $userList = $user->getClientUsers();
-            }
-            else
-            {
-                $userList = array($user);
-            }
+            $users = $user->getClientUsers();
+
             // if role = client user or no role show only themselves
             return view('clients.create', [
                 'title'=>'Create Client',
-                'users' => $userList
+                'users' => $users
             ]);
         }
         else
@@ -125,43 +114,24 @@ class ClientController extends Controller
                 // check if user have access to users provided in client_users field
                 $hasAccessToClientUser = true;
 
-                if($user->hasRole('admin'))
+                $users = $user->getClientUsers();
+
+                $userIds = array();
+
+                foreach($users as $u)
                 {
-                    //
+                    array_push($userIds, $u->id);
                 }
-                else
+
+                // check if authenticated user has permission to assign user to client
+
+                $validatedClientUsers = array_intersect($userIds, request('client_users'));
+
+                for($i=0;$i<count(request('client_users'));$i++)
                 {
-                    if($user->hasRole('client_admin'))
+                    if(!in_array(request('client_users')[$i], $validatedClientUsers))
                     {
-                        $userList = $user->getClientUsers();
-
-                        $userIds = array();
-
-                        foreach($userList as $u)
-                        {
-                            array_push($userIds, $u->id);
-                        }
-
-                        // check if authenticated user has permission to assign user to client
-
-                        $validatedClientUsers = array_intersect($userIds, request('client_users'));
-
-                        $hasAccessToClientUser = true;
-
-                        for($i=0;$i<count(request('client_users'));$i++)
-                        {
-                            if(!in_array(request('client_users')[$i], $validatedClientUsers))
-                            {
-                                $hasAccessToClientUser = false;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if(request('client_users')[0] != $user->id || count(request('client_users')))
-                        {
-                            $hasAccessToClientUser = false;
-                        }
+                        $hasAccessToClientUser = false;
                     }
                 }
 
@@ -216,54 +186,31 @@ class ClientController extends Controller
                 }
                 else
                 {
-                    if(!$user->hasPermissionTo('create client')) return redirect()->route('Dashboard');
+                    if($user->hasPermissionTo('create client'))
+                    {
+                        $users = $user->getClientUsers();
 
-                    // if role = admin show all users
-                    if($user->hasRole('admin'))
-                    {
-                        $userList = $user->getAllUsers();
+                        return view('clients.create', [
+                            'title'=>'Create Client',
+                            'users' => $users,
+                            'input' => $request->input(),
+                        ]);
                     }
-                    // if role = client admin show users for clients user is assigned to
-                    elseif($user->hasRole('client_admin'))
-                    {
-                        $userList = $user->getClientUsers();
-                    }
-                    // if role = client user or no role show only themselves
                     else
                     {
-                        $userList = array($user);
+                        return redirect()->route('Dashboard');
                     }
-
-                    return view('clients.create', [
-                        'title'=>'Create Client',
-                        'users' => $userList,
-                        'input' => $request->input(),
-                    ]);
                 }
             }
             else
             {
-                // if role = admin show all users
-                if($user->hasRole('admin'))
-                {
-                    $userList = $user->getAllUsers();
-                }
-                // if role = client admin show users for clients user is assigned to
-                elseif($user->hasRole('client_admin'))
-                {
-                    $userList = $user->getClientUsers();
-                }
-                // if role = client user or no role show only themselves
-                else
-                {
-                    $userList = array($user);
-                }
+                $users = $user->getClientUsers();
 
                 return view('clients.create', [
                     'title'=>'Create Client',
                     'errors'=>$validator->errors()->all(),
                     'input' => $request->input(),
-                    'users' => $userList,
+                    'users' => $users,
                 ]);
             }
         }
