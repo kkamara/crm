@@ -27,14 +27,16 @@ $factory->define(App\User::class, function (Faker $faker) {
 });
 
 $factory->define(App\Client::class, function (Faker $faker) {
+    $company = $faker->unique()->company;
 
     return [
+        'slug' => strtolower(str_slug($company, '-')),
         'first_name' => $faker->firstName,
         'last_name' => $faker->lastName,
         'user_created' => function() {
             return factory(App\User::class)->create()->id;
         },
-        'company' => $faker->unique()->company,
+        'company' => $company,
         'contact_number' => $faker->phonenumber,
         'building_number' => $faker->buildingnumber,
         'city' => $faker->city,
@@ -45,6 +47,7 @@ $factory->define(App\Client::class, function (Faker $faker) {
 });
 
 $factory->define(App\Log::class, function (Faker $faker) {
+    $title = $faker->name;
 
     return [
         'client_id' => function() {
@@ -55,7 +58,8 @@ $factory->define(App\Log::class, function (Faker $faker) {
 
             return factory(App\User::class)->create()->id;
         },
-        'title' => $faker->name,
+        'slug' => strtolower(str_slug($title, '-')),
+        'title' => $title,
         'description' => $faker->paragraph,
         'body' => $faker->paragraph,
         'notes' => $faker->paragraph,

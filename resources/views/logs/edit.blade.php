@@ -16,7 +16,7 @@
 
         @include('layouts.errors')
 
-        <form method="post" action="{{ route('updateLog', $log->id) }}" class="form col-md-8 col-md-offset-2">
+        <form method="post" action="{{ route('updateLog', $log->slug) }}" class="form col-md-8 col-md-offset-2">
             {{ method_field('PATCH') }}
             {{ csrf_field() }}
 

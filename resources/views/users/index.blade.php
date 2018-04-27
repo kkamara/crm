@@ -7,9 +7,36 @@
 @section('content')
 
     <div class="container-fluid main-container">
-        {{--  <form method="get" action="{{ route('usersHome') }}" class="form-inline" style="padding:5px 0px 0px 20px">
+        <form method="get" action="{{ route('usersHome') }}" class="form-inline" style="padding:5px 0px 0px 20px">
             {{ csrf_field() }}
-            <br/>
+
+            <div class="row">
+                <div class="form-group">
+                    <label>Username
+                        <input name="username" type="checkbox">&nbsp;&nbsp;
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>Name
+                        <input name="name" type="checkbox">&nbsp;&nbsp;
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>Email
+                        <input name="email" type="checkbox">&nbsp;&nbsp;
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>Created at
+                        <input name="created_at" type="checkbox">&nbsp;&nbsp;
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>Updated at
+                        <input name="updated_at" type="checkbox">&nbsp;&nbsp;
+                    </label>
+                </div>
+            </div>
             <div class="row">
                 <div class="form-group">
                     <label>
@@ -23,17 +50,17 @@
                     </label>
                 </div>
             </div>
-        </form>  --}}
+        </form>
 <br/>
         <div class="text-center">
             Showing {{ $users->total() }} results
         </div>
-        
+
         <table class="table {{ count($users) == 0 ? 'hide' : '' }}">
 
             <thead>
                 <th>Username</th>
-                <th>Full Name</th>
+                <th>Name</th>
                 <th>Email</th>
                 <th>Created</th>
                 <th>Updated</th>

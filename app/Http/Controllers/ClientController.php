@@ -20,7 +20,7 @@ class ClientController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth()->user();
 
@@ -44,7 +44,7 @@ class ClientController extends Controller
                 }
             }
 
-            $clients = $clients->whereIn('id', $clientsKeys)->search();
+            $clients = $clients->whereIn('id', $clientsKeys)->search($request->all());
 
             $clients = $clients->paginate(10);
 
@@ -174,11 +174,14 @@ class ClientController extends Controller
                         $imageName = $file->getClientOriginalName();
                     }
 
+                    $company = filter_var(request('company'), FILTER_SANITIZE_STRING);
+
                     $client = Client::create([
                         'user_created' => auth()->user()->id,
+                        'slug' => strtolower(str_slug($company, '-')),
                         'first_name' => !empty(request('first_name')) ? filter_var(request('first_name'), FILTER_SANITIZE_STRING) : NULL,
                         'last_name' => !empty(request('last_name')) ? filter_var(request('last_name'), FILTER_SANITIZE_STRING) : NULL,
-                        'company' => filter_var(request('company'), FILTER_SANITIZE_STRING),
+                        'company' => $company,
                         'email' => filter_var(request('email'), FILTER_SANITIZE_EMAIL),
                         'building_number' => filter_var(request('building_number'), FILTER_SANITIZE_STRING),
                         'street_name' => filter_var(request('street_name'), FILTER_SANITIZE_STRING),
@@ -276,24 +279,33 @@ class ClientController extends Controller
      * @param  \App\Client  $client
      * @return \Illuminate\Http\Response
      */
-    public function show(Client $client)
+    public function show($clientSlug)
     {
-        $user = Auth()->user();
+        $client = Client::where('slug', $clientSlug)->first();
 
-        if($user->hasPermissionTo('view client'))
+        if($client !== null)
         {
-            if($user->isClientAssigned($client->id))
+            $user = Auth()->user();
+
+            if($user->hasPermissionTo('view client'))
             {
-                return view('clients.show', ['title'=>$client->company, 'client'=>$client]);
+                if($user->isClientAssigned($client->id))
+                {
+                    return view('clients.show', ['title'=>$client->company, 'client'=>$client]);
+                }
+                else
+                {
+                    return redirect()->route('clientsHome')->with('flashError', 'You do not have access to that resource.');
+                }
             }
             else
             {
-                return redirect()->route('clientsHome')->with('flashError', 'You do not have access to that resource.');
+                return redirect()->route('Dashboard');
             }
         }
         else
         {
-            return redirect()->route('Dashboard');
+            return redirect()->route('clientsHome')->with('flashError', 'Resource not found.');
         }
     }
 
@@ -303,27 +315,36 @@ class ClientController extends Controller
      * @param  \App\Client  $client
      * @return \Illuminate\Http\Response
      */
-    public function edit(Client $client)
+    public function edit($clientSlug)
     {
-        $user = Auth()->user();
+        $client = Client::where('slug', $clientSlug)->first();
 
-        if($user->hasPermissionTo('edit client'))
+        if($client !== null)
         {
-            if($user->isClientAssigned($client->id))
+            $user = Auth()->user();
+
+            if($user->hasPermissionTo('edit client'))
             {
-                return view('clients.edit', [
-                    'title'=>'Edit '.$client->company,
-                    'client' => $client,
-                ]);
+                if($user->isClientAssigned($client->id))
+                {
+                    return view('clients.edit', [
+                        'title'=>'Edit '.$client->company,
+                        'client' => $client,
+                    ]);
+                }
+                else
+                {
+                    return redirect()->route('clientsHome')->with('flashError', 'You do not have access to that resource.');
+                }
             }
             else
             {
-                return redirect()->route('clientsHome')->with('flashError', 'You do not have access to that resource.');
+                return redirect()->route('Dashboard');
             }
         }
         else
         {
-            return redirect()->route('Dashboard');
+            return redirect()->route('clientsHome')->with('flashError', 'Resource not found.');
         }
     }
 
@@ -334,66 +355,92 @@ class ClientController extends Controller
      * @param  \App\Client  $client
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Client $client)
+    public function update(Request $request, $clientSlug)
     {
-        $user = Auth()->user();
+        $client = Client::where('slug', $clientSlug)->first();
 
-        if($user->hasPermissionTo('edit client'))
+        if($client !== null)
         {
-            if($user->isClientAssigned($client->id))
+            $user = Auth()->user();
+
+            if($user->hasPermissionTo('edit client'))
             {
-                $validator = Validator::make($request->all(), [
-                    'first_name' => 'max:191',
-                    'last_name' => 'max:191',
-                    'email' => 'required|email|max:191',
-                    'building_number' => 'required|max:191',
-                    'street_name' => 'required|max:191',
-                    'city' => 'required|max:191',
-                    'postcode' => 'required|max:191',
-                    // optional
-                    'contact_number' => 'max:191',
-                    'image' => 'image',
-                ]);
-
-                if(empty($validator->errors()->all()))
+                if($user->isClientAssigned($client->id))
                 {
-                    $imageName = null;
-
-                    // get image name
-                    if(Input::hasFile('image'))
+                    if(request('image') !== null)
                     {
-                        $file = Input::file('image');
-                        $imageName = $file->getClientOriginalName();
+                        $validator = Validator::make($request->all(), [
+                            'first_name' => 'max:191',
+                            'last_name' => 'max:191',
+                            'email' => 'required|email|max:191',
+                            'building_number' => 'required|max:191',
+                            'street_name' => 'required|max:191',
+                            'city' => 'required|max:191',
+                            'postcode' => 'required|max:191',
+                            // optional
+                            'contact_number' => 'max:191',
+                            'image' => 'image',
+                        ]);
+                    }
+                    else
+                    {
+                        $validator = Validator::make($request->all(), [
+                            'first_name' => 'max:191',
+                            'last_name' => 'max:191',
+                            'email' => 'required|email|max:191',
+                            'building_number' => 'required|max:191',
+                            'street_name' => 'required|max:191',
+                            'city' => 'required|max:191',
+                            'postcode' => 'required|max:191',
+                            // optional
+                            'contact_number' => 'max:191'
+                        ]);
+                    }
+
+                    if(empty($validator->errors()->all()))
+                    {
+                        $imageName = null;
+
+                        // get image name
+                        if(Input::hasFile('image'))
+                        {
+                            $file = Input::file('image');
+                            $imageName = $file->getClientOriginalName();
+                        }
 
                         $client->updateClient($imageName);
-                    }
 
-                    // store image file if provided
-                    if(isset($file) && isset($imageName))
+                        // store image file if provided
+                        if(isset($file) && isset($imageName))
+                        {
+                            $file->move(public_path('uploads/clients/'.$client->id), $imageName);
+                        }
+
+                        return redirect()->route('showClient', $client->slug);
+                    }
+                    else
                     {
-                        $file->move(public_path('uploads/clients/'.$client->id), $imageName);
+                        return view('clients.edit', [
+                            'title' => 'Edit '.$client->company,
+                            'errors' => $validator->errors()->all(),
+                            'input' => $request->input(),
+                            'client' => $client,
+                        ]);
                     }
-
-                    return redirect()->route('clientsHome');
                 }
                 else
                 {
-                    return view('clients.edit', [
-                        'title' => 'Edit '.$client->company,
-                        'errors' => $validator->errors()->all(),
-                        'input' => $request->input(),
-                        'client' => $client,
-                    ]);
+                    return redirect()->route('clientsHome')->with('flashError', 'You do not have access to that resource.');
                 }
             }
             else
             {
-                return redirect()->route('clientsHome')->with('flashError', 'You do not have access to that resource.');
+                return redirect()->route('Dashboard');
             }
         }
         else
         {
-            return redirect()->route('Dashboard');
+            return redirect()->route('clientsHome')->with('flashError', 'Resource not found.');
         }
     }
 
@@ -403,34 +450,43 @@ class ClientController extends Controller
      * @param  \App\Client  $client
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Client $client)
+    public function destroy($clientSlug)
     {
-        $user = Auth()->user();
+        $client = Client::where('slug', $clientSlug)->first();
 
-        if($user->hasPermissionTo('delete client'))
+        if($client !== null)
         {
-            // check if client should be viewable by user
-            if($user->isClientAssigned($client->id))
-            {
-                if(request('delete') == 1)
-                {
-                    $client->delete();
+            $user = Auth()->user();
 
-                    return redirect('/clients')->with('flashSuccess', 'Client successfully deleted.');
+            if($user->hasPermissionTo('delete client'))
+            {
+                // check if client should be viewable by user
+                if($user->isClientAssigned($client->id))
+                {
+                    if(request('delete') == 1)
+                    {
+                        $client->delete();
+
+                        return redirect('/clients')->with('flashSuccess', 'Client successfully deleted.');
+                    }
+                    else
+                    {
+                        return redirect()->route('showClient', $client->slug);
+                    }
                 }
                 else
                 {
-                    return redirect()->route('showClient', $client->id);
+                    return redirect()->route('clientsHome')->with('flashError', 'You do not have access to that resource.');
                 }
             }
             else
             {
-                return redirect()->route('clientsHome')->with('flashError', 'You do not have access to that resource.');
+                return redirect()->route('Dashboard');
             }
         }
         else
         {
-            return redirect()->route('Dashboard');
+            return redirect()->route('clientsHome')->with('flashError', 'Resource not found.');
         }
     }
 }

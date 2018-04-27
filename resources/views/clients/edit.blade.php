@@ -13,10 +13,10 @@
 <div class="container-fluid main-container">
 
     <div class="row">
-        
+
         @include('layouts.errors')
 
-        <form method="post" action="{{ route('updateClient', $client->id) }}" class="form col-md-4 col-md-offset-4" enctype="multipart/form-data">
+        <form method="post" action="{{ route('updateClient', $client->slug) }}" class="form col-md-4 col-md-offset-4" enctype="multipart/form-data">
             {{ method_field('PATCH') }}
             {{ csrf_field() }}
 

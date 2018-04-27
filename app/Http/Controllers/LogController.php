@@ -20,7 +20,7 @@ class LogController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth()->user();
 
@@ -39,7 +39,7 @@ class LogController extends Controller
                 array_push($logsKeys, $log->id);
             }
 
-            $logs = $logs->whereIn('client_id', $logsKeys)->search();
+            $logs = $logs->whereIn('client_id', $logsKeys)->search($request->all());
 
             $logs = $logs->paginate(10);
 
@@ -94,10 +94,12 @@ class LogController extends Controller
                 {
                     if(empty($validator->errors()->all()))
                     {
+                        $title = filter_var(request('title'), FILTER_SANITIZE_STRING);
                         Log::create([
+                            'slug' => strtolower(str_slug($title, '-')),
                             'client_id' => request('client_id'),
                             'user_created' => $user->id,
-                            'title' => filter_var(request('title'), FILTER_SANITIZE_STRING),
+                            'title' => $title,
                             'description' => filter_var(request('description'), FILTER_SANITIZE_STRING),
                             'body' => filter_var(request('body'), FILTER_SANITIZE_STRING),
                             'notes' => !empty(request('notes')) ? filter_var(request('notes', FILTER_SANITIZE_STRING)) : NULL
@@ -144,25 +146,34 @@ class LogController extends Controller
      * @param  \App\Log  $log
      * @return \Illuminate\Http\Response
      */
-    public function show(Log $log)
+    public function show($logSlug)
     {
-        $user = Auth()->user();
+        $log = Log::where('slug', $logSlug)->first();
 
-        if($user->hasPermissionTo('view log'))
+        if($log !== null)
         {
-            // check if log should be viewable by user
-            if($user->isClientAssigned($log->client_id))
+            $user = Auth()->user();
+
+            if($user->hasPermissionTo('view log'))
             {
-                return view('logs.show', ['title'=>$log->title, 'log'=>$log]);
+                // check if log should be viewable by user
+                if($user->isClientAssigned($log->client_id))
+                {
+                    return view('logs.show', ['title'=>$log->title, 'log'=>$log]);
+                }
+                else
+                {
+                    return redirect()->route('logsHome')->with('flashError', 'You do not have access to that resource.');
+                }
             }
             else
             {
-                return redirect()->route('logsHome')->with('flashError', 'You do not have access to that resource.');
+                return redirect()->route('Dashboard');
             }
         }
         else
         {
-            return redirect()->route('Dashboard');
+            return redirect()->route('logsHome')->with('flashError', 'Resource not found.');
         }
     }
 
@@ -172,27 +183,36 @@ class LogController extends Controller
      * @param  \App\Log  $log
      * @return \Illuminate\Http\Response
      */
-    public function edit(Log $log)
+    public function edit($logSlug)
     {
-        $user = Auth()->user();
+        $log = Log::where('slug', $logSlug)->first();
 
-        if($user->hasPermissionTo('edit log'))
+        if($log !== null)
         {
-            // check if log should be viewable by user
-            if($user->isClientAssigned($log->client_id))
+            $user = Auth()->user();
+
+            if($user->hasPermissionTo('edit log'))
             {
-                return view('logs.edit')
-                    ->withTitle('Edit '.$log->title)
-                    ->withLog($log);
+                // check if log should be viewable by user
+                if($user->isClientAssigned($log->client_id))
+                {
+                    return view('logs.edit')
+                        ->withTitle('Edit '.$log->title)
+                        ->withLog($log);
+                }
+                else
+                {
+                    return redirect()->route('logsHome')->with('flashError', 'You do not have access to that resource.');
+                }
             }
             else
             {
-                return redirect()->route('logsHome')->with('flashError', 'You do not have access to that resource.');
+                return redirect()->route('Dashboard');
             }
         }
         else
         {
-            return redirect()->route('Dashboard');
+            return redirect()->route('clientsHome')->with('flashError', 'Resource not found.');
         }
     }
 
@@ -203,67 +223,85 @@ class LogController extends Controller
      * @param  \App\Log  $log
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Log $log)
+    public function update(Request $request, $logSlug)
     {
-        $user = Auth()->user();
+        $log = Log::where('slug', $logSlug)->first();
 
-        if($user->hasPermissionTo('edit log'))
+        if($log !== null)
         {
-            // check if log should be viewable by user
-            if($user->isClientAssigned($log->client_id))
+            $user = Auth()->user();
+
+            if($user->hasPermissionTo('edit log'))
             {
-                $errors = $log->validationErrors($request);
-
-                if(empty($errors))
+                // check if log should be viewable by user
+                if($user->isClientAssigned($log->client_id))
                 {
-                    $data = $log->parseData($request);
+                    $errors = $log->validationErrors($request);
 
-                    $update = $log->updateLog($data);
+                    if(empty($errors))
+                    {
+                        $data = $log->parseData($request);
 
-                    return redirect('/logs/'.$log->id)->with('flashSuccess', 'Log successfully updated.');
+                        $update = $log->updateLog($data);
+
+                        return redirect('/logs/'.$log->id)->with('flashSuccess', 'Log successfully updated.');
+                    }
+                    else
+                    {
+                        return view('logs.edit', [
+                            'title' => 'Edit '.$log->title,
+                            'log' => $log,
+                            'errors' => $errors,
+                        ]);
+                    }
                 }
                 else
                 {
-                    return view('logs.edit', [
-                        'title' => 'Edit '.$log->title,
-                        'log' => $log,
-                        'errors' => $errors,
-                    ]);
+                    return redirect()->route('logsHome')->with('flashError', 'You do not have access to that resource.');
                 }
             }
             else
             {
-                return redirect()->route('logsHome')->with('flashError', 'You do not have access to that resource.');
+                return redirect()->route('Dashboard');
             }
         }
         else
         {
-            return redirect()->route('Dashboard');
+            return redirect()->route('clientsHome')->with('flashError', 'Resource not found.');
         }
     }
 
-    public function delete(Log $log)
+    public function delete($logSlug)
     {
-        $user = Auth()->user();
+        $log = Log::where('slug', $logSlug)->first();
 
-        if($user->hasPermissionTo('delete log'))
+        if($log !== null)
         {
-            // check if log should be viewable by user
-            if($user->isClientAssigned($log->client_id))
+            $user = Auth()->user();
+
+            if($user->hasPermissionTo('delete log'))
             {
-                return view('logs.delete', [
-                    'title'=>'Delete '.$log->title,
-                    'log'  => $log
-                ]);
+                // check if log should be viewable by user
+                if($user->isClientAssigned($log->client_id))
+                {
+                    return view('logs.delete', [
+                        'title'=>'Delete '.$log->title,
+                        'log'  => $log
+                    ]);
+                }
+                else
+                {
+                    return redirect()->route('logsHome')->with('flashError', 'You do not have access to that resource.');
+                }
             }
             else
             {
-                return redirect()->route('logsHome')->with('flashError', 'You do not have access to that resource.');
+                return redirect()->route('Dashboard');
             }
         }
         else
         {
-            return redirect()->route('Dashboard');
+            return redirect()->route('clientsHome')->with('flashError', 'Resource not found.');
         }
     }
 
@@ -291,7 +329,7 @@ class LogController extends Controller
             }
             else
             {
-                return redirect()->route('showLog', $log->id);
+                return redirect()->route('showLog', $log->slug);
             }
         }
         else

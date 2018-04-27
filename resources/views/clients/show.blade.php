@@ -12,7 +12,7 @@
 <div class="container-fluid main-container">
     <div class="pull-right">
         @can('edit client')
-        <a href="{{ route('editClient', $client->id) }}" class="btn btn-info">Edit</a>
+        <button data-toggle="modal" data-target="#editModal" class="btn btn-info">Edit</button>
         @endcan
         @can('delete client')
         <button data-toggle="modal" data-target="#deleteModal" class="btn btn-danger">Delete</button>
@@ -100,5 +100,88 @@
 
     </div>
 </div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+      <form class="modal-content" method="post" action="{{ route('updateClient', $client->slug) }}">
+        {{ csrf_field() }}
+        {{ method_field('PATCH') }}
+
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Edit {{ $client->company }}</h4>
+        </div>
+        <div class="modal-body">
+
+            <div class="form-group">
+                <label>First Name <em>(optional)</em> :
+                    <input class="form-control" name="first_name" value="{{ $client->first_name }}">
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>Last Name <em>(optional)</em> :
+                    <input class="form-control" name="last_name" value="{{ $client->last_name }}">
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>Image <em>(optional)</em> :
+                    <input type="file" class="form-control" name="image">
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>Email :
+                    <input class="form-control" name="email" value="{{ $client->email }}">
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>Contact Number <em>(optional)</em> :
+                    <input class="form-control" name="contact_number" value="{{ $client->contact_number }}">
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>Building Number/Name :
+                    <input class="form-control" name="building_number" value="{{ $client->building_number }}">
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>Street Name :
+                    <input class="form-control" name="street_name" value="{{ $client->street_name }}">
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>City :
+                    <input class="form-control" name="city" value="{{ $client->city }}">
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>Postcode :
+                    <input class="form-control" name="postcode" value="{{ $client->postcode }}">
+                </label>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <div class='pull-left'>
+                <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+            </div>
+            <div class='pull-right'>
+                <input type="submit" class="btn btn-primary">
+            </div>
+        </div>
+    </form>
+
+    </div>
+</div>
+
 
 @endsection

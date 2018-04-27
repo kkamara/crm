@@ -12,7 +12,8 @@
 <div class="container-fluid main-container">
     <div class="pull-right">
         @can('edit log')
-        <a href="{{ route('editLog', $log->id) }}" class="btn btn-info">Edit</a>
+        {{-- <a href="{{ route('editLog', $log->id) }}" class="btn btn-info">Edit</a> --}}
+        <button data-toggle="modal" data-target="#editModal" class="btn btn-info">Edit</button>
         @endcan
         @can('delete log')
         <button data-toggle="modal" data-target="#deleteModal" class="btn btn-danger">Delete</button>
@@ -69,6 +70,58 @@
                         <option value="0" selected>No</option>
                         <option value="1">Yes</option>
                     </select>
+                </label>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <div class='pull-left'>
+                <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+            </div>
+            <div class='pull-right'>
+                <input type="submit" class="btn btn-primary">
+            </div>
+        </div>
+    </form>
+
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+      <form class="modal-content" method="post" action="{{ route('updateLog', $log->slug) }}">
+        {{ csrf_field() }}
+        {{ method_field('PATCH') }}
+
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Delete {{ $log->title }}</h4>
+        </div>
+        <div class="modal-body">
+
+            <div class="form-group">
+                <label>Title :
+                    <input class="form-control" name="title" value="{{ $log->title }}">
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>Description :
+                    <textarea cols="100%" rows="10" class="form-control" name="description">{!! $log->edit_description !!}</textarea>
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>Body :
+                    <textarea cols="100%" rows="10" class="form-control" name="body">{!! $log->edit_body !!}</textarea>
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>Notes :
+                    <textarea cols="100%" rows="10" class="form-control" name="notes">{!! $log->edit_notes !!}</textarea>
                 </label>
             </div>
 

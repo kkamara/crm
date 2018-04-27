@@ -15,7 +15,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth()->user();
 
@@ -37,7 +37,7 @@ class UserController extends Controller
             //                         ->orWhere('updated_at', 'LIKE', '%'.$searchParam.'%');
             // }
 
-            $users = $users->paginate(10);
+            $users = $users->search($request->all())->paginate(10);
 
             return view('users.index', ['title'=>'Users', 'users'=>$users]);
         }

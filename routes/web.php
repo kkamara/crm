@@ -19,22 +19,20 @@ Route::group(['middleware'=>'auth'],function () {
     Route::get('/logs', 'LogController@index')->name('logsHome');
     Route::get('/logs/create', 'LogController@create')->name('createLog');
     Route::post('/logs/create', 'LogController@store')->name('createLog');
-    Route::get('/logs/{log}', 'LogController@show')->name('showLog');
-    Route::get('/logs/edit/{log}', 'LogController@edit')->name('editLog');
-    Route::patch('/logs/update/{log}', 'LogController@update')->name('updateLog');
-    Route::get('/logs/delete/{log}', 'LogController@delete')->name('deleteLog');
-    Route::delete('/logs/delete/{log}', 'LogController@destroy')->name('destroyLog');
-    
+    Route::get('/logs/{logSlug}', 'LogController@show')->name('showLog');
+    Route::get('/logs/edit/{logSlug}', 'LogController@edit')->name('editLog');
+    Route::patch('/logs/update/{logSlug}', 'LogController@update')->name('updateLog');
+    Route::get('/logs/delete/{logSlug}', 'LogController@delete')->name('deleteLog');
+    Route::delete('/logs/delete/{logSlug}', 'LogController@destroy')->name('destroyLog');
+
     // Client routes
     Route::get('/clients', 'ClientController@index')->name('clientsHome');
     Route::get('/clients/create', 'ClientController@create')->name('createClient');
     Route::post('/clients/create', 'ClientController@store')->name('createClient');
-    Route::get('/clients/{client}', 'ClientController@show')->name('showClient');
-    Route::get('/clients/edit/{client}', 'ClientController@edit')->name('editClient');
-    Route::patch('/clients/update/{client}', 'ClientController@update')->name('updateClient');
-    // Client delete form is now handled with a modal on client show page
-    // Route::get('/clients/delete/{client}', 'ClientController@delete')->name('deleteClient');
-    Route::delete('/clients/delete/{client}', 'ClientController@destroy')->name('destroyClient');
+    Route::get('/clients/{clientSlug}', 'ClientController@show')->name('showClient');
+    Route::get('/clients/edit/{logSlug}', 'ClientController@edit')->name('editClient');
+    Route::patch('/clients/update/{logSlug}', 'ClientController@update')->name('updateClient');
+    Route::delete('/clients/delete/{logSlug}', 'ClientController@destroy')->name('destroyClient');
 
     // User routes
     Route::get('/users', 'UserController@index')->name('usersHome');

@@ -12,7 +12,7 @@ class Log extends Model
 
     public function path()
     {
-        return url('/').'/logs/'.$this->id;
+        return url('/').'/logs/'.$this->slug;
     }
 
     public function user()
@@ -108,36 +108,39 @@ class Log extends Model
         return strlen($desc) > 300 ? substr($desc,0,299).'...' : $desc;
     }
 
-    public function scopeSearch($query)
+    public function scopeSearch($query, $request)
     {
-        if(request('title') || request('desc') || request('body') || request('created_at') || request('updated_at'))
+        if(array_key_exists('title', $request) || array_key_exists('desc', $request) || array_key_exists('body', $request) || array_key_exists('created_at', $request) || array_key_exists('updated_at', $request))
         {
-            $searchParam = filter_var(request('search'), FILTER_SANITIZE_STRING);
+            if(array_key_exists('search', $request))
+            {
+                $searchParam = filter_var($request['search'], FILTER_SANITIZE_STRING);
 
-            if(request('title'))
-            {
-                $query = $query->where('title', 'like', '%'.$searchParam.'%');
-            }
-            if(request('desc'))
-            {
-                $query = $query->where('description', 'like', '%'.$searchParam.'%');
-            }
-            if(request('body'))
-            {
-                $query = $query->where('body', 'like', '%'.$searchParam.'%');
-            }
-            if(request('created_at'))
-            {
-                $query = $query->whereDate('created_at', 'like', '%'.$searchParam.'%');
-            }
-            if(request('updated_at'))
-            {
-                $query = $query->whereDate('updated_at', 'like', '%'.$searchParam.'%');
+                if(array_key_exists('title', $request))
+                {
+                    $query = $query->where('title', 'like', '%'.$searchParam.'%');
+                }
+                if(array_key_exists('desc', $request))
+                {
+                    $query = $query->where('description', 'like', '%'.$searchParam.'%');
+                }
+                if(array_key_exists('body', $request))
+                {
+                    $query = $query->where('body', 'like', '%'.$searchParam.'%');
+                }
+                if(array_key_exists('created_at', $request))
+                {
+                    $query = $query->whereDate('created_at', 'like', '%'.$searchParam.'%');
+                }
+                if(array_key_exists('updated_at', $request))
+                {
+                    $query = $query->whereDate('updated_at', 'like', '%'.$searchParam.'%');
+                }
             }
         }
         else
         {
-            if(request('search'))
+            if(array_key_exists('search', $request))
             {
                 $searchParam = filter_var(request('search'), FILTER_SANITIZE_STRING);
 

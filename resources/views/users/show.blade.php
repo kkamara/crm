@@ -21,7 +21,7 @@
     <div class="card pull-left">
         <ul class="list-group list-group-flush ">
             <li class="list-group-item" style="border: none;">
-                <strong>Name</strong> :<br> 
+                <strong>Name</strong> :<br>
                 {{ $user->first_name.' '.$user->last_name }}
             </li>
             <li class="list-group-item" style="border: none;">
@@ -53,7 +53,7 @@
 <!-- Delete Modal -->
 <div id="deleteModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
-  
+
       <form class="modal-content" method="post" action="{{ route('destroyUser', $user->id) }}">
         {{ csrf_field() }}
         {{ method_field('DELETE') }}
@@ -63,7 +63,7 @@
           <h4 class="modal-title">Delete {{ $user->company }}</h4>
         </div>
         <div class="modal-body">
-          
+
             <div class='form-group'>
                 <label>Are you sure you want to delete this user?
                     <select name="delete" class="form-control">
@@ -83,7 +83,7 @@
             </div>
         </div>
     </form>
-  
+
     </div>
 </div>
 

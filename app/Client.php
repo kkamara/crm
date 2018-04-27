@@ -12,7 +12,7 @@ class Client extends Model
 
     public function path()
     {
-        return url('/').'/clients/'.$this->id;
+        return url('/').'/clients/'.$this->slug;
     }
 
     public function getImageAttribute()
@@ -63,52 +63,56 @@ class Client extends Model
         return $this->save() ? TRUE : FALSE;
     }
 
-    public function scopeSearch($query)
+    public function scopeSearch($query, $request)
     {
-        if(request('company') || request('representative') || request('email') || request('created_at') || request('updated_at'))
+        if(array_key_exists('company', $request) || array_key_exists('representative', $request) || array_key_exists('email', $request) || array_key_exists('created_at', $request) || array_key_exists('updated_at', $request))
         {
-            $searchParam = filter_var(request('search'), FILTER_SANITIZE_STRING);
+            if(array_key_exists('search', $request))
+            {
+                $searchParam = filter_var($request['search'], FILTER_SANITIZE_STRING);
 
-            if(request('company'))
-            {
-                $query = $query->where('company', 'like', '%'.$searchParam.'%');
-            }
-            if(request('representative'))
-            {
-                $fullName = explode(' ', $searchParam);
+                if(array_key_exists('company', $request))
+                {
+                    $query = $query->where('company', 'like', '%'.$searchParam.'%');
+                }
+                if(array_key_exists('representative', $request))
+                {
+                    $fullName = explode(' ', $searchParam);
 
-                if(sizeof($fullName) == 2)
-                {
-                    $query = $query->where('first_name', 'like', '%'.$fullName[0].'%');
-                    $query = $query->where('last_name', 'like', '%'.$fullName[1].'%');
+                    if(sizeof($fullName) == 2)
+                    {
+                        $query = $query->where('first_name', 'like', '%'.$fullName[0].'%');
+                        $query = $query->where('last_name', 'like', '%'.$fullName[1].'%');
+                    }
+                    else
+                    {
+                        $query = $query->where('first_name', 'like', '%'.$fullName[0].'%');
+                    }
                 }
-                else
+                if(array_key_exists('email', $request))
                 {
-                    $query = $query->where('first_name', 'like', '%'.$fullName[0].'%');
+                    $query = $query->where('email', 'like', '%'.$searchParam.'%');
                 }
-            }
-            if(request('email'))
-            {
-                $query = $query->where('email', 'like', '%'.$searchParam.'%');
-            }
-            if(request('created_at'))
-            {
-                $query = $query->whereDate('created_at', 'like', '%'.$searchParam.'%');
-            }
-            if(request('updated_at'))
-            {
-                $query = $query->whereDate('updated_at', 'like', '%'.$searchParam.'%');
+                if(array_key_exists('created_at', $request))
+                {
+                    $query = $query->whereDate('created_at', 'like', '%'.$searchParam.'%');
+                }
+                if(array_key_exists('updated_at', $request))
+                {
+                    $query = $query->whereDate('updated_at', 'like', '%'.$searchParam.'%');
+                }
             }
         }
         else
         {
-            if(request('search'))
+            if(array_key_exists('search', $request))
             {
-                $searchParam = filter_var(request('search'), FILTER_SANITIZE_STRING);
+                $searchParam = filter_var($request['search'], FILTER_SANITIZE_STRING);
 
                 $query = $query->where('company', 'like', '%'.$searchParam.'%')
                                 ->orWhere('first_name', 'like', '%'.$searchParam.'%')
                                 ->orWhere('last_name', 'like', '%'.$searchParam.'%')
+                                ->orWhere('email', 'like', '%'.$searchParam.'%')
                                 ->orWhere('created_at', 'like', '%'.$searchParam.'%')
                                 ->orWhere('updated_at', 'like', '%'.$searchParam.'%');
             }
