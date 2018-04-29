@@ -49,7 +49,23 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('users.create')->withTitle('Create User');
+        $user = auth()->user();
+
+        $roles = array();
+
+        if($user->hasRole('admin'))
+        {
+            $roles = ['Admin', 'Client Admin', 'Client User'];
+        }
+        else
+        {
+            $roles = ['Client User'];
+        }
+
+        return view('users.create', [
+            'title' => 'Create User',
+            'roles' => $roles,
+        ]);
     }
 
     /**
@@ -82,9 +98,31 @@ class UserController extends Controller
                         $hasAccessToClients = false;
                     }
                 }
+            }
 
-                // does user have permission to edit this client?
-                if($hasAccessToClients)
+            // does user have permission to edit this client?
+            if(! empty(request('clients')) && $hasAccessToClients)
+            {
+                $role = strtolower(request('role'));
+                $permissionToAssignRole = true;
+
+                switch($role)
+                {
+                    case 'admin':
+                    case 'client admin':
+                        if(!$user->hasRole('admin'))
+                        {
+                            $permissionToAssignRole = false;
+                        }
+                    break;
+                    case 'client user':
+                    break;
+                    default:
+                        $permissionToAssignRole = false;
+                    break;
+                }
+
+                if(! empty($role) && $permissionToAssignRole)
                 {
                     $validator = Validator::make($request->all(), [
                         'first_name' => 'required|max:191|min:3',
@@ -123,32 +161,82 @@ class UserController extends Controller
                             ]);
                         }
 
+                        // assign role
+                        switch($role)
+                        {
+                            case 'admin':
+                                $createdUser->assignRole('admin');
+                            break;
+                            case 'client admin':
+                                $createdUser->assignRole('client_admin');
+                            break;
+                            case 'client':
+                                $createdUser->assignRole('client_user');
+                            break;
+                        }
+
                         return redirect($createdUser->path());
                     }
                     else
                     {
+                        $roles = array();
+
+                        if($user->hasRole('admin'))
+                        {
+                            $roles = ['Admin', 'Client Admin', 'Client User'];
+                        }
+                        else
+                        {
+                            $roles = ['Client User'];
+                        }
+
                         return view('users.create', [
                             'title'=>'Create User',
                             'errors'=>$validator->errors()->all(),
                             'input' => $request->input(),
+                            'roles' => $roles,
                         ]);
                     }
                 }
                 else
                 {
+                    $roles = array();
+
+                    if($user->hasRole('admin'))
+                    {
+                        $roles = ['Admin', 'Client Admin', 'Client User'];
+                    }
+                    else
+                    {
+                        $roles = ['Client User'];
+                    }
+
                     return view('users.create', [
                         'title'=>'Create User',
-                        'errors'=>['No client selected.'],
+                        'errors'=>['No Role selected'],
                         'input' => $request->input(),
+                        'roles' => $roles,
                     ]);
                 }
             }
             else
             {
+                $roles = array();
+
+                if($user->hasRole('admin'))
+                {
+                    $roles = ['Admin', 'Client Admin', 'Client User'];
+                }
+                else
+                {
+                    $roles = ['Client User'];
+                }
+
                 return view('users.create', [
                     'title'=>'Create User',
                     'errors'=>['No client selected.'],
                     'input' => $request->input(),
+                    'roles' => $roles,
                 ]);
             }
         }

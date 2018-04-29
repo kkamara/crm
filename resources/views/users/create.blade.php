@@ -31,6 +31,17 @@
                 </div>
 
                 <div class="form-group">
+                    <label>Which role will this user have?
+                        <select class="form-control" name="role">
+                            <option value="0">--- select role ---</option>
+                            @foreach($roles as $role)
+                                <option value="{{ $role }}">{{ $role }}</option>
+                            @endforeach
+                        </select>
+                    </label>
+                </div>
+
+                <div class="form-group">
                     <label>First Name :
                         <input class="form-control" name="first_name" value="{{ $input['first_name'] or '' }}">
                     </label>
@@ -50,13 +61,13 @@
 
                 <div class="form-group">
                     <label>Password :
-                        <input class="form-control" name="password" value="{{ $input['password'] or '' }}"/>
+                        <input class="form-control" type='password' name="password" value="{{ $input['password'] or '' }}"/>
                     </label>
                 </div>
 
                 <div class="form-group">
                     <label>Confirm Password :
-                        <input class="form-control" name="password_confirmation" value="{{ $input['password_confirmation'] or '' }}"/>
+                        <input class="form-control" type='password' name="password_confirmation" value="{{ $input['password_confirmation'] or '' }}"/>
                     </label>
                 </div>
 
