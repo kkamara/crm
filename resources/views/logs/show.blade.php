@@ -12,7 +12,7 @@
 <div class="container-fluid main-container">
     <div class="pull-right">
         @can('edit log')
-        {{-- <a href="{{ route('editLog', $log->id) }}" class="btn btn-info">Edit</a> --}}
+        {{-- <a href="{{ route('editLog', $log->slug) }}" class="btn btn-info">Edit</a> --}}
         <button data-toggle="modal" data-target="#editModal" class="btn btn-info">Edit</button>
         @endcan
         @can('delete log')
@@ -54,7 +54,7 @@
 <div id="deleteModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
 
-      <form class="modal-content" method="post" action="{{ route('destroyLog', $log->id) }}">
+      <form class="modal-content" method="post" action="{{ route('destroyLog', $log->slug) }}">
         {{ csrf_field() }}
         {{ method_field('DELETE') }}
 
@@ -91,7 +91,7 @@
 <div id="editModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
 
-      <form class="modal-content" method="post" action="{{ route('updateLog', $log->slug) }}">
+      <form class="modal-content" method="post" action="{{ route('updateLog', $log->slug) }}" enctype="multipart/form-data">
         {{ csrf_field() }}
         {{ method_field('PATCH') }}
 

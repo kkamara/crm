@@ -244,7 +244,7 @@ class LogController extends Controller
 
                         $update = $log->updateLog($data);
 
-                        return redirect('/logs/'.$log->id)->with('flashSuccess', 'Log successfully updated.');
+                        return redirect('/logs/'.$log->slug)->with('flashSuccess', 'Log successfully updated.');
                     }
                     else
                     {

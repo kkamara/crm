@@ -164,7 +164,7 @@ class ClientController extends Controller
                     // store image file if provided
                     if(isset($file) && isset($imageName))
                     {
-                        $file->move(public_path('uploads/clients/'.$client->id), $imageName);
+                        $file->move(public_path('uploads/clients/'.$client->slug), $imageName);
                     }
 
                     // assign users to clients
@@ -360,7 +360,7 @@ class ClientController extends Controller
                         // store image file if provided
                         if(isset($file) && isset($imageName))
                         {
-                            $file->move(public_path('uploads/clients/'.$client->id), $imageName);
+                            $file->move(public_path('uploads/clients/'.$client->slug), $imageName);
                         }
 
                         return redirect()->route('showClient', $client->slug);

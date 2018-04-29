@@ -3,7 +3,7 @@
 @section('breadcrumbs')
 
     <li class="breadcrumb-item"><a href="{{ route('logsHome') }}">Logs</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('showLog', $log->id) }}">{{ $log->title }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('showLog', $log->slug) }}">{{ $log->title }}</a></li>
     <li class="breadcrumb-item active">Delete</li>
 
 @endsection
@@ -41,7 +41,7 @@
     </div>
     <div class="row">
         <div class="text-center">
-            <form class="form-inline" method="POST" action="{{ route('destroyLog', $log->id) }}">
+            <form class="form-inline" method="POST" action="{{ route('destroyLog', $log->slug) }}">
                 {{ csrf_field() }}
                 {{ method_field('DELETE') }}
 

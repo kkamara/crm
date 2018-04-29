@@ -3,7 +3,7 @@
 @section('breadcrumbs')
 
     <li class="breadcrumb-item"><a href="{{ route('clientsHome') }}">Clients</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('showClient', $client->id) }}">{{ $client->company }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('showClient', $client->slug) }}">{{ $client->company }}</a></li>
     <li class="breadcrum-item active">Edit</li>
 
 @endsection

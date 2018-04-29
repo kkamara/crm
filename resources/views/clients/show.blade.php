@@ -68,7 +68,7 @@
 <div id="deleteModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
 
-      <form class="modal-content" method="post" action="{{ route('destroyClient', $client->id) }}">
+      <form class="modal-content" method="post" action="{{ route('destroyClient', $client->slug) }}">
         {{ csrf_field() }}
         {{ method_field('DELETE') }}
 
@@ -105,7 +105,7 @@
 <div id="editModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
 
-      <form class="modal-content" method="post" action="{{ route('updateClient', $client->slug) }}">
+      <form class="modal-content" method="post" action="{{ route('updateClient', $client->slug) }}" enctype="multipart/form-data">
         {{ csrf_field() }}
         {{ method_field('PATCH') }}
 
