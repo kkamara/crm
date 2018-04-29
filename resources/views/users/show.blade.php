@@ -12,7 +12,7 @@
 <div class="container-fluid main-container">
     <div class="pull-right">
         @can('edit user')
-        <a href="{{ route('editUser', $user->id) }}" class="btn btn-info">Edit</a>
+        <button data-toggle="modal" data-target="#editModal" class="btn btn-info">Edit</button>
         @endcan
         @can('delete user')
         <button data-toggle="modal" data-target="#deleteModal" class="btn btn-danger">Delete</button>
@@ -60,7 +60,7 @@
 
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Delete {{ $user->company }}</h4>
+          <h4 class="modal-title">Delete {{ $user->username }}</h4>
         </div>
         <div class="modal-body">
 
@@ -83,6 +83,42 @@
             </div>
         </div>
     </form>
+
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <form class="modal-content" method="post" action="{{ route('updateUser', $user->id) }}">
+            {{ csrf_field() }}
+            {{ method_field('PATCH') }}
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Edit {{ $user->username }}</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <label>Which client(s) will this user belong to?
+                        <select multiple class="form-control" name="clients[]">
+                            {!! $user->getEditClientOptions($user) !!}
+                        </select>
+                    </label>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <div class='pull-left'>
+                    <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+                </div>
+                <div class='pull-right'>
+                    <input type="submit" class="btn btn-primary">
+                </div>
+            </div>
+        </form>
 
     </div>
 </div>

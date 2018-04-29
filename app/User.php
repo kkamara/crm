@@ -203,4 +203,36 @@ class User extends Authenticatable
 
         return $query;
     }
+
+    public function getEditClientOptions($user)
+    {
+        $options = "";
+        $clientAssignedIds = array();
+
+        foreach($user->getClientsAssigned() as $userClient)
+        {
+            array_push($clientAssignedIds, $userClient->id);
+        }
+
+        foreach(auth()->user()->getClientsAssigned() as $client)
+        {
+            if(in_array($client->id, $clientAssignedIds))
+            {
+                $options .= "<option selected value='".$client->id."'>".$client->company."</option>";
+            }
+            else
+            {
+                $options .= "<option value='".$client->id."'>".$client->company."</option>";
+            }
+        }
+
+        return $options;
+    }
+
+    public function removeAllRoles()
+    {
+        $this->removeRole('admin');
+        $this->removeRole('client_admin');
+        $this->removeRole('client_user');
+    }
 }

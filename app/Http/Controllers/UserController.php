@@ -170,7 +170,7 @@ class UserController extends Controller
                             case 'client admin':
                                 $createdUser->assignRole('client_admin');
                             break;
-                            case 'client':
+                            case 'client user':
                                 $createdUser->assignRole('client_user');
                             break;
                         }
@@ -259,39 +259,16 @@ class UserController extends Controller
         if($authUser->hasPermissionTo('view user'))
         {
             // check if client should be viewable by user
-            $userClients = $authUser->getuserClients();
+            $userClients = $authUser->getClientUsers();
 
-            $clientKeys = array();
+            $clientUserIds = array();
 
             foreach($userClients as $userClient)
             {
-                array_push($clientKeys, $userClient->client_id);
+                array_push($clientUserIds, $userClient->id);
             }
 
-            $clientUsers = DB::table('client_user')
-                            ->select('user_id')
-                            ->whereIn('client_id', $clientKeys)
-                            ->where('user_id', '!=', $user->id)
-                            ->distinct()
-                            ->get();
-
-            $usersKeys = array();
-
-            foreach($clientUsers as $clientUser)
-            {
-                array_push($usersKeys, $clientUser->user_id);
-            }
-
-            $users = User::whereIn('id', $usersKeys)->where('id', '!=', $authUser->id)->distinct()->get();
-
-            $clientUserKeys = array();
-
-            foreach($users as $user)
-            {
-                array_push($clientUserKeys, $user->id);
-            }
-
-            $userExists = in_array($user->id, $clientUserKeys);
+            $userExists = in_array($user->id, $clientUserIds);
 
             if($userExists)
             {
@@ -316,7 +293,24 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        //
+        $authUser = auth()->user();
+
+        $roles = array();
+
+        if($user->hasRole('admin'))
+        {
+            $roles = ['Admin', 'Client Admin', 'Client User'];
+        }
+        else
+        {
+            $roles = ['Client User'];
+        }
+
+        return view('users.edit', [
+            'title' => 'Edit '.$user->username,
+            'roles' => $roles,
+            'user' => $user,
+        ]);
     }
 
     /**
@@ -328,7 +322,82 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $authUser = auth()->user();
+
+        if($authUser->hasPermissionTo('edit user'))
+        {
+            if(!empty(request('clients')))
+            {
+                $usersClients = array();
+                foreach($authUser->getUserClients() as $userClient)
+                {
+                    array_push($usersClients, $userClient->client_id);
+                }
+
+                $validatedUserClients = array_intersect($usersClients, request('clients'));
+
+                $hasAccessToClients = true;
+                for($i=0;$i<count(request('clients'));$i++)
+                {
+                    if(!in_array(request('clients')[$i], $validatedUserClients))
+                    {
+                        $hasAccessToClients = false;
+                    }
+                }
+            }
+
+            // does user have permission to edit this client?
+            if(! empty(request('clients')) && $hasAccessToClients)
+            {
+                // delete existing client user assignments
+                DB::table('client_user')->where('user_id', $user->id)->delete();
+
+                // update clients assigned to user
+                $userClientIds = array();
+
+                foreach($user->getUserClients() as $userClient)
+                {
+                    array_push($userClientIds, $userClient->client_id);
+                }
+
+                foreach(request('clients') as $clientId)
+                {
+                    if(! in_array($clientId, $userClientIds))
+                    {
+                        DB::table('client_user')->insert([
+                            'user_id' => $user->id,
+                            'client_id' => $clientId,
+                        ]);
+                    }
+                }
+
+                return redirect($user->path());
+            }
+            else
+            {
+                $roles = array();
+
+                if($authUser->hasRole('admin'))
+                {
+                    $roles = ['Admin', 'Client Admin', 'Client User'];
+                }
+                else
+                {
+                    $roles = ['Client User'];
+                }
+
+                return view('users.create', [
+                    'title'=>'Create User',
+                    'errors'=>['No client selected.'],
+                    'input' => $request->input(),
+                    'roles' => $roles,
+                ]);
+            }
+        }
+        else
+        {
+            return redirect()->route('Dashboard');
+        }
     }
 
     /**
@@ -339,6 +408,9 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        $authUser = auth()->user();
+
+        if($user)
+            return redirect()->route('usersHome');
     }
 }
