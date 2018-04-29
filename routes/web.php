@@ -36,8 +36,9 @@ Route::group(['middleware'=>'auth'],function () {
 
     // User routes
     Route::get('/users', 'UserController@index')->name('usersHome');
+    Route::get('/users/create', 'UserController@create')->name('createUser');
+    Route::post('/users/create', 'UserController@store')->name('createUser');
     Route::get('/users/{user}', 'UserController@show')->name('showUser');
-    Route::get('/users/create', 'UserController@show')->name('createUser');
     Route::get('/users/edit/{user}', 'UserController@edit')->name('editUser');
     Route::patch('/users/update/{user}', 'UserController@update')->name('updateUser');
     Route::get('/users/delete/{user}', 'UserController@delete')->name('deleteUser');

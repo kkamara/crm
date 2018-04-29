@@ -49,7 +49,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        return view('users.create')->withTitle('Create User');
     }
 
     /**
@@ -60,7 +60,102 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user = auth()->user();
+
+        if($user->hasPermissionTo('create user'))
+        {
+            if(!empty(request('clients')))
+            {
+                $usersClients = array();
+                foreach($user->getUserClients() as $userClient)
+                {
+                    array_push($usersClients, $userClient->client_id);
+                }
+
+                $validatedUserClients = array_intersect($usersClients, request('clients'));
+
+                $hasAccessToClients = true;
+                for($i=0;$i<count(request('clients'));$i++)
+                {
+                    if(!in_array(request('clients')[$i], $validatedUserClients))
+                    {
+                        $hasAccessToClients = false;
+                    }
+                }
+
+                // does user have permission to edit this client?
+                if($hasAccessToClients)
+                {
+                    $validator = Validator::make($request->all(), [
+                        'first_name' => 'required|max:191|min:3',
+                        'last_name' => 'required|max:191|min:3',
+                        'email' => 'required|email|unique:users|max:191|min:3',
+                        'password' => 'required|confirmed',
+                    ]);
+
+                    if(empty($validator->errors()->all()))
+                    {
+                        $username = str_slug(request('first_name').' '.request('last_name'), '-');
+
+                        $existingUsernames = User::where('username', $username)->first();
+
+                        if($existingUsernames !== null)
+                        {
+                            $param = str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+                            $username .= substr($param, 0, 4);
+                        }
+
+                        $createdUser = User::create([
+                            'user_created' => $user->id,
+                            'username' => $username,
+                            'first_name' => filter_var(request('first_name'), FILTER_SANITIZE_STRING),
+                            'last_name' => filter_var(request('last_name'), FILTER_SANITIZE_STRING),
+                            'email' => filter_var(request('email'), FILTER_SANITIZE_STRING),
+                            'password' => bcrypt(request('password')),
+                        ]);
+
+                        // assign user to clients
+                        foreach(request('clients') as $clientId)
+                        {
+                            DB::table('client_user')->insert([
+                                'user_id' => $createdUser->id,
+                                'client_id' => $clientId,
+                            ]);
+                        }
+
+                        return redirect($createdUser->path());
+                    }
+                    else
+                    {
+                        return view('users.create', [
+                            'title'=>'Create User',
+                            'errors'=>$validator->errors()->all(),
+                            'input' => $request->input(),
+                        ]);
+                    }
+                }
+                else
+                {
+                    return view('users.create', [
+                        'title'=>'Create User',
+                        'errors'=>['No client selected.'],
+                        'input' => $request->input(),
+                    ]);
+                }
+            }
+            else
+            {
+                return view('users.create', [
+                    'title'=>'Create User',
+                    'errors'=>['No client selected.'],
+                    'input' => $request->input(),
+                ]);
+            }
+        }
+        else
+        {
+            return redirect()->route('Dashboard');
+        }
     }
 
     /**
