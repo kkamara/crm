@@ -3,7 +3,9 @@
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 
-// To be run once and before RolesTableSeeder
+/**
+ * To be run once and before RolesTableSeeder
+ */
 class PermissionsTableSeeder extends Seeder
 {
     /**

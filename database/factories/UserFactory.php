@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use Faker\Generator as Faker;
 
 /*
@@ -49,15 +50,24 @@ $factory->define(App\Client::class, function (Faker $faker) {
 $factory->define(App\Log::class, function (Faker $faker) {
     $title = $faker->name;
 
+    $user = factory(App\User::class)->create();
+    $user->assignRole('client_user');
+
+    $client = App\Client::inRandomOrder()->first();
+
+    if(empty($client))
+    {
+        $client = factory(App\Client::class)->create();
+    }
+
+    DB::table('client_user')->insert([
+        'user_id' => $user->id,
+        'client_id' => $client->id,
+    ]);
+
     return [
-        'client_id' => function() {
-
-            return factory(App\Client::class)->create()->id;
-        },
-        'user_created' => function() {
-
-            return factory(App\User::class)->create()->id;
-        },
+        'client_id' => $client->id,
+        'user_created' => $user->id,
         'slug' => strtolower(str_slug($title, '-')),
         'title' => $title,
         'description' => $faker->paragraph,
