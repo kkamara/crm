@@ -10,7 +10,10 @@ use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
+    /** This model uses the Notifiable trait for notifications. */
     use Notifiable;
+
+    /** This model uses the HasRoles trait for a user being able to have a role. */
     use HasRoles;
 
     /**
@@ -21,7 +24,7 @@ class User extends Authenticatable
     protected $guarded = [];
 
     /**
-     * The attributes that should be hidden for arrays.
+     * The attributes that should not be returned in outputs of the instance.
      *
      * @var array
      */
@@ -29,11 +32,21 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function path()
+    /**
+     * Set a publicily accessible identifier to get the path for this unique instance.
+     * 
+     * @return  string
+     */
+    public function getPathAttribute()
     {
         return url('/').'/users/'.$this->id;
     }
 
+    /**
+     * Set a publicily accessible identifier to get the last login for this unique instance.
+     * 
+     * @return  string
+     */
     public function getLastLoginAttribute()
     {
         if(empty($this->attributes['last_login']))
@@ -44,11 +57,21 @@ class User extends Authenticatable
         return Carbon::parse($this->attributes['last_login'])->diffForHumans();
     }
 
+    /**
+     * Set a publicily accessible identifier to get the name for this unique instance.
+     * 
+     * @return  string
+     */
     public function getNameAttribute()
     {
         return $this->attributes['first_name'] . ' ' . $this->attributes['last_name'];
     }
 
+    /**
+     * Get clients that belong to an instance of this model.
+     * 
+     * @return  Illuminate\Support\Facades\DB
+     */
     public function getUserClients()
     {
         $userClients = DB::table('client_user')->select('client_id', 'user_id')->where('user_id', $this->id)->get();
@@ -56,12 +79,17 @@ class User extends Authenticatable
         return $userClients;
     }
 
+    /**
+     * Gets a list of users that are also assigned to clients that are linked to an instance of this model.
+     * 
+     * @return Illuminate\Support\Collection
+     */
     public function getClientUsers()
     {
-        // get client ids user is assigned to
-        $userClients = DB::table('client_user')->select('client_id', 'user_id')->where('user_id', $this->id)->get();
+        /** get client ids user is assigned to */
+        $userClients = $this->getUserClients();
 
-        // store client ids
+        /** store client ids */
         $clientIds = array();
 
         foreach($userClients as $userClient)
@@ -69,10 +97,10 @@ class User extends Authenticatable
             array_push($clientIds, $userClient->client_id);
         }
 
-        // query client users again to get all user ids except user currently logged in
+        /** query client users again to get all user ids except user currently logged in */
         $clientUsers = DB::table('client_user')->where('user_id', '!=', $this->id)->get();
 
-        // get unique users assigned to clients
+        /** get unique users assigned to clients */
         $userIds = array();
 
         foreach($clientUsers as $clientUser)
@@ -88,32 +116,11 @@ class User extends Authenticatable
         return $clientUsers;
     }
 
-    public function getClientSpecificUsers()
-    {
-        $clients = DB::table('client_user')->where('user_id', $this->id)->where('user_id')->get();
-
-        $clientKeys = array();
-
-        foreach($clients as $client)
-        {
-            array_push($clientKeys, $client->client_id);
-        }
-
-        // get all user ids assigned to clients
-        $clientUsers = DB::table('client_user')->whereIn('client_id', $clientKeys)->get();
-
-        $userIds = array();
-
-        foreach($clientUsers as $cu)
-        {
-            array_push($userIds, $cu->user_id);
-        }
-
-        $users = User::whereIn('id', $userIds)->where('id', '!=', $this->id)->get();
-
-        return $users;
-    }
-
+    /**
+     * Returns a list of clients assigned to an instance of this model.
+     * 
+     * @return  Illuminate\Support\Collection
+     */
     public function getClientsAssigned()
     {
         $userClients = DB::table('client_user')->select('client_id', 'user_id')->where('user_id', $this->id)->get();
@@ -132,6 +139,12 @@ class User extends Authenticatable
         return $clients;
     }
 
+    /**
+     * Finds whether an instance of this model is assigned to a given client id.
+     * 
+     * @param  \App\Client  $clientId
+     * @return bool
+     */
     public function isClientAssigned($clientId)
     {
         $clientUser = DB::table('client_user')->select('id')->where(['user_id'=>$this->id, 'client_id'=>$clientId])->get();
@@ -139,13 +152,13 @@ class User extends Authenticatable
         return !$clientUser->isEmpty() ? TRUE : FALSE;
     }
 
-    public function getAllUsers()
-    {
-        $users = User::orderBy('first_name', 'ASC')->get();
-
-        return $users;
-    }
-
+    /**
+     * Adds onto a query parameters provided in request to search for items of this instance.
+     * 
+     * @param  \Illuminate\Database\Eloquent\Model  $query
+     * @param  \Illuminate\Http\Request             $request
+     * @return \Illuminate\Database\Eloquent\Model
+     */
     public function scopeSearch($query, $request)
     {
         if(array_key_exists('username', $request) || array_key_exists('name', $request) || array_key_exists('email', $request) || array_key_exists('created_at', $request) || array_key_exists('updated_at', $request))
@@ -204,6 +217,12 @@ class User extends Authenticatable
         return $query;
     }
 
+    /**
+     * Returns option values for html input select tags for edit users request.
+     * 
+     * @param  \App\User  $user
+     * @return string
+     */
     public function getEditClientOptions($user)
     {
         $options = "";
@@ -227,12 +246,5 @@ class User extends Authenticatable
         }
 
         return $options;
-    }
-
-    public function removeAllRoles()
-    {
-        $this->removeRole('admin');
-        $this->removeRole('client_admin');
-        $this->removeRole('client_user');
     }
 }

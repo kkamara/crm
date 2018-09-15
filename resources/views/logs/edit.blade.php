@@ -45,7 +45,7 @@
             </div>
 
             <div class="form-group pull-left">
-                <a class="btn btn-warning" href="{{ $log->path() }}">Cancel</a>
+                <a class="btn btn-warning" href="{{ $log->path }}">Cancel</a>
             </div>
 
             <div class="form-group pull-right">

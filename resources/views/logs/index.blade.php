@@ -65,7 +65,7 @@
                 @forelse($logs as $log)
 
                     <tr>
-                        <td><a href="{{ $log->path() }}">{{ $log->title }}</a></td>
+                        <td><a href="{{ $log->path }}">{{ $log->title }}</a></td>
                         <td>{!! $log->short_description !!}</td>
                         <td>{{ $log->created_at->format('Y-m-d') }}</td>
                         @if(strtotime($log->created_at) != strtotime($log->updated_at))

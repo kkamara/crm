@@ -71,7 +71,7 @@
                 @forelse($clients as $client)
 
                     <tr>
-                        <td><a href="{{ $client->path() }}">{{ $client->company }}</a></td>
+                        <td><a href="{{ $client->path }}">{{ $client->company }}</a></td>
                         <td>{{ $client->name }}</td>
                         <td>{{ $client->email }}</td>
                         <td>{{ $client->created_at->format('Y-m-d') }}</td>

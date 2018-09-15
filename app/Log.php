@@ -8,23 +8,48 @@ use Validator;
 
 class Log extends Model
 {
+    /** 
+     * This models immutable values.
+     *
+     * @var array 
+     */
     protected $guarded = [];
 
-    public function path()
+    /**
+     * Set a publicily accessible identifier to get the path for this unique instance.
+     * 
+     * @return  string
+     */
+    public function getPathAttribute()
     {
         return url('/').'/logs/'.$this->slug;
     }
 
+    /**
+     * This model relationship belongs to \App\User.
+     * 
+     * @return  \Illuminate\Database\Eloquent\Model
+     */
     public function user()
     {
         return $this->belongsTo('App\User', 'user_created');
     }
 
+    /**
+     * This model relationship belongs to \App\Client.
+     * 
+     * @return  \Illuminate\Database\Eloquent\Model
+     */
     public function client()
     {
         return $this->belongsTo('App\Client', 'client_id');
     }
 
+    /**
+     * Set a publicily accessible identifier to get the updated by for this unique instance.
+     * 
+     * @return  string
+     */
     public function getUpdatedByAttribute()
     {
         $user = User::where('id', $this->user_modified)->first();
@@ -32,6 +57,12 @@ class Log extends Model
         return $user;
     }
 
+    /**
+     * Get validation errors for an operation that creates or updates values of an instance of this model.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
     public function validationErrors($request)
     {
         $validator = Validator::make($request->all(), [
@@ -43,17 +74,28 @@ class Log extends Model
         return $validator->errors()->all();
     }
 
+    /**
+     * Gets request data for an operation that creates or updates values of an instance of this model.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     */
     public function parseData($request)
     {
         $data = array();
-        $data['title']         = request('title');
-        $data['description']   = request('description');
-        $data['body']          = request('body');
-        $data['notes']         = request('notes');
+        $data['title']       = request('title');
+        $data['description'] = request('description');
+        $data['body']        = request('body');
+        $data['notes']       = request('notes');
 
         return $data;
     }
 
+    /**
+     * Updates values of this instance.
+     * 
+     * @param  array  $data
+     * @return bool
+     */
     public function updateLog($data)
     {
         $this->user_modified = auth()->user()->id;
@@ -65,21 +107,41 @@ class Log extends Model
         return ($this->save()) ? TRUE : FALSE;
     }
 
+    /**
+     * Set a publicily accessible identifier to get the description for this unique instance.
+     * 
+     * @return  string
+     */
     public function getDescriptionAttribute()
     {
         return nl2br(e($this->attributes['description']));
     }
 
+    /**
+     * Set a publicily accessible identifier to get the body for this unique instance.
+     * 
+     * @return  string
+     */
     public function getBodyAttribute()
     {
         return nl2br(e($this->attributes['body']));
     }
 
+    /**
+     * Set a publicily accessible identifier to get the notes for this unique instance.
+     * 
+     * @return  string
+     */
     public function getNotesAttribute()
     {
         return nl2br(e($this->attributes['notes']));
     }
 
+    /**
+     * Set a publicily accessible identifier to get the edit description for this unique instance.
+     * 
+     * @return  string
+     */
     public function getEditDescriptionAttribute()
     {
         $desc = str_replace('<br/>', '', $this->attributes['description']);
@@ -87,6 +149,11 @@ class Log extends Model
         return e($desc);
     }
 
+    /**
+     * Set a publicily accessible identifier to get the edit body for this unique instance.
+     * 
+     * @return  string
+     */
     public function getEditBodyAttribute()
     {
         $body = str_replace('<br/>', '', $this->attributes['body']);
@@ -94,6 +161,11 @@ class Log extends Model
         return e($body);
     }
 
+    /**
+     * Set a publicily accessible identifier to get the edit notes for this unique instance.
+     * 
+     * @return  string
+     */
     public function getEditNotesAttribute()
     {
         $notes = str_replace('<br/>', '', $this->attributes['notes']);
@@ -101,6 +173,11 @@ class Log extends Model
         return e($notes);
     }
 
+    /**
+     * Set a publicily accessible identifier to get the short description for this unique instance.
+     * 
+     * @return  string
+     */
     public function getShortDescriptionAttribute()
     {
         $desc = str_replace('<br/>', '', $this->attributes['description']);
@@ -108,6 +185,13 @@ class Log extends Model
         return strlen($desc) > 300 ? substr($desc,0,299).'...' : $desc;
     }
 
+    /**
+     * Adds onto a query parameters provided in request to search for items of this instance.
+     * 
+     * @param  \Illuminate\Database\Eloquent\Model  $query
+     * @param  \Illuminate\Http\Request             $request
+     * @return \Illuminate\Database\Eloquent\Model
+     */
     public function scopeSearch($query, $request)
     {
         if(array_key_exists('title', $request) || array_key_exists('desc', $request) || array_key_exists('body', $request) || array_key_exists('created_at', $request) || array_key_exists('updated_at', $request))
