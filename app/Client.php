@@ -18,7 +18,9 @@ class Client extends Model
     public function getImageAttribute()
     {
         $image = $this->attributes['image'];
-        $imagePath = 'uploads/clients/'.$this->attributes['slug'].'/'.$image;
+        $slug  = $this->attributes['slug'];
+
+        $imagePath = sprintf('uploads/clients/%s/%s', $slug, $image);
 
         if(File::exists(public_path($imagePath)))
         {
