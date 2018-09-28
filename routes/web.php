@@ -13,7 +13,7 @@
 Route::group(['middleware'=>'auth'],function () {
 
     // Home routes
-    Route::get('/dashboard', 'HomeController@index')->name('Dashboard');
+    Route::get('/dashboard', 'DashboardController@index')->name('Dashboard');
 
     // Log routes
     Route::get('/logs', 'LogController@index')->name('logsHome');
@@ -45,24 +45,11 @@ Route::group(['middleware'=>'auth'],function () {
     Route::delete('/users/delete/{user}', 'UserController@destroy')->name('destroyUser');
 
     // User settings routes
-    Route::get('/settings', 'Auth\UserSettingsController@show')->name('showSettings');
-    Route::get('/settings/edit', 'Auth\UserSettingsController@edit')->name('editSettings');
-    Route::patch('/settings/update', 'Auth\UserSettingsController@update')->name('updateSettings');
+    Route::get('/settings', 'Auth\UserSettingsController@edit')->name('editSettings');
+    Route::put('/settings/update', 'Auth\UserSettingsController@update')->name('updateSettings');
 
     // Auth routes
     Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
-
-
-    // Return permissions assigned to current logged in user
-    Route::get('user/permissions', function(Request $request) {
-        return auth()->user()->getAllPermissions();
-    });
-
-    // Return clients assigned to current logged in user
-    Route::get('user/clients', function(Request $request) {
-        return auth()->user()->getUserClients();
-    });
-
 });
 
 // Auth routes

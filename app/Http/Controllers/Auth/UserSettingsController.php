@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Auth;
-use App\User;
 use Illuminate\Http\Request;
+use Validator;
+use App\User;
+use Auth;
 
 class UserSettingsController extends Controller
 {
@@ -16,13 +17,44 @@ class UserSettingsController extends Controller
      */
     protected $redirectTo = '/home';
 
-    public function show()
+    public function edit()
     {
-        return view('settings.update', ['title'=>'User Settings']);
+        return view('settings.edit', [
+            'title'=>'User Settings',
+            'user' =>auth()->user(),
+        ]);
     }
 
-    public function update()
+    public function update(Request $request)
     {
-    // logic
+        $user = auth()->user();
+        
+        $validator = Validator::make($request->all(), [
+            'first_name' => 'max:191',
+            'last_name' => 'max:191',
+            'email' => 'required|email|max:191',
+            // optional
+            'building_number' => 'max:191',
+            'street_name' => 'max:191',
+            'city' => 'max:191',
+            'postcode' => 'max:191',
+            'contact_number' => 'max:191',
+        ]);        
+        $errors = $validator->errors()->all();
+        
+        if(empty($errors))
+        {
+            $user->updateUser($request);
+            
+            return redirect()->back()->with('flashSuccess', 'Your settings have been updated.');
+        }
+        else
+        {
+            return view('settings.edit', [
+                'title'=>'User Settings',
+                'user' =>auth()->user(),
+                'errors' => $validator->errors()->all(),
+            ]);
+        }
     }
 }

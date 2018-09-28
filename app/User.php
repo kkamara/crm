@@ -2,11 +2,11 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class User extends Authenticatable
 {
@@ -234,5 +234,25 @@ class User extends Authenticatable
         $this->removeRole('admin');
         $this->removeRole('client_admin');
         $this->removeRole('client_user');
+    }
+    
+    /**
+     * Update an instance of this resource.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return bool
+     */
+    public function updateUser($request)
+    {
+        $this->first_name = !empty($request->input('first_name')) ? trim(filter_var($request->input('first_name'), FILTER_SANITIZE_STRING)) : NULL;
+        $this->last_name = !empty($request->input('last_name')) ? trim(filter_var($request->input('last_name'), FILTER_SANITIZE_STRING)) : NULL;
+        $this->email = trim(filter_var($request->input('email'), FILTER_SANITIZE_EMAIL));
+        $this->building_number = $request->input('building_number') !== NULL ? trim(filter_var($request->input('building_number'), FILTER_SANITIZE_STRING)) : NULL;
+        $this->street_address = $request->input('street_name') !== NULL ? trim(filter_var($request->input('street_name'), FILTER_SANITIZE_STRING)) : NULL;
+        $this->postcode = $request->input('postcode') !== NULL ? trim(filter_var($request->input('postcode'), FILTER_SANITIZE_STRING)) : NULL;
+        $this->city = $request->input('city') !== NULL ? trim(filter_var($request->input('city'), FILTER_SANITIZE_STRING)) : NULL;
+        $this->contact_number = $request->input('contact_number') !== NULL ? trim(filter_var($request->input('contact_number'), FILTER_SANITIZE_STRING)) : NULL;
+        
+        return $this->save() ? TRUE : FALSE;
     }
 }

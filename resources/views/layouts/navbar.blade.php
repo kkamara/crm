@@ -52,7 +52,7 @@
                     </li>
                     @endcan
                     <li>
-                        <a href="{{ route('showSettings') }}"><i style='color:purple;' class="fa fa-fw fa-cogs"></i> Settings</a>
+                        <a href="{{ route('editSettings') }}"><i style='color:purple;' class="fa fa-fw fa-cogs"></i> Settings</a>
                     </li>
                     <li>
                         <a href="{{ route('logout') }}"><i style='color:orange;' class="fa fa-fw fa-folder"></i> Logout</a>
