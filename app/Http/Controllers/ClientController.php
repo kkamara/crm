@@ -350,7 +350,7 @@ class ClientController extends Controller
                             $imageName = $file->getClientOriginalName();
                         }
 
-                        $client->updateClient($imageName);
+                        $client->updateClient($request, $imageName);
 
                         // store image file if provided
                         if(isset($file) && isset($imageName))

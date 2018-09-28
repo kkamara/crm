@@ -175,7 +175,7 @@ class UserController extends Controller
                             break;
                         }
 
-                        return redirect($createdUser->path());
+                        return redirect($createdUser->path);
                     }
                     else
                     {
@@ -371,7 +371,7 @@ class UserController extends Controller
                     }
                 }
 
-                return redirect($user->path());
+                return redirect($user->path);
             }
             else
             {

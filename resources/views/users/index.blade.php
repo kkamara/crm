@@ -71,7 +71,7 @@
                 @forelse($users as $user)
 
                     <tr>
-                        <td><a href="{{ $user->path() }}">{{ $user->username }}</a></td>
+                        <td><a href="{{ $user->path }}">{{ $user->username }}</a></td>
                         <td>{{ $user->first_name.' '.$user->last_name }}</td>
                         <td>{{ $user->email }}</td>
                         <td>{{ $user->created_at->format('Y-m-d') }}</td>
