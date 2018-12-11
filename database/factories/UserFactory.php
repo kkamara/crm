@@ -50,20 +50,8 @@ $factory->define(App\Client::class, function (Faker $faker) {
 $factory->define(App\Log::class, function (Faker $faker) {
     $title = $faker->name;
 
-    $user = factory(App\User::class)->create();
-    $user->assignRole('client_user');
-
+    $user = App\User::inRandomOrder()->first();
     $client = App\Client::inRandomOrder()->first();
-
-    if(empty($client))
-    {
-        $client = factory(App\Client::class)->create();
-    }
-
-    DB::table('client_user')->insert([
-        'user_id' => $user->id,
-        'client_id' => $client->id,
-    ]);
 
     return [
         'client_id' => $client->id,

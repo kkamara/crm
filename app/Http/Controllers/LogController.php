@@ -34,9 +34,7 @@ class LogController extends Controller
 
             foreach($userClients as $userClient)
             {
-                $log = Log::distinct()->select('id')->where('client_id', $userClient->client_id)->first();
-
-                array_push($logsKeys, $log->id);
+                array_push($logsKeys, $userClient->client_id);
             }
 
             $logs = $logs->whereIn('client_id', $logsKeys)->search($request->all());
