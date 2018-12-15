@@ -26,20 +26,7 @@ class LogController extends Controller
 
         if($user->hasPermissionTo('view log'))
         {
-            $logs = Log::orderBy('id', 'desc');
-
-            $userClients = $user->getuserClients();
-
-            $logsKeys = array();
-
-            foreach($userClients as $userClient)
-            {
-                array_push($logsKeys, $userClient->client_id);
-            }
-
-            $logs = $logs->whereIn('client_id', $logsKeys)->search($request->all());
-
-            $logs = $logs->paginate(10);
+            $logs = Log::getUserAccessibleLogs($user);
 
             return view('logs.index', ['title'=>'Logs', 'logs'=>$logs]);
         }
@@ -303,36 +290,31 @@ class LogController extends Controller
         }
     }
 
-    public function destroy(Log $log)
+    public function destroy($logSlug)
     {
+        $log = Log::where('slug', $logSlug)->first();
         $user = Auth()->user();
 
-        if($user->hasPermissionTo('delete log'))
-        {
-
-        }
-        else
+        if(!$user->hasPermissionTo('delete log'))
         {
             return redirect()->route('Dashboard');
         }
 
-        // check if log should be viewable by user
-        if($user->isClientAssigned($log->client_id))
+        if((int) request('delete') !== 1)
         {
-            if(request('delete') == 1)
-            {
-                $log->delete();
+            return redirect()->route('showLog', $log->slug);
+        }
 
-                return redirect('/logs')->with('flashSuccess', 'Log successfully deleted.');
-            }
-            else
-            {
-                return redirect()->route('showLog', $log->slug);
-            }
-        }
-        else
+        // check if log should be viewable by user
+        if(!$user->isClientAssigned($log->client_id))
         {
-            return redirect()->route('logsHome')->with('flashError', 'You do not have access to that resource.');
+            return redirect()
+                ->route('logsHome')
+                ->with('flashError', 'You do not have access to that resource.');
         }
+
+        $log->delete();
+
+        return redirect()->route('logsHome')->with('flashSuccess', 'Log successfully deleted.');        
     }
 }

@@ -238,4 +238,22 @@ class Log extends Model
 
         return $query;
     }
+
+    /**
+     *  Get logs available to a given user.
+     *
+     *  @param \App\User $user
+     *  @return \Illuminate\Database\Eloquent\Model
+     */
+    public static function getUserAccessibleLogs($user)
+    {
+        return self::select(
+                'logs.id', 'logs.slug', 'logs.title', 'logs.description', 'logs.created_at', 'logs.updated_at'
+            )
+            ->leftJoin('clients', 'logs.id', '=', 'clients.id')
+            ->leftJoin('client_user', 'clients.id', '=', 'client_user.id')
+            ->where('client_user.user_id', '=', $user->id)
+            ->orderBy('id', 'desc')
+            ->paginate(10);        
+    }
 }

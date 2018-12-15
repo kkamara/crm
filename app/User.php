@@ -147,7 +147,9 @@ class User extends Authenticatable
      */
     public function isClientAssigned($clientId)
     {
-        $clientUser = DB::table('client_user')->select('id')->where(['user_id'=>$this->id, 'client_id'=>$clientId])->get();
+        $clientUser = DB::table('client_user')
+            ->select('id')
+            ->where(['user_id'=>$this->id, 'client_id'=>$clientId])->get();
 
         return !$clientUser->isEmpty() ? TRUE : FALSE;
     }
