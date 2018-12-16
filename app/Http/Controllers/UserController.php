@@ -74,7 +74,6 @@ class UserController extends Controller
 
         $raw = User::getStoreData($request);
         $errors = User::getStoreErrors($raw);
-        $data = User::cleanStoreData($raw);
 
         if(!$errors->isEmpty())
         {
@@ -89,6 +88,8 @@ class UserController extends Controller
                 'roles' => $roles,
             ]);
         }
+
+        $data = User::cleanStoreData($raw);
 
         $createdUser = User::createUser($data, $user);        
 
@@ -105,33 +106,21 @@ class UserController extends Controller
     {
         $authUser = Auth()->user();
 
-        if($authUser->hasPermissionTo('view user'))
-        {
-            // check if client should be viewable by user
-            $userClients = $authUser->getClientUsers();
-
-            $clientUserIds = array();
-
-            foreach($userClients as $userClient)
-            {
-                array_push($clientUserIds, $userClient->id);
-            }
-
-            $userExists = in_array($user->id, $clientUserIds);
-
-            if($userExists)
-            {
-                return view('users.show', ['title'=>$user->username, 'user'=>$user]);
-            }
-            else
-            {
-                return redirect()->route('usersHome')->with('flashError', 'You do not have access to that resource.');
-            }
-        }
-        else
+        if(!$authUser->hasPermissionTo('view user'))
         {
             return redirect()->route('Dashboard');
         }
+
+        if(!User::getAccessibleUsers($authUser)
+            ->where('users.id', '=', $user->id)
+            ->first())
+        {
+            return redirect()
+                ->route('usersHome')
+                ->with('flashError', 'You do not have access to that resource.');
+        }
+        
+        return view('users.show', ['title'=>$user->username, 'user'=>$user]);
     }
 
     /**
