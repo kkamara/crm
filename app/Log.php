@@ -246,7 +246,7 @@ class Log extends Model
      */
     public function scopeGetAccessibleLogs($query, $user)
     {
-        return self::select(
+        return $query->select(
                 'logs.id', 'logs.slug', 'logs.title', 'logs.description', 'logs.created_at', 'logs.updated_at'
             )
             ->leftJoin('clients', 'logs.id', '=', 'clients.id')

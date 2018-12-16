@@ -27,7 +27,7 @@ class LogController extends Controller
         if($user->hasPermissionTo('view log'))
         {
             $logs = Log::getAccessibleLogs($user)
-                ->orderBy('id', 'desc')
+                ->orderBy('logs.id', 'desc')
                 ->search($request)
                 ->paginate(10); 
 

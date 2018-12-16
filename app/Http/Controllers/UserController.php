@@ -22,7 +22,7 @@ class UserController extends Controller
         if($user->hasPermissionTo('view user'))
         {
             $users = User::getAccessibleUsers($user)
-                ->orderBy('id', 'desc')
+                ->orderBy('users.id', 'desc')
                 ->search($request)
                 ->paginate(10);
 

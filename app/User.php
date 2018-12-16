@@ -271,22 +271,17 @@ class User extends Authenticatable
     /**
      *  Get users available to a given user.
      *
-     *  @param \App\User $user
+     *  @param  \App\User $user
      *  @return \Illuminate\Database\Eloquent\Model
      */
-    public static function scopeGetAccessibleUsers($query, $user)
+    public function scopeGetAccessibleUsers($query, $user)
     {
-        $users = self::select(
+        return $query->select(
                 'users.username', 'users.first_name', 'users.last_name', 'users.email', 
                 'users.created_at', 'users.updated_at', 'users.id'
             )
-            ->leftJoin('clients', 'users.id', '=', 'clients.id')
-            ->leftJoin('client_user', 'users.id', '=', 'client_user.id')
+            ->leftJoin('client_user', 'users.id', '=', 'client_user.user_id')
             ->where('users.id', '!=', $user->id)
-            ->whereIn('client_user.id', function($query) use ($user) {
-                $query->select('client_user.id')
-                    ->from('client_user')
-                    ->where('client_user.user_id', '=', $user->id);
-            });
+            ->groupBy('users.id');
     }
 }
