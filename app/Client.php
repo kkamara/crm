@@ -185,4 +185,36 @@ class Client extends Model
             ->where('client_user.user_id', '=', $user->id)
             ->groupBy('clients.id');
     }
+
+    /**
+     *  Check whether user has access to a given array of client ids.
+     *
+     *  @param  array  $clientIds
+     *  @param  \App\User $user
+     *  @return bool
+     */
+    public static function hasAccessToClients($clientIds, $user)
+    {
+        $clientIds = array();
+        for($i=0;$i<count(request('clients'));$i++)
+        {
+            $id = request('clients')[$i];
+            $clientIds[] = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
+        }
+
+        $clients = self::getAccessibleClients($user)
+            ->whereIn('clients.id', $clientIds)
+            ->get()
+            ->toArray();
+
+        foreach($clients as $c)
+        {
+            if(!in_array($c['id'], $clientIds))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

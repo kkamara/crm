@@ -241,6 +241,7 @@ class Log extends Model
     /**
      *  Get logs available to a given user.
      *
+     *  @param  \Illuminate\Database\Eloquent\Model  $query
      *  @param \App\User $user
      *  @return \Illuminate\Database\Eloquent\Model
      */

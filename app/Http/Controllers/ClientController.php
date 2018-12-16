@@ -19,44 +19,43 @@ class ClientController extends Controller
     {
         $user = Auth()->user();
 
-        if($user->hasPermissionTo('view client'))
-        {
-            $clients = Client::getAccessibleClients($user)
-                ->orderBy('clients.id', 'DESC')
-                ->search($request)
-                ->paginate(10);
-
-            return view('clients.index', ['title'=>'Clients', 'clients'=>$clients]);
-        }
-        else
+        if(!$user->hasPermissionTo('view client'))
         {
             return redirect()->route('Dashboard');
         }
+
+        $clients = Client::getAccessibleClients($user)
+            ->orderBy('clients.id', 'DESC')
+            ->search($request)
+            ->paginate(10);
+
+        return view('clients.index', ['title'=>'Clients', 'clients'=>$clients]);
     }
 
     /**
      * Show the form for creating a new resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         $user = auth()->user();
 
-        if($user->hasPermissionTo('create client'))
-        {
-            $users = $user->getClientUsers();
-
-            // if role = client user or no role show only themselves
-            return view('clients.create', [
-                'title'=>'Create Client',
-                'users' => $users
-            ]);
-        }
-        else
+        if(!$user->hasPermissionTo('create client'))
         {
             return redirect()->route('Dashboard');
         }
+
+        $users = $user->getAccessibleUsers($user)
+            ->orderBy('first_name', 'ASC')
+            ->get();
+
+        // if role = client user or no role show only themselves
+        return view('clients.create', [
+            'title'=>'Create Client',
+            'users' => $users
+        ]);
     }
 
     /**

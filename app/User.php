@@ -7,6 +7,7 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Validator;
 
 class User extends Authenticatable
 {
@@ -283,5 +284,156 @@ class User extends Authenticatable
             ->leftJoin('client_user', 'users.id', '=', 'client_user.user_id')
             ->where('users.id', '!=', $user->id)
             ->groupBy('users.id');
+    }
+
+    /**
+     *  Get errors for store request of this instance.
+     *
+     *  @param  array  $data
+     *  @return \Illuminate\Support\MessageBag
+     */
+    public static function getStoreErrors($data)
+    {
+        $user = auth()->user();
+        $errors = [];
+
+        if(isset($data['client_ids']))
+        {
+            $hasAccessToClients = Client::hasAccessToClients($data['client_ids'], $user);
+        }
+
+        if(!isset($data['client_ids']) || !$hasAccessToClients)
+        {
+            $errors[] = 'No client selected.';
+        }
+
+        $role = strtolower(request('role'));
+        $permissionToAssignRole = true;
+
+        switch($role)
+        {
+            case 'admin':
+            case 'client admin':
+                if(!$user->hasRole('admin'))
+                {
+                    $permissionToAssignRole = false;
+                }
+            break;
+            case 'client user':
+            break;
+            default:
+                $permissionToAssignRole = false;
+            break;
+        }
+
+        if(empty($data['role']) || !$permissionToAssignRole)
+        {
+            $errors[] = 'No Role selected';
+        }
+
+        $validator = Validator::make($data, [
+            'first_name' => 'required|max:191|min:3',
+            'last_name' => 'required|max:191|min:3',
+            'email' => 'required|email|unique:users|max:191|min:3',
+            'password' => 'required|confirmed',
+        ]);
+
+        return $validator->messages()->merge($errors);
+    }
+
+    /**
+     *  Get store data
+     *
+     *  @param  \Illuminate\Http\Request  $request
+     *  @return array
+     */
+    public static function getStoreData($request)
+    {
+        return [
+            'first_name' => $request->input('first_name'),
+            'last_name' => $request->input('last_name'),
+            'email' => $request->input('email'),
+            'password' => $request->input('password'),
+            'password_confirmation' => $request->input('password_confirmation'),
+            'client_ids' => $request->input('clients'),
+            'role' => $request->input('role'),
+        ];
+    }
+
+    /**
+     *  Sanitize store data
+     *
+     *  @param  array $data
+     *  @return array
+     */
+    public static function cleanStoreData($data)
+    {
+        $clientIds = array();
+        for($i=0;$i<count($data['client_ids']);$i++)
+        {
+            $id = $data['client_ids'][$i];
+            $clientIds[] = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
+        }
+
+        return [
+            'first_name' => filter_var($data['first_name'], FILTER_SANITIZE_STRING),
+            'last_name' => filter_var($data['last_name'], FILTER_SANITIZE_STRING),
+            'email' => filter_var($data['email'], FILTER_SANITIZE_EMAIL),
+            'password' => $data['password'],
+            'password_confirmation' => $data['password_confirmation'],
+            'client_ids' => $clientIds,
+            'role' => filter_var($data['role'], FILTER_SANITIZE_STRING),
+        ];
+    }
+
+    /**
+     *  Create instance of this model.
+     *
+     *  @param array $data
+     */
+    public static function createUser($data, $user)
+    {
+        $data['username'] = str_slug($data['first_name'].' '.$data['last_name'], '-');
+        $existingUsernames = User::where('username', $data['username'])->first();
+
+        if($existingUsernames !== null)
+        {
+            $param = str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+            $data['username'] .= substr($param, 0, 4);
+        }
+
+        $createdUser = User::create([
+            'user_created' => $user->id,
+            'username' => $data['username'],
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+            'email' => $data['email'],
+            'password' => bcrypt($data['password']),
+        ]);
+
+        // assign user to clients
+        foreach($data['client_ids'] as $id)
+        {
+            DB::table('client_user')->insert([
+                'user_id' => $createdUser->id,
+                'client_id' => $id,
+            ]);
+        }
+
+        // assign role
+        switch($data['role'])
+        {
+            case 'admin':
+                $createdUser->assignRole('admin');
+            break;
+            case 'client admin':
+                $createdUser->assignRole('client_admin');
+            break;
+            case 'client user':
+                $createdUser->assignRole('client_user');
+            break;
+        }
+
+        return $createdUser;
     }
 }
