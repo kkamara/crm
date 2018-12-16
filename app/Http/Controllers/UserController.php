@@ -21,18 +21,10 @@ class UserController extends Controller
 
         if($user->hasPermissionTo('view user'))
         {
-            $users = User::where('id', '!=', $user->id)->orderBy('id', 'desc');
-
-            $clientUsers = $user->getClientUsers();
-
-            $userIds = array();
-
-            foreach($clientUsers as $u)
-            {
-                array_push($userIds, $u->id);
-            }
-
-            $users = $users->whereIn('id', $userIds)->search($request->all())->paginate(10);
+            $users = User::getAccessibleUsers($user)
+                ->orderBy('id', 'desc')
+                ->search($request->all())
+                ->paginate(10);
 
             return view('users.index', ['title'=>'Users', 'users'=>$users]);
         }

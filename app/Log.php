@@ -202,23 +202,23 @@ class Log extends Model
 
                 if(array_key_exists('title', $request))
                 {
-                    $query = $query->where('title', 'like', '%'.$searchParam.'%');
+                    $query = $query->where('logs.title', 'like', '%'.$searchParam.'%');
                 }
                 if(array_key_exists('desc', $request))
                 {
-                    $query = $query->where('description', 'like', '%'.$searchParam.'%');
+                    $query = $query->where('logs.description', 'like', '%'.$searchParam.'%');
                 }
                 if(array_key_exists('body', $request))
                 {
-                    $query = $query->where('body', 'like', '%'.$searchParam.'%');
+                    $query = $query->where('logs.body', 'like', '%'.$searchParam.'%');
                 }
                 if(array_key_exists('created_at', $request))
                 {
-                    $query = $query->whereDate('created_at', 'like', '%'.$searchParam.'%');
+                    $query = $query->whereDate('logs.created_at', 'like', '%'.$searchParam.'%');
                 }
                 if(array_key_exists('updated_at', $request))
                 {
-                    $query = $query->whereDate('updated_at', 'like', '%'.$searchParam.'%');
+                    $query = $query->whereDate('logs.updated_at', 'like', '%'.$searchParam.'%');
                 }
             }
         }
@@ -228,11 +228,11 @@ class Log extends Model
             {
                 $searchParam = filter_var(request('search'), FILTER_SANITIZE_STRING);
 
-                $query = $query->where('title', 'like', '%'.$searchParam.'%')
-                                ->orWhere('description', 'like', '%'.$searchParam.'%')
-                                ->orWhere('body', 'like', '%'.$searchParam.'%')
-                                ->orWhere('created_at', 'like', '%'.$searchParam.'%')
-                                ->orWhere('updated_at', 'like', '%'.$searchParam.'%');
+                $query = $query->where('logs.title', 'like', '%'.$searchParam.'%')
+                                ->orWhere('logs.description', 'like', '%'.$searchParam.'%')
+                                ->orWhere('logs.body', 'like', '%'.$searchParam.'%')
+                                ->orWhere('logs.created_at', 'like', '%'.$searchParam.'%')
+                                ->orWhere('logs.updated_at', 'like', '%'.$searchParam.'%');
             }
         }
 
@@ -245,15 +245,13 @@ class Log extends Model
      *  @param \App\User $user
      *  @return \Illuminate\Database\Eloquent\Model
      */
-    public static function getUserAccessibleLogs($user)
+    public function scopeGetAccessibleLogs($query, $user)
     {
         return self::select(
                 'logs.id', 'logs.slug', 'logs.title', 'logs.description', 'logs.created_at', 'logs.updated_at'
             )
             ->leftJoin('clients', 'logs.id', '=', 'clients.id')
             ->leftJoin('client_user', 'clients.id', '=', 'client_user.id')
-            ->where('client_user.user_id', '=', $user->id)
-            ->orderBy('id', 'desc')
-            ->paginate(10);        
+            ->where('client_user.user_id', '=', $user->id);        
     }
 }

@@ -74,7 +74,10 @@ class User extends Authenticatable
      */
     public function getUserClients()
     {
-        $userClients = DB::table('client_user')->select('client_id', 'user_id')->where('user_id', $this->id)->get();
+        $userClients = DB::table('client_user')
+            ->select('client_id', 'user_id')
+            ->where('user_id', $this->id)
+            ->get();
 
         return $userClients;
     }
@@ -171,7 +174,7 @@ class User extends Authenticatable
 
                 if(array_key_exists('username', $request))
                 {
-                    $query = $query->where('username', 'like', '%'.$searchParam.'%');
+                    $query = $query->where('users.username', 'like', '%'.$searchParam.'%');
                 }
                 if(array_key_exists('name', $request))
                 {
@@ -179,25 +182,25 @@ class User extends Authenticatable
 
                     if(sizeof($fullName) == 2)
                     {
-                        $query = $query->where('first_name', 'like', '%'.$fullName[0].'%');
-                        $query = $query->where('last_name', 'like', '%'.$fullName[1].'%');
+                        $query = $query->where('users.first_name', 'like', '%'.$fullName[0].'%');
+                        $query = $query->where('users.last_name', 'like', '%'.$fullName[1].'%');
                     }
                     else
                     {
-                        $query = $query->where('first_name', 'like', '%'.$fullName[0].'%');
+                        $query = $query->where('users.first_name', 'like', '%'.$fullName[0].'%');
                     }
                 }
                 if(array_key_exists('email', $request))
                 {
-                    $query = $query->where('email', 'like', '%'.$searchParam.'%');
+                    $query = $query->where('users.email', 'like', '%'.$searchParam.'%');
                 }
                 if(array_key_exists('created_at', $request))
                 {
-                    $query = $query->whereDate('created_at', 'like', '%'.$searchParam.'%');
+                    $query = $query->whereDate('users.created_at', 'like', '%'.$searchParam.'%');
                 }
                 if(array_key_exists('updated_at', $request))
                 {
-                    $query = $query->whereDate('updated_at', 'like', '%'.$searchParam.'%');
+                    $query = $query->whereDate('users.updated_at', 'like', '%'.$searchParam.'%');
                 }
             }
         }
@@ -207,12 +210,12 @@ class User extends Authenticatable
             {
                 $searchParam = filter_var(request('search'), FILTER_SANITIZE_STRING);
 
-                $query = $query->where('username', 'like', '%'.$searchParam.'%')
-                                ->orWhere('first_name', 'like', '%'.$searchParam.'%')
-                                ->orWhere('last_name', 'like', '%'.$searchParam.'%')
-                                ->orWhere('email', 'like', '%'.$searchParam.'%')
-                                ->orWhere('created_at', 'like', '%'.$searchParam.'%')
-                                ->orWhere('updated_at', 'like', '%'.$searchParam.'%');
+                $query = $query->where('users.username', 'like', '%'.$searchParam.'%')
+                                ->orWhere('users.first_name', 'like', '%'.$searchParam.'%')
+                                ->orWhere('users.last_name', 'like', '%'.$searchParam.'%')
+                                ->orWhere('users.email', 'like', '%'.$searchParam.'%')
+                                ->orWhere('users.created_at', 'like', '%'.$searchParam.'%')
+                                ->orWhere('users.updated_at', 'like', '%'.$searchParam.'%');
             }
         }
 
@@ -268,5 +271,27 @@ class User extends Authenticatable
         $this->contact_number = $request->input('contact_number') !== NULL ? trim(filter_var($request->input('contact_number'), FILTER_SANITIZE_STRING)) : NULL;
         
         return $this->save() ? TRUE : FALSE;
+    }
+
+    /**
+     *  Get users available to a given user.
+     *
+     *  @param \App\User $user
+     *  @return \Illuminate\Database\Eloquent\Model
+     */
+    public static function scopeGetAccessibleUsers($query, $user)
+    {
+        $users = self::select(
+                'users.username', 'users.first_name', 'users.last_name', 'users.email', 
+                'users.created_at', 'users.updated_at', 'users.id'
+            )
+            ->leftJoin('clients', 'users.id', '=', 'clients.id')
+            ->leftJoin('client_user', 'users.id', '=', 'client_user.id')
+            ->where('users.id', '!=', $user->id)
+            ->whereIn('client_user.id', function($query) use ($user) {
+                $query->select('client_user.id')
+                    ->from('client_user')
+                    ->where('client_user.user_id', '=', $user->id);
+            });
     }
 }
