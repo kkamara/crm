@@ -166,4 +166,23 @@ class Client extends Model
 
         return $query;
     }
+
+    /**
+     *  Get clients available to a given user.
+     *
+     *  @param  \App\User $user
+     *  @return \Illuminate\Database\Eloquent\Model
+     */
+    public function scopeGetAccessibleClients($query, $user)
+    {
+        return $query->select(
+                'clients.slug', 'clients.first_name', 'clients.last_name', 'clients.email', 
+                'clients.created_at', 'clients.updated_at', 'clients.id', 'clients.company',
+                'clients.contact_number', 'clients.building_number', 'clients.street_name',
+                'clients.city', 'clients.postcode'
+            )
+            ->leftJoin('client_user', 'clients.id', '=', 'client_user.client_id')
+            ->where('client_user.user_id', '=', $user->id)
+            ->groupBy('clients.id');
+    }
 }

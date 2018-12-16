@@ -21,27 +21,10 @@ class ClientController extends Controller
 
         if($user->hasPermissionTo('view client'))
         {
-            $clients = Client::orderBy('id', 'desc');
-
-            $userClients = $user->getuserClients();
-
-            $clientsKeys = array();
-
-            foreach($userClients as $userClient)
-            {
-                $client = Client::where('id', $userClient->client_id)->get();
-
-                if(empty($client)) break;
-
-                foreach($client as $c)
-                {
-                    array_push($clientsKeys, $c->id);
-                }
-            }
-
-            $clients = $clients->whereIn('id', $clientsKeys)->search($request->all());
-
-            $clients = $clients->paginate(10);
+            $clients = Client::getAccessibleClients($user)
+                ->orderBy('clients.id', 'DESC')
+                ->search($request)
+                ->paginate(10);
 
             return view('clients.index', ['title'=>'Clients', 'clients'=>$clients]);
         }
