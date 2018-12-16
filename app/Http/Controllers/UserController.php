@@ -23,7 +23,7 @@ class UserController extends Controller
         {
             $users = User::getAccessibleUsers($user)
                 ->orderBy('id', 'desc')
-                ->search($request->all())
+                ->search($request)
                 ->paginate(10);
 
             return view('users.index', ['title'=>'Users', 'users'=>$users]);

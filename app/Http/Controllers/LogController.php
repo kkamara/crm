@@ -28,7 +28,7 @@ class LogController extends Controller
         {
             $logs = Log::getAccessibleLogs($user)
                 ->orderBy('id', 'desc')
-                ->search($request->all())
+                ->search($request)
                 ->paginate(10); 
 
             return view('logs.index', ['title'=>'Logs', 'logs'=>$logs]);

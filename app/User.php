@@ -166,17 +166,17 @@ class User extends Authenticatable
      */
     public function scopeSearch($query, $request)
     {
-        if(array_key_exists('username', $request) || array_key_exists('name', $request) || array_key_exists('email', $request) || array_key_exists('created_at', $request) || array_key_exists('updated_at', $request))
-        {
-            if(array_key_exists('search', $request))
+        if($request->has('search'))
+        {   
+            $searchParam = filter_var($request['search'], FILTER_SANITIZE_STRING);
+            
+            if($request->has('username') || $request->has('name') || $request->has('email') || $request->has('created_at') || $request->has('updated_at'))
             {
-                $searchParam = filter_var($request['search'], FILTER_SANITIZE_STRING);
-
-                if(array_key_exists('username', $request))
+                if($request->has('username'))
                 {
                     $query = $query->where('users.username', 'like', '%'.$searchParam.'%');
                 }
-                if(array_key_exists('name', $request))
+                if($request->has('name'))
                 {
                     $fullName = explode(' ', $searchParam);
 
@@ -190,26 +190,21 @@ class User extends Authenticatable
                         $query = $query->where('users.first_name', 'like', '%'.$fullName[0].'%');
                     }
                 }
-                if(array_key_exists('email', $request))
+                if($request->has('email'))
                 {
                     $query = $query->where('users.email', 'like', '%'.$searchParam.'%');
                 }
-                if(array_key_exists('created_at', $request))
+                if($request->has('created_at'))
                 {
                     $query = $query->whereDate('users.created_at', 'like', '%'.$searchParam.'%');
                 }
-                if(array_key_exists('updated_at', $request))
+                if($request->has('updated_at'))
                 {
                     $query = $query->whereDate('users.updated_at', 'like', '%'.$searchParam.'%');
                 }
             }
-        }
-        else
-        {
-            if(array_key_exists('search', $request))
+            else
             {
-                $searchParam = filter_var(request('search'), FILTER_SANITIZE_STRING);
-
                 $query = $query->where('users.username', 'like', '%'.$searchParam.'%')
                                 ->orWhere('users.first_name', 'like', '%'.$searchParam.'%')
                                 ->orWhere('users.last_name', 'like', '%'.$searchParam.'%')

@@ -13,27 +13,27 @@
             <div class="row">
                 <div class="form-group">
                     <label>Username
-                        <input name="username" type="checkbox">&nbsp;&nbsp;
+                        <input name="username" type="checkbox" @if(Request::has('username')) checked @endif>&nbsp;&nbsp;
                     </label>
                 </div>
                 <div class="form-group">
                     <label>Name
-                        <input name="name" type="checkbox">&nbsp;&nbsp;
+                        <input name="name" type="checkbox" @if(Request::has('name')) checked @endif>&nbsp;&nbsp;
                     </label>
                 </div>
                 <div class="form-group">
                     <label>Email
-                        <input name="email" type="checkbox">&nbsp;&nbsp;
+                        <input name="email" type="checkbox" @if(Request::has('email')) checked @endif>&nbsp;&nbsp;
                     </label>
                 </div>
                 <div class="form-group">
                     <label>Created at
-                        <input name="created_at" type="checkbox">&nbsp;&nbsp;
+                        <input name="created_at" type="checkbox" @if(Request::has('created_at')) checked @endif>&nbsp;&nbsp;
                     </label>
                 </div>
                 <div class="form-group">
                     <label>Updated at
-                        <input name="updated_at" type="checkbox">&nbsp;&nbsp;
+                        <input name="updated_at" type="checkbox" @if(Request::has('updated_at')) checked @endif>&nbsp;&nbsp;
                     </label>
                 </div>
             </div>

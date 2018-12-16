@@ -194,45 +194,44 @@ class Log extends Model
      */
     public function scopeSearch($query, $request)
     {
-        if(array_key_exists('title', $request) || array_key_exists('desc', $request) || array_key_exists('body', $request) || array_key_exists('created_at', $request) || array_key_exists('updated_at', $request))
+        if($request->has('search'))
         {
-            if(array_key_exists('search', $request))
+            $searchParam = filter_var($request['search'], FILTER_SANITIZE_STRING);
+                    
+            if($request->has('title') || $request->has('desc') || $request->has('body') || 
+                $request->has('created_at') || $request->has('updated_at'))
             {
-                $searchParam = filter_var($request['search'], FILTER_SANITIZE_STRING);
-
-                if(array_key_exists('title', $request))
+                if($request->has('search'))
                 {
-                    $query = $query->where('logs.title', 'like', '%'.$searchParam.'%');
-                }
-                if(array_key_exists('desc', $request))
-                {
-                    $query = $query->where('logs.description', 'like', '%'.$searchParam.'%');
-                }
-                if(array_key_exists('body', $request))
-                {
-                    $query = $query->where('logs.body', 'like', '%'.$searchParam.'%');
-                }
-                if(array_key_exists('created_at', $request))
-                {
-                    $query = $query->whereDate('logs.created_at', 'like', '%'.$searchParam.'%');
-                }
-                if(array_key_exists('updated_at', $request))
-                {
-                    $query = $query->whereDate('logs.updated_at', 'like', '%'.$searchParam.'%');
+                    if($request->has('title')) 
+                    {
+                        $query = $query->where('logs.title', 'like', '%'.$searchParam.'%');
+                    }
+                    if($request->has('desc')) 
+                    {
+                        $query = $query->where('logs.description', 'like', '%'.$searchParam.'%');
+                    }
+                    if($request->has('body')) 
+                    {
+                        $query = $query->where('logs.body', 'like', '%'.$searchParam.'%');
+                    }
+                    if($request->has('created_at')) 
+                    {
+                        $query = $query->whereDate('logs.created_at', 'like', '%'.$searchParam.'%');
+                    }
+                    if($request->has('updated_at')) 
+                    {
+                        $query = $query->whereDate('logs.updated_at', 'like', '%'.$searchParam.'%');
+                    }
                 }
             }
-        }
-        else
-        {
-            if(array_key_exists('search', $request))
+            else
             {
-                $searchParam = filter_var(request('search'), FILTER_SANITIZE_STRING);
-
                 $query = $query->where('logs.title', 'like', '%'.$searchParam.'%')
-                                ->orWhere('logs.description', 'like', '%'.$searchParam.'%')
-                                ->orWhere('logs.body', 'like', '%'.$searchParam.'%')
-                                ->orWhere('logs.created_at', 'like', '%'.$searchParam.'%')
-                                ->orWhere('logs.updated_at', 'like', '%'.$searchParam.'%');
+                    ->orWhere('logs.description', 'like', '%'.$searchParam.'%')
+                    ->orWhere('logs.body', 'like', '%'.$searchParam.'%')
+                    ->orWhere('logs.created_at', 'like', '%'.$searchParam.'%')
+                    ->orWhere('logs.updated_at', 'like', '%'.$searchParam.'%');
             }
         }
 
