@@ -249,8 +249,8 @@ class Log extends Model
         return $query->select(
                 'logs.id', 'logs.slug', 'logs.title', 'logs.description', 'logs.created_at', 'logs.updated_at'
             )
-            ->leftJoin('clients', 'logs.id', '=', 'clients.id')
-            ->leftJoin('client_user', 'clients.id', '=', 'client_user.id')
-            ->where('client_user.user_id', '=', $user->id);        
+            ->leftJoin('client_user', 'logs.client_id', '=', 'client_user.client_id')
+            ->where('client_user.user_id', '=', $user->id)
+            ->groupBy('logs.id');
     }
 }
