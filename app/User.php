@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\MessageBag;
 use Carbon\Carbon;
 use Validator;
 
@@ -227,14 +228,20 @@ class User extends Authenticatable
     public function getEditClientOptions($user)
     {
         $options = "";
-        $clientAssignedIds = array();
+        $clientAssignedIds = [];
 
-        foreach($user->getClientsAssigned() as $userClient)
+        $givenUserClients = Client::getAccessibleClients($user)->get();
+
+        foreach($givenUserClients as $userClient)
         {
-            array_push($clientAssignedIds, $userClient->id);
+            $clientAssignedIds[] = $userClient->id;
         }
 
-        foreach(auth()->user()->getClientsAssigned() as $client)
+        $authUserClients = Client::getAccessibleClients(auth()->user())
+            ->orderBy('clients.company', 'ASC')
+            ->get();
+
+        foreach($authUserClients as $client)
         {
             if(in_array($client->id, $clientAssignedIds))
             {
@@ -255,6 +262,7 @@ class User extends Authenticatable
      * @param  \Illuminate\Http\Request  $request
      * @return bool
      */
+    /*
     public function updateUser($request)
     {
         $this->first_name = !empty($request->input('first_name')) ? trim(filter_var($request->input('first_name'), FILTER_SANITIZE_STRING)) : NULL;
@@ -268,6 +276,7 @@ class User extends Authenticatable
         
         return $this->save() ? TRUE : FALSE;
     }
+    */
 
     /**
      *  Get users available to a given user.
@@ -287,14 +296,13 @@ class User extends Authenticatable
     }
 
     /**
-     *  Get errors for store request of this instance.
+     *  Get errors for store request of this resource.
      *
      *  @param  array  $data
      *  @return \Illuminate\Support\MessageBag
      */
-    public static function getStoreErrors($data)
+    public static function getStoreErrors($data, $user)
     {
-        $user = auth()->user();
         $errors = [];
 
         if(isset($data['client_ids']))
@@ -387,11 +395,11 @@ class User extends Authenticatable
     }
 
     /**
-     *  Create instance of this model.
+     *  Create db instance of this model.
      *
      *  @param array $data
      */
-    public static function createUser($data, $user)
+    public function createUser($data, $user)
     {
         $data['username'] = str_slug($data['first_name'].' '.$data['last_name'], '-');
         $existingUsernames = User::where('username', $data['username'])->first();
@@ -435,5 +443,78 @@ class User extends Authenticatable
         }
 
         return $createdUser;
+    }
+
+    /**
+     *  Get errors for update request of this resource.
+     *
+     *  @param  array  $data
+     *  @return \Illuminate\Support\MessageBag
+     */
+    public static function getUpdateErrors($data, $user)
+    {
+        $errors = new MessageBag;
+
+        if(isset($data['client_ids']))
+        {
+            $hasAccessToClients = Client::hasAccessToClients($data['client_ids'], $user);
+        }
+
+        if(!isset($data['client_ids']) || !$hasAccessToClients)
+        {
+            $errors->add('client_ids', 'No client selected.');
+        }
+
+        return $errors;
+    }
+
+    /**
+     *  Get update data
+     *
+     *  @param  \Illuminate\Http\Request  $request
+     *  @return array
+     */
+    public static function getUpdateData($request)
+    {
+        return [
+            'client_ids' => $request->input('clients'),
+        ];
+    }
+
+    /**
+     *  Sanitize update data
+     *
+     *  @param  array $data
+     *  @return array
+     */
+    public static function cleanUpdateData($data)
+    {
+        $clientIds = array();
+        for($i=0;$i<count($data['client_ids']);$i++)
+        {
+            $id = $data['client_ids'][$i];
+            $clientIds[] = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
+        }
+
+        return [
+            'client_ids' => $clientIds,
+        ];
+    }
+
+    /**
+     *  Create db instance of this model.
+     *
+     *  @param array $data
+     */
+    public function updateUser($data)
+    {
+        // assign user to clients
+        foreach($data['client_ids'] as $id)
+        {
+            DB::table('client_user')->insert([
+                'user_id' => $this->id,
+                'client_id' => $id,
+            ]);
+        }
     }
 }

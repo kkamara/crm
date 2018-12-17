@@ -195,13 +195,6 @@ class Client extends Model
      */
     public static function hasAccessToClients($clientIds, $user)
     {
-        $clientIds = array();
-        for($i=0;$i<count(request('clients'));$i++)
-        {
-            $id = request('clients')[$i];
-            $clientIds[] = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
-        }
-
         $clients = self::getAccessibleClients($user)
             ->whereIn('clients.id', $clientIds)
             ->get()

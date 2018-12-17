@@ -73,7 +73,7 @@ class UserController extends Controller
         }
 
         $raw = User::getStoreData($request);
-        $errors = User::getStoreErrors($raw);
+        $errors = User::getStoreErrors($raw, $user);
 
         if(!$errors->isEmpty())
         {
@@ -91,7 +91,7 @@ class UserController extends Controller
 
         $data = User::cleanStoreData($raw);
 
-        $createdUser = User::createUser($data, $user);        
+        $createdUser = (new User)->createUser($data, $user);        
 
         return redirect($createdUser->path);
     }
@@ -133,16 +133,9 @@ class UserController extends Controller
     {
         $authUser = auth()->user();
 
-        $roles = array();
-
-        if($user->hasRole('admin'))
-        {
-            $roles = ['Admin', 'Client Admin', 'Client User'];
-        }
-        else
-        {
-            $roles = ['Client User'];
-        }
+        $roles = $user->hasRole('admin') ? 
+            ['Admin', 'Client Admin', 'Client User'] :
+            ['Client User'];
 
         return view('users.edit', [
             'title' => 'Edit '.$user->username,
@@ -162,73 +155,37 @@ class UserController extends Controller
     {
         $authUser = auth()->user();
 
-        if($authUser->hasPermissionTo('edit user'))
-        {
-            if(!empty(request('clients')))
-            {
-                $usersClients = array();
-                foreach($authUser->getUserClients() as $userClient)
-                {
-                    array_push($usersClients, $userClient->client_id);
-                }
-
-                $validatedUserClients = array_intersect($usersClients, request('clients'));
-
-                $hasAccessToClients = true;
-                for($i=0;$i<count(request('clients'));$i++)
-                {
-                    if(!in_array(request('clients')[$i], $validatedUserClients))
-                    {
-                        $hasAccessToClients = false;
-                    }
-                }
-            }
-
-            // does user have permission to edit this client?
-            if(! empty(request('clients')) && $hasAccessToClients)
-            {
-                // delete existing client user assignments
-                DB::table('client_user')->where('user_id', $user->id)->delete();
-
-                // update clients assigned to user
-                $userClientIds = array();
-
-                foreach($user->getUserClients() as $userClient)
-                {
-                    array_push($userClientIds, $userClient->client_id);
-                }
-
-                foreach(request('clients') as $clientId)
-                {
-                    if(! in_array($clientId, $userClientIds))
-                    {
-                        DB::table('client_user')->insert([
-                            'user_id' => $user->id,
-                            'client_id' => $clientId,
-                        ]);
-                    }
-                }
-
-                return redirect($user->path);
-            }
-            else
-            {
-                $roles = $authUser->hasRole('admin') ?
-                    ['Admin', 'Client Admin', 'Client User'] :
-                    ['Client User'];
-
-                return view('users.create', [
-                    'title'=>'Create User',
-                    'errors'=>['No client selected.'],
-                    'input' => $request->input(),
-                    'roles' => $roles,
-                ]);
-            }
-        }
-        else
+        if(!$authUser->hasPermissionTo('edit user'))
         {
             return redirect()->route('Dashboard');
         }
+
+        $raw = User::getUpdateData($request);
+        $errors = User::getUpdateErrors($raw, $authUser);
+
+        if(!$errors->isEmpty())
+        {
+            $roles = $user->hasRole('admin') ? 
+            ['Admin', 'Client Admin', 'Client User'] :
+            ['Client User'];
+
+            return view('users.edit', [
+                'title'=>'Create User',
+                'errors'=>$errors->all(),
+                'input' => $request->input(),
+                'roles' => $roles,
+                'user' => $user,
+            ]);
+        }
+
+        $data = User::cleanUpdateData($raw);
+
+        // delete existing client user assignments
+        DB::table('client_user')->where('user_id', $user->id)->delete();
+
+        $user->updateUser($data, $user);        
+
+        return redirect($user->path);
     }
 
     /**
@@ -241,7 +198,11 @@ class UserController extends Controller
     {
         $authUser = auth()->user();
 
-        if($user)
-            return redirect()->route('usersHome');
+        if(!$authUser->hasPermissionTo('delete user'))
+            return redirect()->route('dashboard');
+
+        $user->delete();    
+
+        return redirect()->route('usersHome');
     }
 }

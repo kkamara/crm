@@ -23,7 +23,7 @@
                 <div class="form-group">
                     <label>Which client(s) will this user belong to?
                         <select multiple class="form-control" name="clients[]">
-                            @foreach(auth()->user()->getClientsAssigned() as $client)
+                            @foreach(\App\Client::getAccessibleClients(auth()->user())->orderBy('company', 'ASC')->get() as $client)
                                 <option value="{{ $client->id }}">{{ $client->company }}</option>
                             @endforeach
                         </select>
