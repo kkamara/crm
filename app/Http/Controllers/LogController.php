@@ -72,11 +72,11 @@ class LogController extends Controller
         $raw = Log::getStoreData($request, $user);
         $errors = Log::getStoreErrors($raw, $user);
 
-        if(!$validator->errors()->isEmpty())
+        if(!$errors->isEmpty())
         {
             return view('logs.create', [
                 'title'=>'Create Log',
-                'errors'=>$validator->errors()->all(),
+                'errors'=>$errors->all(),
                 'input' => $request->input(),
             ]);
         }

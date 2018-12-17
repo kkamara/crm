@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\MessageBag;
+use App\Client;
 use Validator;
 use App\User;
 
@@ -285,7 +286,7 @@ class Log extends Model
         $errors = [];
 
         $validator = Validator::make($data, [
-            'client_id' => 'required|integer',
+            'client_id' => 'integer|not_in:0',
             'title' => 'required|max:191|min:3',
             'description'  => 'required|min:10',
             'body'  => 'required|min:10',
@@ -293,16 +294,11 @@ class Log extends Model
         ]);
 
         // if(!$user->isClientAssigned($data['client_id']))
-        if(!Client::hasAccessibleClients($user)
+        if(!Client::getAccessibleClients($user)
             ->where('clients.id', '=', $data['client_id'])
             ->first())
         {
             $errors[] = 'No client selected.';
-        }
-
-        if($data['client_id'] == 0)
-        {
-            $errors[] = 'Oops, something went wrong.';
         }
 
         return $validator->messages()->merge($errors);
@@ -324,5 +320,23 @@ class Log extends Model
             'body' => $data['body'],
             'notes' => $data['notes'],
         ]);
+    }
+
+    /**
+     *  Sanitize create data
+     *
+     *  @param  array $data
+     *  @return array
+     */
+    public static function cleanStoreData($data)
+    {
+        return [
+            'client_id' => filter_var($data['client_id'], FILTER_SANITIZE_NUMBER_INT),
+            'title' => filter_var($data['title'], FILTER_SANITIZE_STRING),
+            'description' => filter_var($data['description'], FILTER_SANITIZE_STRING),
+            'body' => filter_var($data['body'], FILTER_SANITIZE_STRING),
+            'notes' => filter_var($data['notes'], FILTER_SANITIZE_STRING),
+            'user_created' => $data['user_created'],
+        ];
     }
 }
