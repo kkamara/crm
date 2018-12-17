@@ -281,6 +281,7 @@ class User extends Authenticatable
     /**
      *  Get users available to a given user.
      *
+     *  @param  \Illuminate\Database\Eloquent\Model $query
      *  @param  \App\User $user
      *  @return \Illuminate\Database\Eloquent\Model
      */
@@ -299,6 +300,7 @@ class User extends Authenticatable
      *  Get errors for store request of this resource.
      *
      *  @param  array  $data
+     *  @param  \App\User $user
      *  @return \Illuminate\Support\MessageBag
      */
     public static function getStoreErrors($data, $user)
@@ -397,7 +399,9 @@ class User extends Authenticatable
     /**
      *  Create db instance of this model.
      *
-     *  @param array $data
+     *  @param  array $data
+     *  @param  \App\User $user
+     *  @return \App\User
      */
     public function createUser($data, $user)
     {
@@ -449,6 +453,7 @@ class User extends Authenticatable
      *  Get errors for update request of this resource.
      *
      *  @param  array  $data
+     *  @param  \App\User $user
      *  @return \Illuminate\Support\MessageBag
      */
     public static function getUpdateErrors($data, $user)

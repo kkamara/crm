@@ -3,8 +3,9 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\User;
+use Illuminate\Support\MessageBag;
 use Validator;
+use App\User;
 
 class Log extends Model
 {
@@ -253,5 +254,56 @@ class Log extends Model
             ->leftJoin('client_user', 'logs.client_id', '=', 'client_user.client_id')
             ->where('client_user.user_id', '=', $user->id)
             ->groupBy('logs.id');
+    }
+
+    /**
+     *  Get store data
+     *
+     *  @param  \Illuminate\Http\Request  $request
+     *  @return array
+     */
+    public static function getStoreData($request)
+    {
+        return [
+            'client_id' => $request->input('client_id'),
+            'title' => $request->input('title'),
+            'description' => $request->input('description'),
+            'body' => $request->input('body'),
+            'notes' => $request->input('notes'),
+        ];
+    }
+
+    /**
+     *  Get errors for store request of this resource.
+     *
+     *  @param  array  $data
+     *  @return \Illuminate\Support\MessageBag
+     */
+    public static function getStoreErrors($data, $user)
+    {
+        $errors = [];
+
+        $validator = Validator::make($data, [
+            'client_id' => 'required|integer',
+            'title' => 'required|max:191|min:3',
+            'description'  => 'required|min:10',
+            'body'  => 'required|min:10',
+            'notes' => 'max:1000',
+        ]);
+
+        // if(!$user->isClientAssigned($data['client_id']))
+        if(!Client::hasAccessibleClients($user)
+            ->where('clients.id', '=', $data['client_id'])
+            ->first())
+        {
+            $errors[] = 'No client selected.';
+        }
+
+        if($data['client_id'] == 0)
+        {
+            $errors[] = 'Oops, something went wrong.';
+        }
+
+        return $validator->messages()->merge($errors);
     }
 }
