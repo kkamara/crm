@@ -69,7 +69,7 @@ class LogController extends Controller
             return redirect()->route('Dashboard');
         }
 
-        $raw = Log::getStoreData($request);
+        $raw = Log::getStoreData($request, $user);
         $errors = Log::getStoreErrors($raw, $user);
 
         if(!$validator->errors()->isEmpty())
@@ -84,16 +84,6 @@ class LogController extends Controller
         $data = Log::cleanStoreData($raw);
 
         Log::createLog($data);
-
-        Log::create([
-            'slug' => strtolower(str_slug($title, '-')),
-            'client_id' => $data['client_id'],
-            'user_created' => $user->id,
-            'title' => $data['title'],
-            'description' => $data['description'],
-            'body' => $data['body'],
-            'notes' => $data['notes'],
-        ]);
 
         return redirect()->route('logsHome');
     }

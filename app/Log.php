@@ -262,7 +262,7 @@ class Log extends Model
      *  @param  \Illuminate\Http\Request  $request
      *  @return array
      */
-    public static function getStoreData($request)
+    public static function getStoreData($request, $user)
     {
         return [
             'client_id' => $request->input('client_id'),
@@ -270,6 +270,7 @@ class Log extends Model
             'description' => $request->input('description'),
             'body' => $request->input('body'),
             'notes' => $request->input('notes'),
+            'user_created' => $user->id,
         ];
     }
 
@@ -305,5 +306,23 @@ class Log extends Model
         }
 
         return $validator->messages()->merge($errors);
+    }
+
+    /**
+     *  Create an db instance of this resource.
+     *
+     *  @param array $data
+     */
+    public static function createLog($data)
+    {
+        Log::create([
+            'slug' => strtolower(str_slug($data['title'], '-')),
+            'client_id' => $data['client_id'],
+            'user_created' => $data['user_created'],
+            'title' => $data['title'],
+            'description' => $data['description'],
+            'body' => $data['body'],
+            'notes' => $data['notes'],
+        ]);
     }
 }
