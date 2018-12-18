@@ -185,7 +185,7 @@ class UserController extends Controller
 
         $user->updateUser($data, $user);        
 
-        return redirect($user->path);
+        return redirect($user->path)->with('flashSuccess', 'User successfully updated.');;
     }
 
     /**
@@ -200,6 +200,15 @@ class UserController extends Controller
 
         if(!$authUser->hasPermissionTo('delete user'))
             return redirect()->route('dashboard');
+
+        if((int) request('delete') !== 1)
+        {
+            return redirect()->route('showUser', $user->slug);
+        }
+
+        DB::table('client_user')
+            ->where('client_user.user_id', '=', $user->id)
+            ->delete();
 
         $user->delete();    
 

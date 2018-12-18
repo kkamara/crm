@@ -60,56 +60,6 @@ class Log extends Model
     }
 
     /**
-     * Get validation errors for an operation that creates or updates values of an instance of this model.
-     * 
-     * @param  \Illuminate\Http\Request  $request
-     * @return array
-     */
-    public function validationErrors($request)
-    {
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|max:191|min:5',
-            'description'  => 'required|min:20',
-            'body'  => 'required|min:20'
-        ]);
-
-        return $validator->errors()->all();
-    }
-
-    /**
-     * Gets request data for an operation that creates or updates values of an instance of this model.
-     * 
-     * @param  \Illuminate\Http\Request  $request
-     */
-    public function parseData($request)
-    {
-        $data = array();
-        $data['title']       = request('title');
-        $data['description'] = request('description');
-        $data['body']        = request('body');
-        $data['notes']       = request('notes');
-
-        return $data;
-    }
-
-    /**
-     * Updates values of this instance.
-     * 
-     * @param  array  $data
-     * @return bool
-     */
-    public function updateLog($data)
-    {
-        $this->user_modified = auth()->user()->id;
-        $this->title         = trim(filter_var($data['title'], FILTER_SANITIZE_STRING));
-        $this->description   = trim(filter_var($data['description'], FILTER_SANITIZE_STRING));
-        $this->body          = trim(filter_var($data['body'], FILTER_SANITIZE_STRING));
-        $this->notes         = trim(filter_var($data['notes'], FILTER_SANITIZE_STRING));
-
-        return ($this->save()) ? TRUE : FALSE;
-    }
-
-    /**
      * Set a publicily accessible identifier to get the description for this unique instance.
      * 
      * @return  string
@@ -338,5 +288,64 @@ class Log extends Model
             'notes' => filter_var($data['notes'], FILTER_SANITIZE_STRING),
             'user_created' => $data['user_created'],
         ];
+    }
+
+    /**
+     *  Get log data
+
+     *  @param \Illuminate\Http\Request $request
+     *  @return array
+     */
+    public static function getUpdateData($request)
+    {
+        return [
+            'title' => $request->input('title'),
+            'description' => $request->input('description'),
+            'body' => $request->input('body'),
+            'notes' => $request->input('notes'),
+        ];
+    }
+
+    /**
+     *  Get update errors for this resource.
+     *
+     *  @param \Illuminate\Http\Request $request
+     *  @return \Illuminate\Support\MessageBag
+     */
+    public static function getUpdateErrors($data)
+    {
+        $validator = Validator::make($data, [
+            'title' => 'required|max:191|min:5',
+            'description'  => 'required|min:20',
+            'body'  => 'required|min:20'
+        ]);
+
+        return $validator->messages();
+    }
+
+    /**
+     *  Sanitize update data
+     *
+     *  @param array $raw
+     *  @return array
+     */
+    public static function cleanUpdateData($raw)
+    {
+        return [
+            'title' => filter_var($raw['title'], FILTER_SANITIZE_STRING),
+            'description' => filter_var($raw['description'], FILTER_SANITIZE_STRING),
+            'body' => filter_var($data['body'], FILTER_SANITIZE_STRING),
+            'notes' => filter_var($data['notes'], FILTER_SANITIZE_STRING),
+        ];
+    }
+
+    /**
+     *  Create db instance of this resource
+     *
+     *  @param array $data
+     */
+    public static function updateLog($data)
+    {
+        $log = self::create($data);
     }
 }

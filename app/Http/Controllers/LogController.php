@@ -184,27 +184,30 @@ class LogController extends Controller
         }
 
         // check if log should be viewable by user
-        if(!$user->isClientAssigned($log->client_id))
+        if(!Log::getAccessibleLogs($user)
+            ->where('client_user.client_id', $log->client_id)
+            ->first())
         {
             return redirect()->route('logsHome')->with('flashError', 'You do not have access to that resource.');
         }
 
-        $errors = $log->validationErrors($request);
+        $raw = Log::getUpdateData($request);
+        $errors = Log::getUpdateErrors($raw);
 
         if(!empty($errors))
         {
             return view('logs.edit', [
                 'title' => 'Edit '.$log->title,
                 'log' => $log,
-                'errors' => $errors,
+                'errors' => $errors->all(),
             ]);
         }
 
-        $data = $log->parseData($request);
+        $data = Log::cleanUpdateData($raw);
 
-        $update = $log->updateLog($data);
+        $update = Log::updateLog($data);
 
-        return redirect('/logs/'.$log->slug)->with('flashSuccess', 'Log successfully updated.');
+        return redirect($log->path)->with('flashSuccess', 'Log successfully updated.');
     }
 
     public function delete($logSlug)
@@ -224,7 +227,9 @@ class LogController extends Controller
         }
 
         // check if log should be viewable by user
-        if(!$user->isClientAssigned($log->client_id))
+        if(!Log::getAccessibleLogs($user)
+            ->where('client_user.client_id', $log->client_id)
+            ->first())
         {
             return redirect()->route('logsHome')->with('flashError', 'You do not have access to that resource.');
         }
@@ -251,7 +256,9 @@ class LogController extends Controller
         }
 
         // check if log should be viewable by user
-        if(!$user->isClientAssigned($log->client_id))
+        if(!Log::getAccessibleLogs($user)
+            ->where('client_user.client_id', $log->client_id)
+            ->first())
         {
             return redirect()
                 ->route('logsHome')
