@@ -146,7 +146,9 @@ class LogController extends Controller
         }
         
         // check if log should be viewable by user
-        if(!$user->isClientAssigned($log->client_id))
+        if(!Log::getAccessibleLogs($user)
+            ->where('client_user.client_id', $log->client_id)
+            ->first())
         {
             return redirect()
                 ->route('logsHome')
