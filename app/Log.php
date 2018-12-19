@@ -261,7 +261,7 @@ class Log extends Model
      */
     public static function createLog($data)
     {
-        Log::create([
+        return self::create([
             'slug' => strtolower(str_slug($data['title'], '-')),
             'client_id' => $data['client_id'],
             'user_created' => $data['user_created'],
@@ -334,8 +334,8 @@ class Log extends Model
         return [
             'title' => filter_var($raw['title'], FILTER_SANITIZE_STRING),
             'description' => filter_var($raw['description'], FILTER_SANITIZE_STRING),
-            'body' => filter_var($data['body'], FILTER_SANITIZE_STRING),
-            'notes' => filter_var($data['notes'], FILTER_SANITIZE_STRING),
+            'body' => filter_var($raw['body'], FILTER_SANITIZE_STRING),
+            'notes' => filter_var($raw['notes'], FILTER_SANITIZE_STRING),
         ];
     }
 
@@ -344,8 +344,10 @@ class Log extends Model
      *
      *  @param array $data
      */
-    public static function updateLog($data)
+    public function updateLog($data)
     {
-        $log = self::create($data);
+        $this->update($data);
+
+        return $this;
     }
 }

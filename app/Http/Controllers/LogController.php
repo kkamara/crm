@@ -83,9 +83,9 @@ class LogController extends Controller
 
         $data = Log::cleanStoreData($raw);
 
-        Log::createLog($data);
+        $log = Log::createLog($data);
 
-        return redirect()->route('logsHome');
+        return redirect($log->path);
     }
 
     /**
@@ -194,7 +194,7 @@ class LogController extends Controller
         $raw = Log::getUpdateData($request);
         $errors = Log::getUpdateErrors($raw);
 
-        if(!empty($errors))
+        if(!$errors->isEmpty())
         {
             return view('logs.edit', [
                 'title' => 'Edit '.$log->title,
@@ -205,7 +205,7 @@ class LogController extends Controller
 
         $data = Log::cleanUpdateData($raw);
 
-        $update = Log::updateLog($data);
+        $log = $log->updateLog($data);
 
         return redirect($log->path)->with('flashSuccess', 'Log successfully updated.');
     }

@@ -3,7 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\MessageBag;
+use Validator;
 use App\User;
 
 class Client extends Model
@@ -111,17 +115,17 @@ class Client extends Model
      */
     public function scopeSearch($query, $request)
     {
-        if(array_key_exists('company', $request) || array_key_exists('representative', $request) || array_key_exists('email', $request) || array_key_exists('created_at', $request) || array_key_exists('updated_at', $request))
+        if($request->has('company') || $request->has('representative') || $request->has('email') || $request->has('created_at') || $request->has('updated_at'))
         {
-            if(array_key_exists('search', $request))
+            if($request->has('search'))
             {
                 $searchParam = filter_var($request['search'], FILTER_SANITIZE_STRING);
 
-                if(array_key_exists('company', $request))
+                if($request->has('company'))
                 {
                     $query = $query->where('company', 'like', '%'.$searchParam.'%');
                 }
-                if(array_key_exists('representative', $request))
+                if($request->has('representative'))
                 {
                     $fullName = explode(' ', $searchParam);
 
@@ -135,15 +139,15 @@ class Client extends Model
                         $query = $query->where('first_name', 'like', '%'.$fullName[0].'%');
                     }
                 }
-                if(array_key_exists('email', $request))
+                if($request->has('email'))
                 {
                     $query = $query->where('email', 'like', '%'.$searchParam.'%');
                 }
-                if(array_key_exists('created_at', $request))
+                if($request->has('created_at'))
                 {
                     $query = $query->whereDate('created_at', 'like', '%'.$searchParam.'%');
                 }
-                if(array_key_exists('updated_at', $request))
+                if($request->has('updated_at'))
                 {
                     $query = $query->whereDate('updated_at', 'like', '%'.$searchParam.'%');
                 }
@@ -151,7 +155,7 @@ class Client extends Model
         }
         else
         {
-            if(array_key_exists('search', $request))
+            if($request->has('search'))
             {
                 $searchParam = filter_var($request['search'], FILTER_SANITIZE_STRING);
 
@@ -209,5 +213,174 @@ class Client extends Model
         }
 
         return true;
+    }
+
+    /**
+     *  Get data for store request
+     *
+     *  @param \Illuminate\Http\Request $request
+     *  @return array
+     */
+    public static function getStoreData($request)
+    {
+        if($cu = $request->input('client_users'))
+        {
+            $clientUsers = [];
+
+            for($i=0;$i<count($cu);$i++)
+            {
+                $clientUsers[] = filter_var($cu[$i], FILTER_SANITIZE_STRING);
+            }
+        }
+
+        return [
+            'first_name' => $request->input('first_name'),
+            'last_name' => $request->input('last_name'),
+            'company' => $request->input('company'),
+            'email' => $request->input('email'),
+            'building_number' => $request->input('building_number'),
+            'street_name' => $request->input('street_name'),
+            'city' => $request->input('city'),
+            'postcode' => $request->input('postcode'),
+            'contact_number' => $request->input('contact_number'),
+            'image' => $request->input('image'),
+            'client_users' => $clientUsers ?? NULL,
+        ];
+    }
+
+    /**
+     *  Get store errors
+     *
+     *  @param  array $data
+     *  @param  \App\User $user
+     *  @return \Illuminate\Support\MessageBag
+     */
+    public static function getStoreErrors($data, $user)
+    {
+        $errors = new MessageBag;
+
+        $validator = Validator::make($data, [
+            'first_name' => 'max:191',
+            'last_name' => 'max:191',
+            'company' => 'required|max:191|min:3|unique:clients',
+            'email' => 'required|email|max:191',
+            'building_number' => 'required|max:191',
+            'street_name' => 'required|max:191',
+            'city' => 'required|max:191',
+            'postcode' => 'required|max:191',
+            // optional
+            'contact_number' => 'max:191',
+            'client_users' => 'required|array',
+            'client_users.*' => 'required|integer',
+        ]);
+
+        if(isset($data['client_users']))
+        {
+            if(!Client::hasAccessToClients($data['client_users'], $user))
+            {
+                $errors->add("client_users", "No client selected");
+            }
+        }   
+
+        if(Input::hasFile('image'))
+        {
+            $file = Input::file('image');
+            $mimetype = $file->getClientMimeType();
+
+            switch($mimetype)
+            {
+                case "image/jpeg":
+                case "image/png":
+                case "image/tiff";
+                break;
+                default:
+                    $errors->add("image", "File must be of the following type: jpeg, png, tiff");
+                break;
+            }
+        }
+
+        return $validator->messages()->merge($errors);
+    }
+
+    /**
+     *  Clean store data
+     *
+     *  @param array $data
+     *  @return array
+     */
+    public static function cleanStoreData($data)
+    {
+        return [
+            'first_name' => filter_var($data['first_name'], FILTER_SANITIZE_STRING),
+            'last_name' => filter_var($data['last_name'], FILTER_SANITIZE_STRING),
+            'company' => filter_var($data['company'], FILTER_SANITIZE_STRING),
+            'email' => filter_var($data['email'], FILTER_SANITIZE_STRING),
+            'building_number' => filter_var($data['building_number'], FILTER_SANITIZE_STRING),
+            'street_name' => filter_var($data['street_name'], FILTER_SANITIZE_STRING),
+            'city' => filter_var($data['city'], FILTER_SANITIZE_STRING),
+            'postcode' => filter_var($data['postcode'], FILTER_SANITIZE_STRING),
+            // optional
+            'contact_number' => filter_var($data['contact_number'], FILTER_SANITIZE_STRING),
+            'image' => $data['image'],
+            'client_users' => $data['client_users'],
+        ];
+    }
+
+    /**
+     * Create db instance of this model
+     *
+     *  @param  array $data
+     *  @param  \App\User $user
+     *  @return \App\Client
+     */
+    public function createClient($data, $user)
+    {
+        // get image name
+        if(Input::hasFile('image'))
+        {
+            $file = Input::file('image');
+            $imageName = $file->getClientOriginalName();
+        }
+
+        $client = Client::create([
+            'user_created' => $user->id,
+            'slug' => strtolower(str_slug($data['company'], '-')),
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+            'company' => $data['company'],
+            'email' => $data['email'],
+            'building_number' => $data['building_number'],
+            'street_name' => $data['street_name'],
+            'postcode' => $data['postcode'],
+            'city' => $data['city'],
+            'contact_number' => $data['contact_number'],
+            'image' => $imageName ?? null,
+        ]);
+
+        // store image file if provided
+        if(isset($file) && isset($imageName))
+        {
+            $file->move(public_path('uploads/clients/'.$client->slug), $imageName);
+        }
+
+        // assign users to clients
+        $limit = count($data['client_users']);
+
+        for($i=0;$i<$limit;$i++)
+        {
+            $clientUsers = [
+                'user_id' => $data['client_users'][$i],
+                'client_id' => $client->id,
+            ];
+            DB::table('client_user')->insert($clientUsers);
+
+            $clientUsers = [
+                'user_id' => $user->id,
+                'client_id' => $client->id,
+            ];
+            DB::table('client_user')->insert($clientUsers);
+        }
+
+        return $client;
     }
 }

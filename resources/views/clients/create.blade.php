@@ -44,7 +44,7 @@
             </div>
 
             <div class="form-group">
-                <label>Assign Client Users :
+                <label>Assign Users of this Client :
                     <select multiple class="form-control" name="client_users[]">
                         @foreach($users as $user)
                             <option value="{{ $user->id }}">{{ $user->first_name.' '.$user->last_name.' - '.$user->username }}</option>
