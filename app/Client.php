@@ -84,26 +84,40 @@ class Client extends Model
     }
 
     /**
-     * Uses request data to update an instance of this model.
+     * Update db instance of this model.
      * 
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $imageName  (optional)
+     * @param  array $data
+     * @param  \App\User $user 
      * @return bool
      */
-    public function updateClient($request, $imageName = null)
+    public function updateClient($data, $user)
     {
-        $this->user_modified = auth()->user()->id;
-        $this->first_name = !empty($request->input('first_name')) ? trim(filter_var($request->input('first_name'), FILTER_SANITIZE_STRING)) : NULL;
-        $this->last_name = !empty($request->input('last_name')) ? trim(filter_var($request->input('last_name'), FILTER_SANITIZE_STRING)) : NULL;
-        $this->email = trim(filter_var($request->input('email'), FILTER_SANITIZE_EMAIL));
-        $this->building_number = trim(filter_var($request->input('building_number'), FILTER_SANITIZE_STRING));
-        $this->street_name = trim(filter_var($request->input('street_name'), FILTER_SANITIZE_STRING));
-        $this->postcode = trim(filter_var($request->input('postcode'), FILTER_SANITIZE_STRING));
-        $this->city = trim(filter_var($request->input('city'), FILTER_SANITIZE_STRING));
-        $this->contact_number = !empty($request->input('contact_number')) ? trim(filter_var($request->input('contact_number'), FILTER_SANITIZE_STRING)) : NULL;
-        $this->image = isset($imageName) ? $imageName : NULL;
+        if(Input::hasFile('image'))
+        {
+            $file = Input::file('image');
+            $imageName = $file->getClientOriginalName();
+        }
 
-        return $this->save() ? TRUE : FALSE;
+        $this->update([
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+            'email' => $data['email'],
+            'building_number' => $data['building_number'],
+            'street_name' => $data['street_name'],
+            'city' => $data['city'],
+            'postcode' => $data['postcode'],
+            // optional
+            'contact_number' => $data['contact_number'],
+            'user_modified' => $user->id,
+            'image' => $imageName ?? null,
+        ]);
+
+        if(isset($file) && isset($imageName))
+        {
+            $file->move(public_path('uploads/clients/'.$this->slug), $imageName);
+        }
+
+        return $this;
     }
     
     /**
@@ -382,5 +396,89 @@ class Client extends Model
         }
 
         return $client;
+    }
+
+    /**
+     *  Get data for update request for this resource.
+     *
+     *  @param  \Illuminate\Http\Request $request
+     *  @return array
+     */
+    public static function getUpdateData($request)
+    {
+        return [
+            'first_name' => $request->input('first_name'),
+            'last_name' => $request->input('last_name'),
+            'email' => $request->input('email'),
+            'building_number' => $request->input('building_number'),
+            'street_name' => $request->input('street_name'),
+            'city' => $request->input('city'),
+            'postcode' => $request->input('postcode'),
+            // optional
+            'contact_number' => $request->input('contact_number'),
+        ];
+    }
+
+    /**
+     *  Sanitize update data.
+     *
+     *  @param  array $data
+     *  @return array
+     */
+    public static function cleanUpdateData($data)
+    {
+        return [
+            'first_name' => filter_var($data['first_name'], FILTER_SANITIZE_STRING),
+            'last_name' => filter_var($data['last_name'], FILTER_SANITIZE_STRING),
+            'email' => filter_var($data['email'], FILTER_SANITIZE_EMAIL),
+            'building_number' => filter_var($data['building_number'], FILTER_SANITIZE_STRING),
+            'street_name' => filter_var($data['street_name'], FILTER_SANITIZE_STRING),
+            'city' => filter_var($data['city'], FILTER_SANITIZE_STRING),
+            'postcode' => filter_var($data['postcode'], FILTER_SANITIZE_STRING),
+            // optional
+            'contact_number' => filter_var($data['contact_number'], FILTER_SANITIZE_STRING),
+        ];
+    }
+
+    /**
+     *  Get update errors.
+     *
+     *  @param array $data
+     *  @return array
+     */
+    public static function getUpdateErrors($data)
+    {
+        $errors = new MessageBag;
+
+        $validator = Validator::make($data, [
+            'first_name' => 'max:191',
+            'last_name' => 'max:191',
+            'email' => 'required|email|max:191',
+            'building_number' => 'required|max:191',
+            'street_name' => 'required|max:191',
+            'city' => 'required|max:191',
+            'postcode' => 'required|max:191',
+            // optional
+            'contact_number' => 'max:191',
+        ]);
+
+        if(Input::hasFile('image'))
+        {
+            $file = Input::file('image');
+            $mimetype = $file->getClientMimeType();
+
+            switch($mimetype)
+            {
+                case "image/jpeg":
+                case "image/png":
+                case "image/tiff";
+                break;
+                default:
+                    $errors->add("image", "File must be of the following type: jpeg, png, tiff");
+                break;
+            }
+        }
+
+        return $validator->messages()->merge($errors);
     }
 }

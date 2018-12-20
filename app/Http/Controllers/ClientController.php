@@ -150,33 +150,31 @@ class ClientController extends Controller
     {
         $client = Client::where('slug', $clientSlug)->first();
 
-        if($client !== null)
-        {
-            $user = Auth()->user();
-
-            if($user->hasPermissionTo('edit client'))
-            {
-                if($user->isClientAssigned($client->id))
-                {
-                    return view('clients.edit', [
-                        'title'=>'Edit '.$client->company,
-                        'client' => $client,
-                    ]);
-                }
-                else
-                {
-                    return redirect()->route('clientsHome')->with('flashError', 'You do not have access to that resource.');
-                }
-            }
-            else
-            {
-                return redirect()->route('Dashboard');
-            }
-        }
-        else
+        if($client === null)
         {
             return redirect()->route('clientsHome')->with('flashError', 'Resource not found.');
         }
+
+        $user = Auth()->user();
+
+        if(!$user->hasPermissionTo('edit client'))
+        {
+            return redirect()->route('Dashboard');
+        }
+
+        if(!Client::getAccessibleClients($user)
+            ->where('client_id', '=', $client->id)
+            ->first())
+        {
+            return redirect()
+                ->route('clientsHome')
+                ->with('flashError', 'You do not have access to that resource.');
+        }
+
+        return view('clients.edit', [
+            'title'=>'Edit '.$client->company,
+            'client' => $client,
+        ]);
     }
 
     /**
@@ -190,89 +188,46 @@ class ClientController extends Controller
     {
         $client = Client::where('slug', $clientSlug)->first();
 
-        if($client !== null)
-        {
-            $user = Auth()->user();
-
-            if($user->hasPermissionTo('edit client'))
-            {
-                if($user->isClientAssigned($client->id))
-                {
-                    if(request('image') !== null)
-                    {
-                        $validator = Validator::make($request->all(), [
-                            'first_name' => 'max:191',
-                            'last_name' => 'max:191',
-                            'email' => 'required|email|max:191',
-                            'building_number' => 'required|max:191',
-                            'street_name' => 'required|max:191',
-                            'city' => 'required|max:191',
-                            'postcode' => 'required|max:191',
-                            // optional
-                            'contact_number' => 'max:191',
-                            'image' => 'image',
-                        ]);
-                    }
-                    else
-                    {
-                        $validator = Validator::make($request->all(), [
-                            'first_name' => 'max:191',
-                            'last_name' => 'max:191',
-                            'email' => 'required|email|max:191',
-                            'building_number' => 'required|max:191',
-                            'street_name' => 'required|max:191',
-                            'city' => 'required|max:191',
-                            'postcode' => 'required|max:191',
-                            // optional
-                            'contact_number' => 'max:191'
-                        ]);
-                    }
-
-                    if(empty($validator->errors()->all()))
-                    {
-                        $imageName = null;
-
-                        // get image name
-                        if(Input::hasFile('image'))
-                        {
-                            $file = Input::file('image');
-                            $imageName = $file->getClientOriginalName();
-                        }
-
-                        $client->updateClient($request, $imageName);
-
-                        // store image file if provided
-                        if(isset($file) && isset($imageName))
-                        {
-                            $file->move(public_path('uploads/clients/'.$client->slug), $imageName);
-                        }
-
-                        return redirect()->route('showClient', $client->slug);
-                    }
-                    else
-                    {
-                        return view('clients.edit', [
-                            'title' => 'Edit '.$client->company,
-                            'errors' => $validator->errors()->all(),
-                            'input' => $request->input(),
-                            'client' => $client,
-                        ]);
-                    }
-                }
-                else
-                {
-                    return redirect()->route('clientsHome')->with('flashError', 'You do not have access to that resource.');
-                }
-            }
-            else
-            {
-                return redirect()->route('Dashboard');
-            }
-        }
-        else
+        if($client === null)
         {
             return redirect()->route('clientsHome')->with('flashError', 'Resource not found.');
         }
+
+        $user = Auth()->user();
+
+        if(!$user->hasPermissionTo('edit client'))
+        {
+            return redirect()->route('Dashboard');
+        }
+
+        if(!Client::getAccessibleClients($user)
+            ->where('client_id', '=', $client->id)
+            ->first())
+        {
+            return redirect()
+                ->route('clientsHome')
+                ->with('flashError', 'You do not have access to that resource.');
+        }
+
+        $raw = Client::getUpdateData($request);
+        $errors = Client::getUpdateErrors($raw);
+
+        // handle errors
+        if(!$errors->isEmpty())
+        {
+            return view('clients.edit', [
+                'title' => 'Edit '.$client->company,
+                'errors' => $errors->all(),
+                'input' => $request->input(),
+                'client' => $client,
+            ]);
+        }
+
+        $data = Client::cleanUpdateData($raw);
+
+        $client = $client->updateClient($data, $user);
+
+        return redirect()->route('showClient', $client->slug);
     }
 
     /**
