@@ -240,39 +240,35 @@ class ClientController extends Controller
     {
         $client = Client::where('slug', $clientSlug)->first();
 
-        if($client !== null)
-        {
-            $user = Auth()->user();
-
-            if($user->hasPermissionTo('delete client'))
-            {
-                // check if client should be viewable by user
-                if($user->isClientAssigned($client->id))
-                {
-                    if(request('delete') == 1)
-                    {
-                        $client->delete();
-
-                        return redirect('/clients')->with('flashSuccess', 'Client successfully deleted.');
-                    }
-                    else
-                    {
-                        return redirect()->route('showClient', $client->slug);
-                    }
-                }
-                else
-                {
-                    return redirect()->route('clientsHome')->with('flashError', 'You do not have access to that resource.');
-                }
-            }
-            else
-            {
-                return redirect()->route('Dashboard');
-            }
-        }
-        else
+        if($client === null)
         {
             return redirect()->route('clientsHome')->with('flashError', 'Resource not found.');
         }
+
+        $user = Auth()->user();
+
+        if(!$user->hasPermissionTo('delete client'))
+        {
+            return redirect()->route('Dashboard');
+        }
+
+        // check if client should be viewable by user
+        if(!Client::getAccessibleClients($user)
+            ->where('client_id', '=', $client->id)
+            ->first())
+        {
+            return redirect()
+                ->route('clientsHome')
+                ->with('flashError', 'You do not have access to that resource.');
+        }
+
+        if((int) request('delete') !== 1)
+        {
+            return redirect()->route('showClient', $client->slug);
+        }
+
+        $client->delete();
+
+        return redirect('/clients')->with('flashSuccess', 'Client successfully deleted.');  
     }
 }
