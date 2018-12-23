@@ -14,7 +14,7 @@ class AddSlugColumnToLogsTable extends Migration
     public function up()
     {
         Schema::table('logs', function($table) {
-            $table->string('slug')->index()->after('user_modified');
+            $table->string('slug')->index()->after('user_modified')->nullable();
         });
     }
 

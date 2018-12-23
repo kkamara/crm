@@ -14,7 +14,7 @@ class AddStreetNameColumnToClientsTable extends Migration
     public function up()
     {
         Schema::table('clients', function($table) {
-            $table->string('street_name')->after('building_number');
+            $table->string('street_name')->after('building_number')->nullable();
         });
     }
 
