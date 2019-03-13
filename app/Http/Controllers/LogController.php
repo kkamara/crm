@@ -205,7 +205,7 @@ class LogController extends Controller
 
         $data = Log::cleanUpdateData($raw);
 
-        $log = $log->updateLog($data);
+        $log = $log->updateLog($data, $user);
 
         return redirect($log->path)->with('flashSuccess', 'Log successfully updated.');
     }

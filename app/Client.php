@@ -60,15 +60,13 @@ class Client extends Model
     }
 
     /**
-     * Set a publicily accessible identifier to get the updated by for this unique instance.
+     * This model relationship belongs to \App\User.
      * 
-     * @return  string
+     * @return  \Illuminate\Database\Eloquent\Model
      */
-    public function getUpdatedByAttribute()
+    public function userUpdated()
     {
-        $user = User::where('id', $this->user_modified)->first();
-
-        return $user;
+        return $this->belongsTo('App\User', 'user_modified');
     }
 
     /**
@@ -88,7 +86,7 @@ class Client extends Model
      * 
      * @param  array $data
      * @param  \App\User $user 
-     * @return bool
+     * @return Client 
      */
     public function updateClient($data, $user)
     {

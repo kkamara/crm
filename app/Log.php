@@ -38,6 +38,16 @@ class Log extends Model
     }
 
     /**
+     * This model relationship belongs to \App\User.
+     * 
+     * @return  \Illuminate\Database\Eloquent\Model
+     */
+    public function userUpdated()
+    {
+        return $this->belongsTo('App\User', 'user_modified');
+    }
+
+    /**
      * This model relationship belongs to \App\Client.
      * 
      * @return  \Illuminate\Database\Eloquent\Model
@@ -45,18 +55,6 @@ class Log extends Model
     public function client()
     {
         return $this->belongsTo('App\Client', 'client_id');
-    }
-
-    /**
-     * Set a publicily accessible identifier to get the updated by for this unique instance.
-     * 
-     * @return  string
-     */
-    public function getUpdatedByAttribute()
-    {
-        $user = User::where('id', $this->user_modified)->first();
-
-        return $user;
     }
 
     /**
@@ -342,10 +340,14 @@ class Log extends Model
     /**
      *  Create db instance of this resource
      *
-     *  @param array $data
+     *  @param  array $data
+     *  @param  \App\User $user 
+     *  @return Log
      */
-    public function updateLog($data)
+    public function updateLog($data, $user)
     {
+        $data['user_modified'] = $user->id;
+
         $this->update($data);
 
         return $this;

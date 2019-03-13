@@ -37,9 +37,9 @@
                 <strong>Created by</strong> :<br> <a href="#">{{ $log->user->name }} </a> at {{ $log->created_at->format('Y-m-D G:i:a') }}
             </li>
 
-            @if(strtotime($log->updated_at) != strtotime($log->created_at))
+            @if(null !== $log->userUpdated)
             <li class="list-group-item" style="border: none">
-                <strong>Updated by</strong> :<br> <a href="#">@if(!empty($log->updated_by)){{ $log->updated_by->name.' at ' }}@endif</a>{{ $log->updated_at->format('Y-m-D G:i:a') }}
+                <strong>Updated by</strong> :<br> <a href="#">{{ $log->userUpdated->name.' at ' }}</a>{{ $log->updated_at->format('Y-m-D G:i:a') }}
             </li>
             @endif
 
@@ -97,7 +97,7 @@
 
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Delete {{ $log->title }}</h4>
+          <h4 class="modal-title">Edit {{ $log->title }}</h4>
         </div>
         <div class="modal-body">
 
