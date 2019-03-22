@@ -48,12 +48,12 @@
                 <strong>Postcode</strong> :<br> {{ $client->postcode }}
             </li>
             <li class="list-group-item" style="border: none">
-                <strong>Created by</strong> :<br> <a href="#">{{ $client->user->name }} </a> at {{ $client->created_at->format('Y-m-D G:i:a') }}
+                <strong>Created by</strong> :<br> <a href="#">{{ $client->user->name }} </a> at {{ $client->created_at->format('Y-m-D G:i') }}
             </li>
 
             @if(null !== $client->userUpdated)
             <li class="list-group-item" style="border: none">
-                <strong>Updated by</strong> :<br> <a href="#">{{ $client->userUpdated->name.' at ' }}</a> {{ $client->updated_at->format('Y-m-D G:i:a') }}
+                <strong>Updated by</strong> :<br> <a href="#">{{ $client->userUpdated->name.' at ' }}</a> {{ $client->updated_at->format('Y-m-D G:i') }}
             </li>
             @endif
         </ul>
