@@ -26,8 +26,54 @@
                      <div class="container-fluid">
                         <form class="row" method="POST" action="/login">
                         {{ csrf_field() }}
-                              <h2 class="text-center" style="color: #5cb85c;"> <strong> {{$title}}  </strong></h2>
-                              <hr />
+                           <h2 class="text-center" style="color: #5cb85c;"> <strong> {{$title}}  </strong></h2>
+                           <hr />
+                           <small>
+                              <table class="table">
+                                 <tbody>
+                                    <tr>
+                                       <td colspan="2">
+                                          <strong>Admin credentials</strong>
+                                       </td>  
+                                    </tr>
+                                    <tr>
+                                       <td>Email</td>
+                                       <td>admin@mail.com</td>
+                                    </tr>
+                                    <tr>
+                                       <td>Password</td>
+                                       <td>secret</td>
+                                    </tr>
+                                    <tr>
+                                       <td colspan="2">
+                                          <strong>Client Admin credentials</strong>
+                                       </td>  
+                                    </tr>
+                                    <tr>
+                                       <td>Email</td>
+                                       <td>clientadmin@mail.com</td>
+                                    </tr>
+                                    <tr>
+                                       <td>Password</td>
+                                       <td>secret</td>
+                                    </tr>
+                                    <tr>
+                                       <td colspan="2">
+                                          <strong>Client User credentials</strong>
+                                       </td>  
+                                    </tr>
+                                    <tr>
+                                       <td>Email</td>
+                                       <td>clientuser@mail.com</td>
+                                    </tr>
+                                    <tr>
+                                       <td>Password</td>
+                                       <td>secret</td>
+                                    </tr>
+                                 </tbody>
+                              </table>
+                           </small>
+                           <hr />
                             @include('layouts.errors')
                               <div class="row">
                                  <div class="col-xs-12 col-sm-12 col-md-12">
