@@ -292,7 +292,7 @@ class User extends Authenticatable
                 'users.created_at', 'users.updated_at', 'users.id'
             )
             ->leftJoin('client_user', 'users.id', '=', 'client_user.user_id')
-            ->where('client_user.user_id', '!=', $user->id)
+            ->where('users.id', '!=', $user->id)
             ->groupBy('users.id');
     }
 
