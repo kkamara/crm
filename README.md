@@ -1,6 +1,6 @@
 # Client Relational Management System
 
-This project is a remake of my barebones Client Management System. Built with Laravel 5.x. 
+This project is a remake of my [barebones CRM](https://github.com/kkamara/crm). Built with Laravel 5.x. 
 
 ## Installation
 
@@ -8,7 +8,7 @@ Install [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https
 
 
 ## Setup
-Our Makefile is based at the root of project directory and provides us with a number of useful commands.
+Our [Makefile](https://github.com/kkamara/laravel-crm/blob/master/Makefile) is based at the root of project directory and provides us with a number of useful commands.
 
 What you want to do is go to the root directory where you've stored this project and run the following command:
 ```
