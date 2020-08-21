@@ -1,6 +1,6 @@
 # Client Relational Management System
 
-This project is a remake of my [barebones CRM](https://github.com/kkamara/crm). Built with Laravel 5.x. 
+This project is a remake of my [barebones CRM](https://github.com/kkamara/crm). Built with Laravel 5.x. Live link [here](https://laravelcrm.herokuapp.com/).
 
 ## Installation
 
