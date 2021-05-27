@@ -11,5 +11,3 @@ npm-debug.log
 yarn-error.log
 .env
 /nbproject/private/
-public/js/app.js
-public/css/app.css
