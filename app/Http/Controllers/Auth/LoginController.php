@@ -34,16 +34,16 @@ class LoginController extends Controller
     /** @var array to store seeder logins for site users */
     protected $loginEmails = array(
         array(
-            'email' => 'mod@mail.com',
-            'role'  => 'mod',
+            'email' => 'admin@mail.com',
+            'role'  => 'admin',
         ),
         array(
-            'email' => 'vendor@mail.com',
-            'role'  => 'vendor',
+            'email' => 'clientadmin@mail.com',
+            'role'  => 'client_admin',
         ),
         array(
-            'email' => 'guest@mail.com',
-            'role'  => 'guest',
+            'email' => 'clientuser@mail.com',
+            'role'  => 'client_user',
         ),
     );
 
