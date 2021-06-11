@@ -31,6 +31,22 @@ class LoginController extends Controller
      */
     protected $redirectTo = '/dashboard';
 
+    /** @var array to store seeder logins for site users */
+    protected $loginEmails = array(
+        array(
+            'email' => 'mod@mail.com',
+            'role'  => 'mod',
+        ),
+        array(
+            'email' => 'vendor@mail.com',
+            'role'  => 'vendor',
+        ),
+        array(
+            'email' => 'guest@mail.com',
+            'role'  => 'guest',
+        ),
+    );
+
     /**
      * Create a new controller instance.
      *
@@ -47,7 +63,9 @@ class LoginController extends Controller
             return redirect()->route('Dashboard');
         }
 
-        return view('auth/login')->withTitle('Login');
+        return view('auth/login')
+            ->withTitle('Login')
+            ->withLoginEmails($this->loginEmails);
     }
 
     public function store(Request $request)

@@ -29,49 +29,12 @@
                            <h2 class="text-center" style="color: #5cb85c;"> <strong> {{$title}}  </strong></h2>
                            <hr />
                            <small>
-                              <table class="table">
-                                 <tbody>
-                                    <tr>
-                                       <td colspan="2">
-                                          <strong>Admin credentials</strong>
-                                       </td>  
-                                    </tr>
-                                    <tr>
-                                       <td>Email</td>
-                                       <td>admin@mail.com</td>
-                                    </tr>
-                                    <tr>
-                                       <td>Password</td>
-                                       <td>secret</td>
-                                    </tr>
-                                    <tr>
-                                       <td colspan="2">
-                                          <strong>Client Admin credentials</strong>
-                                       </td>  
-                                    </tr>
-                                    <tr>
-                                       <td>Email</td>
-                                       <td>clientadmin@mail.com</td>
-                                    </tr>
-                                    <tr>
-                                       <td>Password</td>
-                                       <td>secret</td>
-                                    </tr>
-                                    <tr>
-                                       <td colspan="2">
-                                          <strong>Client User credentials</strong>
-                                       </td>  
-                                    </tr>
-                                    <tr>
-                                       <td>Email</td>
-                                       <td>clientuser@mail.com</td>
-                                    </tr>
-                                    <tr>
-                                       <td>Password</td>
-                                       <td>secret</td>
-                                    </tr>
-                                 </tbody>
-                              </table>
+                              <p style='color:#000'>Creds</p>
+                              <ul>
+                                 @foreach($loginEmails as $loginEmail)
+                                     <li>{{$loginEmail['email']}}</li>
+                                 @endforeach
+                              </ul>
                            </small>
                            <hr />
                             @include('layouts.errors')
@@ -96,7 +59,7 @@
                                              <span class="glyphicon glyphicon-lock"></span>
                                           </div>
 
-                                          <input type="password" placeholder="Password" name="password" class="form-control">
+                                          <input type="password" placeholder="Password" name="password" class="form-control" value="secret" />
                                        </div>
                                     </div>
                                  </div>
