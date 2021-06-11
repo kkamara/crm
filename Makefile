@@ -27,7 +27,7 @@ install-js-dep:
 
 dev:
 	make docker-setup
-	sleep 30
+	sleep 120
 	make backend-setup
 	make backend-seed
 	make install-js-dep
