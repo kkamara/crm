@@ -1,0 +1,96 @@
+//
+// List Data Table
+//
+
+@tree-control-size: 24px;
+
+.control-list.list-no-reorder table.table.data {
+    a.tree-expand-collapse {
+        margin-left: -(24px + 5px);
+    }
+}
+
+table.table.data {
+    //
+    // Trees
+    //
+
+    tr:nth-child(even) td {
+        a.tree-reorder-handle,
+        a.tree-expand-collapse {
+            background-color: white;
+        }
+    }
+
+    .list-cell-tree {
+        padding: 0;
+        vertical-align: middle;
+        position: relative;
+        -webkit-transition: padding 0.3s ease;
+        transition: padding 0.3s ease;
+
+        a.tree-reorder-handle,
+        a.tree-expand-collapse {
+            width: @tree-control-size;
+            height: @tree-control-size;
+            display: block;
+            position: absolute;
+            top: calc(50% - 12px);
+            border-radius: 3px;
+            background: @color-list-accent;
+            text-decoration: none;
+            &, &:after {
+                color: rgba(0,0,0,.5);
+            }
+        }
+
+        a.tree-reorder-handle {
+            text-align: center;
+            cursor: move;
+            margin-left: -(24px + 5px);
+
+            span {
+                position: relative;
+                top: 2px;
+            }
+
+            &:active {
+                background: @background-color-focus;
+            }
+        }
+
+        a.tree-expand-collapse {
+            margin-left: -(48px + 10px);
+
+            &:hover {
+                background: @background-color-focus;
+            }
+
+            > span {
+                position: absolute;
+                display: inline-block;
+                left: 0;
+                top: 0;
+                width: @tree-control-size;
+                height: @tree-control-size;
+
+                &:after {
+                    .icon(@angle-right);
+                    position: absolute;
+                    left: calc(100% - 15px);
+                    top: 2px;
+                    width: @tree-control-size;
+                    height: @tree-control-size;
+                    font-size: 15px;
+                    color: #333333;
+                    text-indent: 0;
+                }
+            }
+
+            &.is-expanded span:after {
+                .icon(@angle-down);
+                left: calc(100% - 17px);
+            }
+        }
+    }
+}

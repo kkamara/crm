@@ -1,0 +1,6 @@
+[submodule "themes/crm"]
+	path = themes/crm
+	url = https://github.com/kkamara/crm-theme.git
+[submodule "plugins/kkamara/crm"]
+	path = plugins/kkamara/crm
+	url = https://github.com/kkamara/crm-plugin.git

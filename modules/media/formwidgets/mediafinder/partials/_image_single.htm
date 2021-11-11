@@ -1,0 +1,53 @@
+<div
+    id="<?= $this->getId() ?>"
+    class="field-mediafinder style-image-single is-image <?= $value ? 'is-populated' : '' ?> <?= $this->previewMode ? 'is-preview' : '' ?>"
+    data-control="mediafinder"
+    data-thumbnail-width="<?= $imageWidth ?: '0' ?>"
+    data-thumbnail-height="<?= $imageHeight ?: '0' ?>"
+>
+    <div class="mediafinder-control-container">
+        <div class="mediafinder-control-toolbar">
+            <a href="javascript:;" class="backend-toolbar-button control-button toolbar-find-button">
+                <i class="octo-icon-save"></i>
+                <span
+                    class="button-label"
+                    data-upload-label="<?= e(trans('backend::lang.fileupload.upload')) ?>"
+                    data-replace-label="<?= e(trans('backend::lang.fileupload.replace')) ?>"
+                ><?= 
+                    ($imageExists && !empty($imageUrl)) ?
+                        e(trans('backend::lang.mediafinder.replace')) :
+                        e(trans('backend::lang.mediafinder.select')) 
+                    ?></span>
+            </a>
+
+            <button
+                class="backend-toolbar-button control-button find-remove-button populated-only"
+            >
+                <i class="octo-icon-delete"></i>
+                <span class="button-label"><?= e(trans('backend::lang.fileupload.clear')) ?></span>
+            </button>
+        </div>
+
+        <!-- Existing file -->
+        <div class="mediafinder-files-container container-image">
+            <div class="icon-container image">
+                <img data-find-image src="<?= $imageUrl ?>" alt="" />
+            </div>
+
+            <div class="info">
+                <h4 class="filename">
+                    <span data-find-file-name><?= e(ltrim($value, '/')) ?></span>
+                </h4>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data locker -->
+    <input
+        type="hidden"
+        name="<?= $field->getName() ?>"
+        id="<?= $field->getId() ?>"
+        value="<?= e($value) ?>"
+        data-find-value
+        />
+</div>

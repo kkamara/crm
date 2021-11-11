@@ -1,0 +1,72 @@
+//
+// Shared
+//
+
+.field-mediafinder {
+    .mediafinder-control-container {
+        .border-radius(@input-border-radius);
+        border: 1px solid @color-form-field-border;
+        background: white;
+
+        .mediafinder-control-toolbar {
+            padding: 3px;
+            font-size: 0;
+            white-space: nowrap;
+
+            .backend-toolbar-button {
+                &.populated-only {
+                    display: none;
+                }
+            }
+        }
+
+        .mediafinder-files-container {
+            position: relative;
+            display: none;
+        }
+    }
+
+    &.is-populated {
+        .mediafinder-control-toolbar {
+            border-bottom: 1px solid @color-grey-3;
+
+            .backend-toolbar-button.populated-only {
+                display: inline-block;
+            }
+        }
+
+        .mediafinder-files-container {
+            display: block;
+            margin: 7px;
+        }
+    }
+
+    &.is-preview {
+        .mediafinder-control-toolbar {
+            display: none;
+        }
+    }
+
+    h4.filename, p {
+        color: @color-text-grey-1;
+        font-size: @font-size-base;
+        word-break: break-all;
+    }
+
+    h4.filename {
+        font-weight: 500;
+        margin-top: 0;
+    }
+
+    .icon-container {
+        position: absolute;
+    }
+
+    //
+    // Preview mode
+    //
+
+    &.is-preview {
+
+    }
+}

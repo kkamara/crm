@@ -1,0 +1,20 @@
+<div class="nolink">
+    <?php if ($showReorder): ?>
+        <a
+            href="javascript:;"
+            class="tree-reorder-handle nolink"
+            title="<?= e(trans('backend::lang.treeview.reorder')) ?>">
+            <span>☰</span>
+        </a>
+    <?php endif ?>
+    <?php if ($childCount): ?>
+        <a
+            href="javascript:;"
+            class="tree-expand-collapse <?= $expanded ? 'is-expanded' : '' ?> nolink"
+            data-stripe-load-indicator
+            data-request-data="node_id: '<?= $record->getKey() ?>', status: <?= $expanded ? 1 : 0 ?>"
+            title="<?= e(trans($expanded ? 'backend::lang.treeview.collapse' : 'backend::lang.treeview.expand')) ?>">
+            <span></span>
+        </a>
+    <?php endif ?>
+</div>

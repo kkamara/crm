@@ -1,0 +1,65 @@
+<?php
+    $expanded = $showTree ? $this->isTreeNodeExpanded($record) : null;
+    $childRecords = $showTree ? $record->getChildren() : null;
+    $treeLevelClass = $showTree ? 'list-tree-level-'.$treeLevel : '';
+    $childCount = $showTree ? $record->getChildCount() : 0;
+?>
+<tr
+    class="<?= $treeLevelClass ?> <?= $this->getRowClass($record) ?>"
+    data-tree-id="<?= $record->getKey() ?>"
+    data-tree-level="<?= $treeLevel ?>"
+    data-tree-expanded="<?= $expanded ? 'true' : 'false' ?>"
+    data-tree-children="<?= $childCount ?>"
+>
+    <?php if ($showCheckboxes): ?>
+        <?= $this->makePartial('list_body_checkbox', ['record' => $record]) ?>
+    <?php endif ?>
+    <?php $index = $action = 0; foreach ($columns as $key => $column): ?>
+        <?php
+            $index++;
+            $classes = [
+                'list-cell-index-'.$index,
+                'list-cell-name-'.$column->getName(),
+                'list-cell-type-'.$column->type,
+                $column->getAlignClass(),
+                $column->cssClass
+            ];
+
+            if (!$column->clickable) {
+                $classes[] = 'nolink';
+            }
+
+            $styles = '';
+            $isTreeCell = $index === 1 && $useStructure;
+            if ($isTreeCell) {
+                $classes[] = 'list-cell-tree';
+                $styles = 'padding-left:'.((($treeLevel+2) * $indentSize) + ($showReorder ? 20 : 15)).'px';
+            }
+        ?>
+        <td class="<?= implode(' ', $classes) ?>" style="<?= $styles ?>">
+            <?php if ($isTreeCell): ?>
+                <?= $this->makePartial('list_body_tree', [
+                    'treeLevel' => $treeLevel,
+                    'record' => $record,
+                    'expanded' => $expanded,
+                    'childCount' => $childCount
+                ]) ?>
+            <?php endif ?>
+            <?php if ($column->clickable && !$action && ($action = $this->getRecordAction($record))): ?>
+                <a <?= $action[1] ?> href="<?= $action[0] ?>">
+                    <?= $this->getColumnValue($record, $column) ?>
+                </a>
+            <?php else: ?>
+                <?= $this->getColumnValue($record, $column) ?>
+            <?php endif ?>
+        </td>
+    <?php endforeach ?>
+
+    <?php if ($showSetup): ?>
+        <td class="list-setup">&nbsp;</td>
+    <?php endif ?>
+</tr>
+
+<?php if ($showTree && $expanded): ?>
+    <?= $this->makePartial('list_body_rows', ['records' => $childRecords, 'treeLevel' => $treeLevel+1]) ?>
+<?php endif ?>

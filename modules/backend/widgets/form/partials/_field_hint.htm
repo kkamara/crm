@@ -1,0 +1,44 @@
+<?php if ($field->path): ?>
+    <?= $this->controller->makeHintPartial($field->getId(), $field->path, [
+        'formModel' => $formModel,
+        'formField' => $field,
+        'formValue' => $field->value,
+        'model' => $formModel,
+        'field' => $field,
+        'value' => $field->value
+    ]) ?>
+<?php else: ?>
+    <?php
+        switch ($field->getConfig('mode')) {
+            case 'success':
+                $hintType = 'success';
+                $hintIcon = 'icon-check';
+                break;
+            case 'danger':
+                $hintType = 'danger';
+                $hintIcon = 'icon-exclamation';
+                break;
+            case 'warning':
+                $hintType = 'warning';
+                $hintIcon = 'icon-flag';
+                break;
+            case 'tip':
+            case 'info':
+            default:
+                $hintType = 'info';
+                $hintIcon = 'icon-info';
+                break;
+        }
+    ?>
+    <div class="callout fade in callout-<?= $hintType ?> <?= !$field->label ? 'no-title' : '' ?> <?= !$field->comment ? 'no-subheader' : '' ?>">
+        <div class="header">
+            <i class="<?= $hintIcon ?>"></i>
+            <?php if ($field->label): ?>
+                <h3><?= e(trans($field->label)) ?></h3>
+            <?php endif ?>
+            <?php if ($field->comment): ?>
+                <p><?= $field->commentHtml ? trans($field->comment) : Markdown::parse(e(trans($field->comment))) ?></p>
+            <?php endif ?>
+        </div>
+    </div>
+<?php endif ?>

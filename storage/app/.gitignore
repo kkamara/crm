@@ -1,3 +1,5 @@
 *
-!public/
 !.gitignore
+!media
+!uploads
+!resources
