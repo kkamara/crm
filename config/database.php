@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | PDO Fetch Style
@@ -55,6 +54,7 @@ return [
         ],
 
         'mysql' => [
+            'varcharmax' => env('DEFAULT_STRING_LENGTH', 191),
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
