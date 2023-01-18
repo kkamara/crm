@@ -1,3 +1,5 @@
+![crm.png](https://github.com/kkamara/useful/raw/main/crm.png)
+
 # Client Relational Management System
 
 This project is a remake of my [barebones CRM](https://github.com/kkamara/crm). Built with Laravel 5.x. Live link [here](https://laravelcrm.herokuapp.com/).
