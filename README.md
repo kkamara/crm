@@ -4,7 +4,7 @@
 
 # Client Relational Management System
 
-(2016) This project is a remake of my [barebones CRM](https://github.com/kkamara/oldcrm). Built with Laravel 5.x.
+(12-Dec-2017) This project is a remake of my [barebones CRM](https://github.com/kkamara/oldcrm). Built with Laravel 5.x.
 
 ## Installation
 
